@@ -54,7 +54,6 @@
         .handle {
             width: 16px;
             height: 16px;
-            background-color: #F59E0B; /* Amber-500 */
             border: 2px solid white;
             border-radius: 50%;
             position: absolute;
@@ -62,7 +61,7 @@
             cursor: grab;
             z-index: 50;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            transition: transform 0.1s;
+            transition: transform 0.1s, background-color 0.2s;
         }
         
         .handle:active {
@@ -72,6 +71,27 @@
 
         .handle:hover {
             transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .handle.selected {
+            background-color: #4F46E5; /* Indigo-600 */
+            z-index: 60;
+            transform: translate(-50%, -50%) scale(1.25);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2);
+        }
+
+        .handle:not(.selected) {
+            background-color: #F59E0B; /* Amber-500 */
+        }
+        
+        /* Ghost lines connecting handles */
+        .skeleton-line {
+            position: absolute;
+            background-color: rgba(245, 158, 11, 0.3);
+            height: 2px;
+            transform-origin: 0 50%;
+            pointer-events: none;
+            z-index: 40;
         }
     </style>
 </head>
@@ -114,9 +134,9 @@
                         </div>
                     </div>
 
-                    <!-- Drag Handles Overlay -->
+                    <!-- Drag Handles & Lines Overlay -->
                     <div id="handleContainer" class="absolute inset-0 w-full h-full hidden">
-                        <!-- Handles injected by JS -->
+                        <!-- Handles and lines injected by JS -->
                     </div>
 
                 </div>
@@ -162,32 +182,48 @@
                     <div class="p-4 bg-amber-50 rounded-xl border border-amber-100 flex items-start gap-3">
                         <i class="fa-solid fa-hand-pointer text-amber-500 mt-1"></i>
                         <div class="text-sm text-amber-800">
-                            <strong>Interactive Mode:</strong> Drag the orange handles on the image to create your custom shape.
+                            <strong>Interactive Mode:</strong> Drag the handles to shape. Click a handle (turns blue) to adjust its specific roundness below.
                         </div>
                     </div>
 
-                    <div class="space-y-4">
+                    <div class="space-y-6">
+                        <!-- Edges Slider -->
                         <div>
-                            <label class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-2 block">Number of Edges</label>
-                            <input type="range" id="edgeCount" min="3" max="12" value="6" oninput="initPolygon(this.value)" class="mb-2">
-                            <div class="flex justify-between text-xs text-slate-400 font-mono">
+                            <label class="flex justify-between text-xs text-slate-500 font-bold uppercase tracking-wider mb-2">
+                                <span>Number of Edges</span>
+                                <span id="edgeValueDisplay" class="text-indigo-600">6</span>
+                            </label>
+                            <input type="range" id="edgeCount" min="3" max="50" value="6" oninput="initPolygon(this.value)" class="mb-2">
+                            <div class="flex justify-between text-xs text-slate-300 font-mono">
                                 <span>3</span>
-                                <span id="edgeValueDisplay">6</span>
-                                <span>12</span>
+                                <span>50</span>
+                            </div>
+                        </div>
+
+                        <!-- Roundness Slider -->
+                        <div>
+                            <label class="flex justify-between text-xs text-slate-500 font-bold uppercase tracking-wider mb-2">
+                                <span>Selected Corner Roundness <span id="selectedIdxDisplay" class="ml-2 bg-indigo-100 text-indigo-600 px-1.5 rounded text-[10px] align-middle">#1</span></span>
+                                <span id="roundnessValueDisplay" class="text-indigo-600">0%</span>
+                            </label>
+                            <input type="range" id="roundness" min="0" max="40" value="0" oninput="updateRoundness(this.value)" class="mb-2 accent-indigo-600">
+                            <div class="flex justify-between text-xs text-slate-300 font-mono">
+                                <span>Sharp</span>
+                                <span>Round</span>
                             </div>
                         </div>
 
                         <div>
                             <label class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-2 block">Quick Presets</label>
                             <div class="grid grid-cols-4 gap-2">
-                                <button onclick="setPreset('triangle')" class="p-2 border border-slate-200 rounded hover:bg-slate-50 text-xs">Triangle</button>
-                                <button onclick="setPreset('pentagon')" class="p-2 border border-slate-200 rounded hover:bg-slate-50 text-xs">Pentagon</button>
-                                <button onclick="setPreset('hexagon')" class="p-2 border border-slate-200 rounded hover:bg-slate-50 text-xs">Hexagon</button>
-                                <button onclick="setPreset('octagon')" class="p-2 border border-slate-200 rounded hover:bg-slate-50 text-xs">Octagon</button>
-                                <button onclick="setPreset('star')" class="p-2 border border-slate-200 rounded hover:bg-slate-50 text-xs">Star</button>
-                                <button onclick="setPreset('cross')" class="p-2 border border-slate-200 rounded hover:bg-slate-50 text-xs">Cross</button>
-                                <button onclick="setPreset('message')" class="p-2 border border-slate-200 rounded hover:bg-slate-50 text-xs">Message</button>
-                                <button onclick="setPreset('frame')" class="p-2 border border-slate-200 rounded hover:bg-slate-50 text-xs">Frame</button>
+                                <button onclick="setPreset('triangle')" class="p-2 border border-slate-200 rounded hover:bg-slate-50 text-xs transition-colors">Triangle</button>
+                                <button onclick="setPreset('pentagon')" class="p-2 border border-slate-200 rounded hover:bg-slate-50 text-xs transition-colors">Pentagon</button>
+                                <button onclick="setPreset('hexagon')" class="p-2 border border-slate-200 rounded hover:bg-slate-50 text-xs transition-colors">Hexagon</button>
+                                <button onclick="setPreset('octagon')" class="p-2 border border-slate-200 rounded hover:bg-slate-50 text-xs transition-colors">Octagon</button>
+                                <button onclick="setPreset('star')" class="p-2 border border-slate-200 rounded hover:bg-slate-50 text-xs transition-colors">Star</button>
+                                <button onclick="setPreset('cross')" class="p-2 border border-slate-200 rounded hover:bg-slate-50 text-xs transition-colors">Cross</button>
+                                <button onclick="setPreset('message')" class="p-2 border border-slate-200 rounded hover:bg-slate-50 text-xs transition-colors">Message</button>
+                                <button onclick="setPreset('burst')" class="p-2 border border-slate-200 rounded hover:bg-slate-50 text-xs transition-colors">Burst</button>
                             </div>
                         </div>
                     </div>
@@ -256,7 +292,8 @@
     <script>
         // State
         let mode = 'polygon'; // polygon | organic
-        let polyPoints = []; // Array of {x, y} in percentages
+        let polyPoints = []; // Array of {x, y, r} in percentages
+        let selectedIndex = 0; // Currently selected handle for roundness editing
 
         // Elements
         const targetShape = document.getElementById('targetShape');
@@ -272,6 +309,9 @@
         
         const edgeInput = document.getElementById('edgeCount');
         const edgeDisplay = document.getElementById('edgeValueDisplay');
+        const roundnessInput = document.getElementById('roundness');
+        const roundnessDisplay = document.getElementById('roundnessValueDisplay');
+        const selectedIdxDisplay = document.getElementById('selectedIdxDisplay');
 
         // Organic Sliders
         const sl_tl = document.getElementById('tl');
@@ -305,9 +345,11 @@
                 
                 // If no points yet, init default
                 if (polyPoints.length === 0) initPolygon(6);
-                else renderHandles();
-                
-                updatePolyClip();
+                else {
+                    selectHandle(0);
+                    renderHandles();
+                    updatePolyClip();
+                }
             }
         }
 
@@ -319,7 +361,7 @@
             edgeDisplay.textContent = sides;
             polyPoints = [];
             
-            const radius = 50; // 50% from center
+            const radius = 40; // 40% from center to leave room for handles
             const center = 50;
             
             for (let i = 0; i < sides; i++) {
@@ -327,57 +369,116 @@
                 const angle = (i * 2 * Math.PI / sides) - (Math.PI / 2);
                 const x = center + radius * Math.cos(angle);
                 const y = center + radius * Math.sin(angle);
-                polyPoints.push({ x: Math.round(x), y: Math.round(y) });
+                polyPoints.push({ x: Math.round(x), y: Math.round(y), r: 0 });
             }
+            selectHandle(0);
             renderHandles();
             updatePolyClip();
         }
 
+        function updateRoundness(val) {
+            if (selectedIndex < 0 || selectedIndex >= polyPoints.length) return;
+            
+            const rVal = parseInt(val);
+            polyPoints[selectedIndex].r = rVal;
+            roundnessDisplay.textContent = rVal + '%';
+            
+            updatePolyClip();
+        }
+
+        function selectHandle(index) {
+            selectedIndex = index;
+            selectedIdxDisplay.textContent = `#${index + 1}`;
+            
+            // Update slider to match selected handle
+            if (polyPoints[index]) {
+                const rVal = polyPoints[index].r;
+                roundnessInput.value = rVal;
+                roundnessDisplay.textContent = rVal + '%';
+            }
+            
+            renderHandles(); // To update colors
+        }
+
         function setPreset(name) {
-            polyPoints = [];
+            // Helper to create points
+            const createPts = (arr) => arr.map(p => ({ x: p.x, y: p.y, r: 0 }));
             
             // Define standard shapes
-            if (name === 'triangle') polyPoints = [{x:50, y:0}, {x:0, y:100}, {x:100, y:100}];
-            else if (name === 'pentagon') polyPoints = [{x:50,y:0}, {x:100,y:38}, {x:82,y:100}, {x:18,y:100}, {x:0,y:38}];
+            if (name === 'triangle') polyPoints = createPts([{x:50, y:5}, {x:5, y:95}, {x:95, y:95}]);
+            else if (name === 'pentagon') polyPoints = createPts([{x:50,y:2}, {x:98,y:38}, {x:80,y:98}, {x:20,y:98}, {x:2,y:38}]);
             else if (name === 'hexagon') initPolygon(6);
             else if (name === 'octagon') initPolygon(8);
-            else if (name === 'star') polyPoints = [
+            else if (name === 'star') polyPoints = createPts([
                 {x:50,y:0}, {x:61,y:35}, {x:98,y:35}, {x:68,y:57}, 
                 {x:79,y:91}, {x:50,y:70}, {x:21,y:91}, {x:32,y:57}, 
                 {x:2,y:35}, {x:39,y:35}
-            ];
-            else if (name === 'cross') polyPoints = [
-                {x:35,y:0}, {x:65,y:0}, {x:65,y:35}, {x:100,y:35}, 
-                {x:100,y:65}, {x:65,y:65}, {x:65,y:100}, {x:35,y:100}, 
-                {x:35,y:65}, {x:0,y:65}, {x:0,y:35}, {x:35,y:35}
-            ];
-            else if (name === 'message') polyPoints = [
-                {x:0,y:0}, {x:100,y:0}, {x:100,y:75}, {x:75,y:75}, 
-                {x:75,y:100}, {x:50,y:75}, {x:0,y:75}
-            ];
-            else if (name === 'frame') polyPoints = [
-                {x:0,y:0}, {x:100,y:0}, {x:100,y:100}, {x:0,y:100}, 
-                {x:0,y:10}, {x:10,y:10}, {x:10,y:90}, {x:90,y:90}, 
-                {x:90,y:10}, {x:0,y:10}
-            ]; // Note: Frame logic in simple polygon needs careful winding, simplified here.
+            ]);
+            else if (name === 'cross') polyPoints = createPts([
+                {x:35,y:5}, {x:65,y:5}, {x:65,y:35}, {x:95,y:35}, 
+                {x:95,y:65}, {x:65,y:65}, {x:65,y:95}, {x:35,y:95}, 
+                {x:35,y:65}, {x:5,y:65}, {x:5,y:35}, {x:35,y:35}
+            ]);
+            else if (name === 'message') polyPoints = createPts([
+                {x:5,y:5}, {x:95,y:5}, {x:95,y:75}, {x:75,y:75}, 
+                {x:75,y:95}, {x:50,y:75}, {x:5,y:75}
+            ]);
+            else if (name === 'burst') {
+                polyPoints = [];
+                const center = 50;
+                const outerR = 45;
+                const innerR = 30;
+                for(let i=0; i<30; i++) {
+                    const angle = (i * 2 * Math.PI / 30) - (Math.PI / 2);
+                    const r = i % 2 === 0 ? outerR : innerR;
+                    polyPoints.push({
+                        x: Math.round(center + r * Math.cos(angle)),
+                        y: Math.round(center + r * Math.sin(angle)),
+                        r: 0
+                    });
+                }
+            }
 
-            // Update Input if matches basic sides, else just reset value visually or ignore
-            edgeInput.value = polyPoints.length;
-            edgeDisplay.textContent = polyPoints.length;
-
-            renderHandles();
-            updatePolyClip();
+            // Update Input
+            if (name !== 'hexagon' && name !== 'octagon') {
+                edgeInput.value = polyPoints.length;
+                edgeDisplay.textContent = polyPoints.length;
+                selectHandle(0);
+                renderHandles();
+                updatePolyClip();
+            }
         }
 
         function renderHandles() {
             handleContainer.innerHTML = '';
+            
+            // Render lines
+            for (let i = 0; i < polyPoints.length; i++) {
+                const p1 = polyPoints[i];
+                const p2 = polyPoints[(i + 1) % polyPoints.length];
+                
+                const dx = p2.x - p1.x;
+                const dy = p2.y - p1.y;
+                const len = Math.sqrt(dx*dx + dy*dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+                const line = document.createElement('div');
+                line.className = 'skeleton-line';
+                line.style.left = p1.x + '%';
+                line.style.top = p1.y + '%';
+                line.style.width = len + '%';
+                line.style.transform = `rotate(${angle}deg)`;
+                
+                handleContainer.appendChild(line);
+            }
+
+            // Render handles
             polyPoints.forEach((pt, index) => {
                 const el = document.createElement('div');
-                el.className = 'handle';
+                el.className = 'handle' + (index === selectedIndex ? ' selected' : '');
                 el.style.left = pt.x + '%';
                 el.style.top = pt.y + '%';
                 
-                // Drag Events
                 el.addEventListener('mousedown', (e) => startDrag(e, index));
                 el.addEventListener('touchstart', (e) => startDrag(e, index));
                 
@@ -386,8 +487,51 @@
         }
 
         function updatePolyClip() {
-            const pointsStr = polyPoints.map(p => `${p.x}% ${p.y}%`).join(', ');
-            const clipVal = `polygon(${pointsStr})`;
+            let generatedPoints = [];
+            const len = polyPoints.length;
+            
+            for (let i = 0; i < len; i++) {
+                const curr = polyPoints[i];
+                // If roundness is 0, just add the point
+                if (curr.r === 0) {
+                    generatedPoints.push(`${curr.x}% ${curr.y}%`);
+                    continue;
+                }
+
+                const prev = polyPoints[(i - 1 + len) % len];
+                const next = polyPoints[(i + 1) % len];
+
+                // Vectors
+                const v1 = { x: prev.x - curr.x, y: prev.y - curr.y };
+                const v2 = { x: next.x - curr.x, y: next.y - curr.y };
+
+                const len1 = Math.sqrt(v1.x*v1.x + v1.y*v1.y);
+                const len2 = Math.sqrt(v2.x*v2.x + v2.y*v2.y);
+
+                const maxR = Math.min(len1, len2) * 0.5;
+                const r = maxR * (curr.r / 100 * 2);
+
+                if (r < 0.5) { // Threshold to ignore tiny curves
+                    generatedPoints.push(`${curr.x}% ${curr.y}%`);
+                    continue;
+                }
+
+                const startX = curr.x + (v1.x / len1) * r;
+                const startY = curr.y + (v1.y / len1) * r;
+                const endX = curr.x + (v2.x / len2) * r;
+                const endY = curr.y + (v2.y / len2) * r;
+
+                const samples = 5; 
+                for (let s = 0; s <= samples; s++) {
+                    const t = s / samples;
+                    const mt = 1 - t;
+                    const bx = (mt*mt * startX) + (2*mt*t * curr.x) + (t*t * endX);
+                    const by = (mt*mt * startY) + (2*mt*t * curr.y) + (t*t * endY);
+                    generatedPoints.push(`${bx.toFixed(1)}% ${by.toFixed(1)}%`);
+                }
+            }
+            
+            const clipVal = `polygon(${generatedPoints.join(', ')})`;
             
             targetShape.style.borderRadius = '0';
             targetShape.style.clipPath = clipVal;
@@ -400,6 +544,8 @@
         function startDrag(e, index) {
             e.preventDefault();
             draggedIndex = index;
+            selectHandle(index); // Select on click/drag start
+
             document.addEventListener('mousemove', onDrag);
             document.addEventListener('mouseup', endDrag);
             document.addEventListener('touchmove', onDrag, {passive: false});
@@ -408,32 +554,23 @@
 
         function onDrag(e) {
             if (draggedIndex === -1) return;
-            e.preventDefault(); // prevent scrolling on touch
+            e.preventDefault();
 
             const rect = handleContainer.getBoundingClientRect();
             
-            // Get coordinates
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-            // Calculate percentage
             let x = ((clientX - rect.left) / rect.width) * 100;
             let y = ((clientY - rect.top) / rect.height) * 100;
 
-            // Constrain
             x = Math.max(0, Math.min(100, x));
             y = Math.max(0, Math.min(100, y));
 
-            // Update Point
-            polyPoints[draggedIndex] = { x: Math.round(x), y: Math.round(y) };
+            polyPoints[draggedIndex].x = Math.round(x);
+            polyPoints[draggedIndex].y = Math.round(y);
 
-            // Update specific handle DOM
-            const handle = handleContainer.children[draggedIndex];
-            if (handle) {
-                handle.style.left = x + '%';
-                handle.style.top = y + '%';
-            }
-
+            renderHandles();
             updatePolyClip();
         }
 
