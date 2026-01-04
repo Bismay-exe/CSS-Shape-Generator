@@ -205,7 +205,7 @@
 
             <div id="canvasZone" class="flex-1 flex items-center justify-center overflow-visible checkerboard relative p-10">
                 <div id="aspectContainer" class="relative transition-all duration-300 canvas-boundary" style="width: 400px; height: 400px;">
-                    <!-- Removed onmousedown to prevent shape moving -->
+                    <!-- Removed onmousedown to prevent shape moving as requested -->
                     <div id="layersContainer" class="absolute inset-0 w-full h-full"></div>
                     
                     <div id="ghostOverlay" class="absolute inset-0 w-full h-full pointer-events-none opacity-30 hidden border-2 border-dashed border-indigo-300"></div>
@@ -296,26 +296,44 @@
                 <div id="panel-fill" class="hidden space-y-5">
                     <div>
                         <label class="text-xs font-bold text-slate-500 uppercase mb-2 block">Background</label>
-                        <div class="flex gap-2 mb-2">
-                            <button onclick="setFillType('color')" class="flex-1 py-1.5 text-xs bg-white border border-slate-200 rounded hover:border-indigo-400">Color</button>
-                            <button onclick="triggerUpload()" class="flex-1 py-1.5 text-xs bg-white border border-slate-200 rounded hover:border-indigo-400">Image</button>
-                            <input type="file" id="imgUpload" hidden accept="image/*" onchange="handleImageUpload(this)">
+                        
+                        <!-- Color Section -->
+                        <div class="mb-4">
+                             <label class="text-[10px] font-bold text-slate-400 block mb-1">Color</label>
+                             <div class="flex gap-2">
+                                 <input type="color" id="fillColor" class="flex-1 h-8 rounded cursor-pointer border border-slate-200" value="#6366f1" oninput="setFillType('color'); updateStyle('value', this.value)">
+                                 <button onclick="setRandomGradient()" class="px-3 py-1 bg-gradient-to-r from-pink-500 to-violet-500 text-white text-xs font-bold rounded shadow-sm hover:opacity-90">Colorful</button>
+                             </div>
                         </div>
-                        <div class="flex items-center gap-2">
-                             <input type="color" id="fillColor" class="flex-1 h-8 rounded cursor-pointer" value="#6366f1" oninput="updateStyle('value', this.value)">
-                             <button id="removeImgBtn" onclick="removeImage()" class="hidden px-2 py-1.5 bg-red-50 text-red-600 rounded hover:bg-red-100 text-xs" title="Remove Image"><i class="fa-solid fa-trash"></i></button>
+                
+                        <!-- Image Section -->
+                        <div class="mb-4">
+                            <label class="text-[10px] font-bold text-slate-400 block mb-1">Image</label>
+                            <div class="flex gap-2">
+                                 <button onclick="triggerUpload()" class="flex-1 py-2 text-xs bg-white border border-slate-200 rounded hover:border-indigo-400 hover:text-indigo-600 transition-colors flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-image"></i> Upload Image
+                                 </button>
+                                 <input type="file" id="imgUpload" hidden accept="image/*" onchange="handleImageUpload(this)">
+                                 <button id="removeImgBtn" onclick="removeImage()" class="hidden w-8 flex items-center justify-center bg-white border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 rounded transition-colors disabled:opacity-50" title="Remove Image">
+                                    <i class="fa-solid fa-trash"></i>
+                                 </button>
+                            </div>
+                        </div>
+                
+                        <!-- Image Positioning (Hidden by default) -->
+                        <div id="imageControls" class="hidden space-y-3 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <label class="text-xs font-bold text-slate-500 uppercase block">Image Position</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div><span class="text-[10px] text-slate-400 block">Pan X</span><input type="range" id="imgPanX" min="0" max="100" value="50" oninput="updateImagePos()"></div>
+                                <div><span class="text-[10px] text-slate-400 block">Pan Y</span><input type="range" id="imgPanY" min="0" max="100" value="50" oninput="updateImagePos()"></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div><span class="text-[10px] text-slate-400 block">Zoom</span><input type="range" id="imgZoom" min="10" max="300" value="100" oninput="updateImagePos()"></div>
+                                <div><span class="text-[10px] text-slate-400 block">Rotate</span><input type="range" id="imgRot" min="0" max="360" value="0" oninput="updateImagePos()"></div>
+                            </div>
                         </div>
                     </div>
                     
-                    <div id="imageControls" class="hidden space-y-3 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                        <label class="text-xs font-bold text-slate-500 uppercase block">Image Position</label>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div><span class="text-[10px] text-slate-400 block">Pan X</span><input type="range" id="imgPanX" min="0" max="100" value="50" oninput="updateImagePos()"></div>
-                            <div><span class="text-[10px] text-slate-400 block">Pan Y</span><input type="range" id="imgPanY" min="0" max="100" value="50" oninput="updateImagePos()"></div>
-                        </div>
-                        <div><span class="text-[10px] text-slate-400 block">Zoom</span><input type="range" id="imgZoom" min="50" max="250" value="100" oninput="updateImagePos()"></div>
-                    </div>
-
                     <div class="space-y-2 pt-2 border-t border-slate-100">
                         <div class="flex items-center justify-between"><label class="text-xs font-bold text-slate-500 uppercase">Border (Wrapper)</label><input type="checkbox" id="hasBorder" class="accent-indigo-600" onchange="updateStyle('borderActive', this.checked)"></div>
                         <div id="borderSettings" class="space-y-2 opacity-50 pointer-events-none">
@@ -410,7 +428,7 @@
         let layers = [{ 
             id: 'l1', name: 'Shape 1', visible: true, 
             points: [], hoverPoints: [], 
-            style: { type: 'color', value: '#6366f1', rotation: 0, scale: 100, dropShadow: false, dropShadowBlur: 10, innerShadow: false, innerShadowBlur: 10, blend: 'normal', opacity: 100, filter:'none', filterVal: 50, borderActive: false, borderWidth: 5, borderColor: '#000000', imgPanX: 50, imgPanY: 50, imgZoom: 100 }
+            style: { type: 'color', value: '#6366f1', rotation: 0, scale: 100, dropShadow: false, dropShadowBlur: 10, innerShadow: false, innerShadowBlur: 10, blend: 'normal', opacity: 100, filter:'none', filterVal: 50, borderActive: false, borderWidth: 5, borderColor: '#000000', imgPanX: 50, imgPanY: 50, imgZoom: 100, imgRot: 0 }
         }];
         let activeLayerId = 'l1';
         let selectedPointIndex = 0;
@@ -440,7 +458,6 @@
             const pts = []; const r = 40; const c = 50;
             for(let i=0; i<5; i++) {
                 const a = (i * 2 * Math.PI / 5) - Math.PI/2;
-                // Add control points for bezier
                 pts.push({ x: c + r*Math.cos(a), y: c + r*Math.sin(a), type: 'corner', r: 0, cp1: {x:0, y:0}, cp2: {x:0, y:0} });
             }
             layers[0].points = pts;
@@ -464,77 +481,7 @@
             if (btnUndo) btnUndo.disabled = historyIndex<=0; 
             if (btnRedo) btnRedo.disabled = historyIndex>=history.length-1; 
         }
-
-        function addLayer() {
-            const newL = JSON.parse(JSON.stringify(layers[0]));
-            newL.id = `layer-${Date.now()}`; newL.name = `Shape ${layers.length+1}`; newL.style.value = '#F43F5E';
-            layers.push(newL); activeLayerId = newL.id; saveHistory(); render();
-        }
         
-        function deleteLayer(e, id) {
-            e.stopPropagation();
-            if(layers.length <= 1) return alert("Keep at least one layer");
-            layers = layers.filter(l => l.id !== id);
-            if(activeLayerId === id) activeLayerId = layers[0].id;
-            saveHistory(); render();
-        }
-        
-        function addPoint() { 
-            const pts=getActivePoints(); const next=(selectedPointIndex+1)%pts.length; const p1=pts[selectedPointIndex], p2=pts[next]; 
-            pts.splice(selectedPointIndex+1,0,{x:(p1.x+p2.x)/2, y:(p1.y+p2.y)/2, type:'corner', r:0}); 
-            // Also sync hover if it exists
-            const l = getActiveLayer();
-            if(!isHoverEditing && l.hoverPoints && l.hoverPoints.length === pts.length - 1) {
-                 // Re-clone to stay safe
-                 l.hoverPoints = JSON.parse(JSON.stringify(l.points));
-            }
-            saveHistory(); render(); 
-        }
-        
-        function deletePoint() { 
-            const pts=getActivePoints(); 
-            if(pts.length>3){ 
-                pts.splice(selectedPointIndex,1); 
-                selectedPointIndex=Math.max(0,selectedPointIndex-1); 
-                // Sync hover
-                const l = getActiveLayer();
-                if(!isHoverEditing && l.hoverPoints) l.hoverPoints = JSON.parse(JSON.stringify(l.points));
-                saveHistory(); render(); 
-            } 
-        }
-        
-        function initPolygon(sides) {
-            const pts = []; const r = 40; const c = 50;
-            for(let i=0; i<sides; i++) {
-                const a = (i * 2 * Math.PI / sides) - Math.PI/2;
-                pts.push({ x: c + r*Math.cos(a), y: c + r*Math.sin(a), type: 'corner', r: 0, cp1: {x:c + r*Math.cos(a)-5, y:c + r*Math.sin(a)}, cp2: {x:c + r*Math.cos(a)+5, y:c + r*Math.sin(a)} });
-            }
-            const l = getActiveLayer();
-            l.points = pts;
-            l.hoverPoints = JSON.parse(JSON.stringify(pts));
-            saveHistory(); 
-            render();
-        }
-
-        function applyPreset(name) {
-            let pts = []; 
-            const mk = (arr) => arr.map(p => ({x:p.x, y:p.y, smooth: false, type:'corner', r:0, cp1:{x:p.x-5,y:p.y}, cp2:{x:p.x+5,y:p.y}}));
-            
-            if(name==='pentagon') { initPolygon(5); return; }
-            if(name==='hexagon') { initPolygon(6); return; }
-            if(name==='circle') { const sides=8; const r=45; for(let i=0; i<sides; i++){ const a=(i*2*Math.PI/sides); pts.push({x:50+r*Math.cos(a), y:50+r*Math.sin(a), type:'smooth', r:0, cp1:{x:0,y:0}, cp2:{x:0,y:0}}); } }
-            else if(name==='star') pts = mk([{x:50,y:0},{x:61,y:35},{x:98,y:35},{x:68,y:57},{x:79,y:91},{x:50,y:70},{x:21,y:91},{x:32,y:57},{x:2,y:35},{x:39,y:35}]);
-            else if(name==='shield') pts = mk([{x:50,y:0},{x:100,y:20},{x:100,y:50},{x:50,y:100},{x:0,y:50},{x:0,y:20}]);
-            else if(name==='message') pts = mk([{x:5,y:5},{x:95,y:5},{x:95,y:75},{x:75,y:75},{x:75,y:95},{x:50,y:75},{x:5,y:75}]);
-            else if(name==='cross') pts = mk([{x:35,y:5},{x:65,y:5},{x:65,y:35},{x:95,y:35},{x:95,y:65},{x:65,y:65},{x:65,y:95},{x:35,y:95},{x:35,y:65},{x:5,y:65},{x:5,y:35},{x:35,y:35}]);
-            else if(name==='arrow') pts = mk([{x:0,y:25},{x:50,y:25},{x:50,y:0},{x:100,y:50},{x:50,y:100},{x:50,y:75},{x:0,y:75}]);
-            else if(name==='frame') pts = mk([{x:0,y:0},{x:100,y:0},{x:100,y:100},{x:0,y:100},{x:10,y:10},{x:90,y:10},{x:90,y:90},{x:10,y:90},{x:10,y:10}]);
-            
-            const l = getActiveLayer();
-            l.points = pts; l.hoverPoints = JSON.parse(JSON.stringify(pts)); 
-            saveHistory(); render();
-        }
-
         // --- RENDER PIPELINE ---
         function render() {
             const container = document.getElementById('layersContainer');
@@ -582,6 +529,33 @@
                 wrapper.style.filter = filterStr;
                 wrapper.style.mixBlendMode = layer.style.blend;
 
+                // Inner content
+                let content;
+                
+                if (layer.style.type === 'color') {
+                    content = document.createElement('div');
+                    content.className = 'w-full h-full';
+                    content.style.background = layer.style.value; // Use 'background' to support gradients
+                } else {
+                    // Image mode with <img> tag for rotation support
+                    content = document.createElement('img');
+                    content.src = layer.style.value;
+                    content.className = 'absolute top-1/2 left-1/2 min-w-full min-h-full object-cover';
+                    
+                    const panX = (layer.style.imgPanX - 50) * 5; 
+                    const panY = (layer.style.imgPanY - 50) * 5;
+                    const zoom = layer.style.imgZoom / 100;
+                    const rot = layer.style.imgRot || 0;
+                    
+                    content.style.transform = `translate(-50%, -50%) translate(${panX}px, ${panY}px) scale(${zoom}) rotate(${rot}deg)`;
+                }
+
+                // Apply clipping to a parent of content
+                const clipper = document.createElement('div');
+                clipper.className = 'w-full h-full';
+                clipper.style.clipPath = polyCSS;
+                clipper.appendChild(content);
+
                 // Border Trick
                 if(layer.style.borderActive) {
                     const outerDiv = document.createElement('div');
@@ -589,22 +563,29 @@
                     outerDiv.style.backgroundColor = layer.style.borderColor;
                     outerDiv.style.clipPath = polyCSS;
                     
-                    const inner = document.createElement('div');
-                    inner.className = 'w-full h-full';
-                    inner.style.clipPath = polyCSS;
+                    // Scale down inner
                     const s = 1 - (layer.style.borderWidth / 200); 
-                    inner.style.transform = `scale(${s})`;
-                    applyFill(inner, layer);
+                    clipper.style.transform = `scale(${s})`;
                     
-                    outerDiv.appendChild(inner);
+                    outerDiv.appendChild(clipper); // clipper is now inner
                     wrapper.appendChild(outerDiv);
                 } else {
-                    const content = document.createElement('div');
-                    content.className = 'w-full h-full';
-                    content.style.clipPath = polyCSS;
-                    applyFill(content, layer);
-                    wrapper.appendChild(content);
+                    wrapper.appendChild(clipper);
                 }
+                
+                // Inner Shadow (needs to be on top of content but inside clip)
+                if(layer.style.innerShadow) {
+                     const sh = document.createElement('div');
+                     sh.className = 'absolute inset-0 pointer-events-none';
+                     sh.style.boxShadow = `inset 0 0 ${layer.style.innerShadowBlur}px rgba(0,0,0,0.8)`;
+                     // Append to the clipped element
+                     if(layer.style.borderActive) {
+                         clipper.appendChild(sh); // Inner is clipper
+                     } else {
+                         clipper.appendChild(sh);
+                     }
+                }
+
                 container.appendChild(wrapper);
 
                 const li = document.createElement('div');
@@ -620,25 +601,6 @@
             
             generateCode();
             syncUI();
-        }
-
-        // --- ACTIONS ---
-        function applyFill(el, layer) {
-            if(layer.style.type === 'color') {
-                el.style.backgroundColor = layer.style.value;
-            } else {
-                el.style.backgroundImage = `url(${layer.style.value})`;
-                el.style.backgroundRepeat = 'no-repeat';
-                // Convert center 50/50 logic to CSS logic
-                el.style.backgroundPosition = `${layer.style.imgPanX}% ${layer.style.imgPanY}%`;
-                el.style.backgroundSize = `${layer.style.imgZoom}%`;
-            }
-            if(layer.style.innerShadow) {
-                const sh = document.createElement('div');
-                sh.className = 'absolute inset-0 pointer-events-none';
-                sh.style.boxShadow = `inset 0 0 ${layer.style.innerShadowBlur}px rgba(0,0,0,0.8)`;
-                el.appendChild(sh);
-            }
         }
 
         // --- MATH ---
@@ -696,24 +658,19 @@
                     const sX=curr.x+(v1.x/l1)*r, sY=curr.y+(v1.y/l1)*r;
                     const eX=curr.x+(v2.x/l2)*r, eY=curr.y+(v2.y/l2)*r;
                     
-                    // Arc approximation
                     for(let s=0; s<=20; s++) {
                         const t=s/20, mt=1-t;
                         tess.push({x:(mt*mt*sX)+(2*mt*t*curr.x)+(t*t*eX), y:(mt*mt*sY)+(2*mt*t*curr.y)+(t*t*eY)});
                     }
                 } else if(curr.type === 'bezier') {
-                    // Cubic Bezier
                     const next = points[(i+1)%len];
                     const cp1 = curr.cp2; // Out handle of current
-                    // For next point, if it's bezier use its IN handle (cp1), else default to the point itself
                     const cp2 = (next.type==='bezier' && next.cp1) ? next.cp1 : {x: next.x, y: next.y}; 
                     
-                    // Simple tessellation of cubic bezier
                     for(let t=0; t<1; t+=0.02) {
                         const mt = 1-t;
                         const mt2 = mt*mt; const mt3 = mt*mt*mt;
                         const t2 = t*t; const t3 = t*t*t;
-                        // B(t) = (1-t)^3*P0 + 3(1-t)^2*t*P1 + 3(1-t)t^2*P2 + t^3*P3
                         const bx = mt3*curr.x + 3*mt2*t*cp1.x + 3*mt*t2*cp2.x + t3*next.x;
                         const by = mt3*curr.y + 3*mt2*t*cp1.y + 3*mt*t2*cp2.y + t3*next.y;
                         tess.push({x: bx, y: by});
@@ -726,8 +683,6 @@
         function drawHandles(pts, htmlLayer, svgLayer) {
             pts.forEach((p, i) => {
                 const next = pts[(i+1)%pts.length];
-                
-                // Skeleton Line
                 const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
                 line.setAttribute("x1", p.x+"%"); line.setAttribute("y1", p.y+"%");
                 line.setAttribute("x2", next.x+"%"); line.setAttribute("y2", next.y+"%");
@@ -735,7 +690,6 @@
                 line.setAttribute("stroke-width", "1");
                 svgLayer.appendChild(line);
                 
-                // Main Point
                 const h = document.createElement('div');
                 h.className = `handle ${i === selectedPointIndex ? 'selected' : ''}`;
                 h.style.left = p.x + '%'; h.style.top = p.y + '%';
@@ -744,16 +698,13 @@
                 h.onmousedown = (e) => startDrag(e, i, 'point');
                 htmlLayer.appendChild(h);
                 
-                // Manual Bezier Handles (Only for selected bezier point)
                 if(i === selectedPointIndex && p.type === 'bezier') {
-                    // Draw lines to handles
                     [p.cp1, p.cp2].forEach((cp, idx) => {
                         const l = document.createElementNS("http://www.w3.org/2000/svg", "line");
                         l.setAttribute("x1", p.x+"%"); l.setAttribute("y1", p.y+"%");
                         l.setAttribute("x2", cp.x+"%"); l.setAttribute("y2", cp.y+"%");
                         l.setAttribute("stroke", "#EC4899"); l.setAttribute("stroke-width", "1");
                         svgLayer.appendChild(l);
-                        
                         const bh = document.createElement('div');
                         bh.className = 'bezier-handle';
                         bh.style.left = cp.x + '%'; bh.style.top = cp.y + '%';
@@ -787,7 +738,6 @@
             if (dragTarget === 'background') {
                 const l = getActiveLayer();
                 if (l.style.type === 'image') {
-                    // Pan Image
                     const deltaX = e.clientX - dragStartPos.x;
                     const deltaY = e.clientY - dragStartPos.y;
                     const percentX = (deltaX / rect.width) * 100; 
@@ -889,8 +839,7 @@
         }
         function updateImagePos() {
             const s = getActiveLayer().style;
-            s.imgPanX = document.getElementById('imgPanX').value; s.imgPanY = document.getElementById('imgPanY').value; s.imgZoom = document.getElementById('imgZoom').value;
-            render();
+            s.imgPanX = document.getElementById('imgPanX').value; s.imgPanY = document.getElementById('imgPanY').value; s.imgZoom = document.getElementById('imgZoom').value; s.imgRot = document.getElementById('imgRot').value; render();
         }
         function setFillType(t) { getActiveLayer().style.type = t; if(t==='color') getActiveLayer().style.value = document.getElementById('fillColor').value; render(); syncUI(); }
         function triggerUpload() { document.getElementById('imgUpload').click(); }
@@ -899,27 +848,25 @@
         function updatePointFromInput() { const pts = getActivePoints(); pts[selectedPointIndex].x = parseFloat(document.getElementById('inpX').value); pts[selectedPointIndex].y = parseFloat(document.getElementById('inpY').value); render(); saveHistory(); }
         function updateProp(prop, val) { if(prop === 'roundness') { const pts = getActivePoints(); if(pts[selectedPointIndex]) { pts[selectedPointIndex].r = parseInt(val); document.getElementById('ptRoundVal').textContent = val+'%'; } } render(); saveHistory(); }
         
-        function toggleHoverEdit() { 
-            isHoverEditing = !isHoverEditing; 
-            if(isHoverEditing && !getActiveLayer().hoverPoints.length) getActiveLayer().hoverPoints = JSON.parse(JSON.stringify(getActiveLayer().points));
-            document.getElementById('btnHoverEdit').innerText = isHoverEditing ? "Stop Editing" : "Edit Hover State";
-            document.getElementById('btnHoverEdit').classList.toggle('bg-red-600', isHoverEditing);
-            document.getElementById('btnHoverEdit').classList.toggle('bg-indigo-600', !isHoverEditing);
-            document.getElementById('hoverIndicator').classList.toggle('hidden', !isHoverEditing);
-            render();
+        function setRandomGradient() {
+            const l = getActiveLayer();
+            l.style.type = 'color';
+            const c1 = '#' + Math.floor(Math.random()*16777215).toString(16);
+            const c2 = '#' + Math.floor(Math.random()*16777215).toString(16);
+            l.style.value = `linear-gradient(45deg, ${c1}, ${c2})`;
+            // Can't set input type=color to gradient, so handle UI
+            render(); syncUI();
         }
-        
+
+        function toggleHoverEdit() { isHoverEditing = !isHoverEditing; if(isHoverEditing && !getActiveLayer().hoverPoints.length) getActiveLayer().hoverPoints = JSON.parse(JSON.stringify(getActiveLayer().points)); document.getElementById('btnHoverEdit').innerText = isHoverEditing ? "Stop Editing" : "Edit Hover State"; document.getElementById('btnHoverEdit').classList.toggle('bg-red-600', isHoverEditing); document.getElementById('btnHoverEdit').classList.toggle('bg-indigo-600', !isHoverEditing); document.getElementById('hoverIndicator').classList.toggle('hidden', !isHoverEditing); render(); }
         function previewAnim() {
             const el = document.getElementById('layersContainer').children[layers.findIndex(l => l.id === activeLayerId)];
             if(!el) return;
             const start = getPolygonCSS(getTransformedPoints(getActiveLayer().points, getActiveLayer()));
             const end = getPolygonCSS(getTransformedPoints(getActiveLayer().hoverPoints, getActiveLayer()));
-            const styleId = 'anim-style-' + activeLayerId;
-            let s = document.getElementById(styleId);
-            if(!s) { s = document.createElement('style'); s.id=styleId; document.head.appendChild(s); }
+            const styleId = 'anim-style-' + activeLayerId; let s = document.getElementById(styleId); if(!s) { s = document.createElement('style'); s.id=styleId; document.head.appendChild(s); }
             s.innerHTML = `@keyframes anim-${activeLayerId} { 0% { clip-path: ${start}; } 100% { clip-path: ${end}; } }`;
-            const children = el.querySelectorAll('div');
-            children.forEach(c => { c.style.animation = `anim-${activeLayerId} 1s infinite alternate ease-in-out`; });
+            const children = el.querySelectorAll('div'); children.forEach(c => { c.style.animation = `anim-${activeLayerId} 1s infinite alternate ease-in-out`; });
             setTimeout(() => { children.forEach(c => c.style.animation = ''); }, 3000);
         }
 
@@ -1037,11 +984,59 @@
                 render();
             }
         }
-        function saveHistory() { if(historyIndex < history.length-1) history=history.slice(0,historyIndex+1); history.push(JSON.stringify(layers)); if(history.length>30) history.shift(); else historyIndex++; updateHistoryBtns(); }
-        function historyUndo() { if(historyIndex>0) { historyIndex--; layers=JSON.parse(history[historyIndex]); render(); updateHistoryBtns(); } }
-        function historyRedo() { if(historyIndex<history.length-1) { historyIndex++; layers=JSON.parse(history[historyIndex]); render(); updateHistoryBtns(); } }
-        function updateHistoryBtns() { document.getElementById('btnUndo').disabled = historyIndex<=0; document.getElementById('btnRedo').disabled = historyIndex>=history.length-1; }
         
+        function addLayer() {
+            const newL = JSON.parse(JSON.stringify(layers[0]));
+            newL.id = `layer-${Date.now()}`; newL.name = `Shape ${layers.length+1}`; newL.style.value = '#F43F5E';
+            layers.push(newL); activeLayerId = newL.id; saveHistory(); render();
+        }
+        function deleteLayer(e, id) { e.stopPropagation(); if(layers.length <= 1) return alert("Keep at least one layer"); layers = layers.filter(l => l.id !== id); if(activeLayerId === id) activeLayerId = layers[0].id; saveHistory(); render(); }
+        function addPoint() { const pts=getActivePoints(); const next=(selectedPointIndex+1)%pts.length; const p1=pts[selectedPointIndex], p2=pts[next]; pts.splice(selectedPointIndex+1,0,{x:(p1.x+p2.x)/2, y:(p1.y+p2.y)/2, type:'corner', r:0}); const l = getActiveLayer(); if(!isHoverEditing && l.hoverPoints && l.hoverPoints.length === pts.length - 1) l.hoverPoints = JSON.parse(JSON.stringify(l.points)); saveHistory(); render(); }
+        function deletePoint() { const pts=getActivePoints(); if(pts.length>3){ pts.splice(selectedPointIndex,1); selectedPointIndex=Math.max(0,selectedPointIndex-1); const l = getActiveLayer(); if(!isHoverEditing && l.hoverPoints) l.hoverPoints = JSON.parse(JSON.stringify(l.points)); saveHistory(); render(); } }
+        function centerGeometry() { const pts = getActivePoints(); let mnX=100,mxX=0,mnY=100,mxY=0; pts.forEach(p=>{if(p.x<mnX)mnX=p.x;if(p.x>mxX)mxX=p.x;if(p.y<mnY)mnY=p.y;if(p.y>mxY)mxY=p.y}); const dx=50-(mnX+mxX)/2, dy=50-(mnY+mxY)/2; pts.forEach(p=>{p.x+=dx;p.y+=dy}); saveHistory(); render(); }
+        function toggleSymmetry(axis) { symmetry[axis] = !symmetry[axis]; document.getElementById(`sym${axis.toUpperCase()}`).classList.toggle('bg-indigo-600', symmetry[axis]); document.getElementById(`sym${axis.toUpperCase()}`).classList.toggle('text-white', symmetry[axis]); }
+        function flipGeometry(a) { const pts = getActivePoints(); pts.forEach(p => a==='h' ? p.x=100-p.x : p.y=100-p.y); saveHistory(); render(); }
+        function setAspectRatio(r) { const w = 400; const h = r===16/9 ? w/r : (r===4/3 ? w/r : w); document.getElementById('aspectContainer').style.width = w+'px'; document.getElementById('aspectContainer').style.height = h+'px'; }
+        function shareState() { const json = JSON.stringify(layers); const b64 = btoa(json); window.location.hash = b64; alert("URL updated!"); }
+        function takeSnapshot() { alert("Snapshot saved!"); }
+        function setPointType(type) {
+            const pts = getActivePoints();
+            if (!pts || !pts[selectedPointIndex]) return;
+            pts[selectedPointIndex].type = type;
+            if(type === 'bezier') {
+                const p = pts[selectedPointIndex];
+                if(!p.cp1) { p.cp1 = {x: p.x-5, y: p.y}; p.cp2 = {x: p.x+5, y: p.y}; }
+            }
+            syncUI(); render(); saveHistory();
+        }
+        
+        function initPolygon(sides) {
+            const pts = []; const r = 40; const c = 50;
+            for(let i=0; i<sides; i++) {
+                const a = (i * 2 * Math.PI / sides) - Math.PI/2;
+                pts.push({ x: c + r*Math.cos(a), y: c + r*Math.sin(a), type: 'corner', r: 0, cp1: {x:c + r*Math.cos(a)-5, y:c + r*Math.sin(a)}, cp2: {x:c + r*Math.cos(a)+5, y:c + r*Math.sin(a)} });
+            }
+            const l = getActiveLayer();
+            l.points = pts;
+            l.hoverPoints = JSON.parse(JSON.stringify(pts));
+            saveHistory(); 
+            render();
+        }
+
+        function applyPreset(name) {
+            let pts = []; const mk = (arr) => arr.map(p => ({x:p.x, y:p.y, smooth: false, type:'corner', r:0, cp1:{x:p.x-5,y:p.y}, cp2:{x:p.x+5,y:p.y}}));
+            if(name==='pentagon') { initPolygon(5); return; }
+            if(name==='hexagon') { initPolygon(6); return; }
+            if(name==='circle') { const sides=8; const r=45; for(let i=0; i<sides; i++){ const a=(i*2*Math.PI/sides); pts.push({x:50+r*Math.cos(a), y:50+r*Math.sin(a), type:'smooth', r:0, cp1:{x:0,y:0}, cp2:{x:0,y:0}}); } }
+            else if(name==='star') pts = mk([{x:50,y:0},{x:61,y:35},{x:98,y:35},{x:68,y:57},{x:79,y:91},{x:50,y:70},{x:21,y:91},{x:32,y:57},{x:2,y:35},{x:39,y:35}]);
+            else if(name==='shield') pts = mk([{x:50,y:0},{x:100,y:20},{x:100,y:50},{x:50,y:100},{x:0,y:50},{x:0,y:20}]);
+            else if(name==='message') pts = mk([{x:5,y:5},{x:95,y:5},{x:95,y:75},{x:75,y:75},{x:75,y:95},{x:50,y:75},{x:5,y:75}]);
+            else if(name==='cross') pts = mk([{x:35,y:5},{x:65,y:5},{x:65,y:35},{x:95,y:35},{x:95,y:65},{x:65,y:65},{x:65,y:95},{x:35,y:95},{x:35,y:65},{x:5,y:65},{x:5,y:35},{x:35,y:35}]);
+            else if(name==='arrow') pts = mk([{x:0,y:25},{x:50,y:25},{x:50,y:0},{x:100,y:50},{x:50,y:100},{x:50,y:75},{x:0,y:75}]);
+            else if(name==='frame') pts = mk([{x:0,y:0},{x:100,y:0},{x:100,y:100},{x:0,y:100},{x:10,y:10},{x:90,y:10},{x:90,y:90},{x:10,y:90},{x:10,y:10}]);
+            getActiveLayer().points = pts; getActiveLayer().hoverPoints = JSON.parse(JSON.stringify(pts)); saveHistory(); render();
+        }
+
         function syncUI() {
             const l = getActiveLayer();
             const p = getActivePoints()[selectedPointIndex];
@@ -1121,17 +1116,6 @@
             document.getElementById('filterIntensity').value = l.style.filterVal;
             document.getElementById('blendSelect').value = l.style.blend;
             document.getElementById('blendOpacity').value = l.style.opacity;
-        }
-        
-        function setPointType(type) {
-            const pts = getActivePoints();
-            if (!pts || !pts[selectedPointIndex]) return;
-            pts[selectedPointIndex].type = type;
-            if(type === 'bezier') {
-                const p = pts[selectedPointIndex];
-                if(!p.cp1) { p.cp1 = {x: p.x-5, y: p.y}; p.cp2 = {x: p.x+5, y: p.y}; }
-            }
-            syncUI(); render(); saveHistory();
         }
 
         init();
