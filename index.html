@@ -1326,8 +1326,41 @@
         }
 
         function addLayer() {
-            const newL = JSON.parse(JSON.stringify(layers[0]));
-            newL.id = `layer-${Date.now()}`; newL.name = `Shape ${layers.length + 1}`; newL.style.value = '#F43F5E';
+            const newL = {
+                id: `layer-${Date.now()}`,
+                name: `Shape ${layers.length + 1}`,
+                visible: true,
+                points: [
+                    { x: 40, y: 40, type: 'corner', r: 0, cp1: { x: 40, y: 40 }, cp2: { x: 40, y: 40 } },
+                    { x: 60, y: 40, type: 'corner', r: 0, cp1: { x: 60, y: 40 }, cp2: { x: 60, y: 40 } },
+                    { x: 60, y: 60, type: 'corner', r: 0, cp1: { x: 60, y: 60 }, cp2: { x: 60, y: 60 } },
+                    { x: 40, y: 60, type: 'corner', r: 0, cp1: { x: 40, y: 60 }, cp2: { x: 40, y: 60 } }
+                ],
+                hoverPoints: [],
+                style: {
+                    type: 'color',
+                    value: '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0'),
+                    rotation: 0,
+                    scale: 100,
+                    dropShadow: false,
+                    dropShadowBlur: 10,
+                    innerShadow: false,
+                    innerShadowBlur: 10,
+                    blend: 'normal',
+                    opacity: 100,
+                    filter: 'none',
+                    filterVal: 50,
+                    borderActive: false,
+                    borderWidth: 5,
+                    borderColor: '#000000',
+                    imgPanX: 50,
+                    imgPanY: 50,
+                    imgZoom: 100,
+                    imgRot: 0,
+                    imgBlur: 0
+                }
+            };
+            newL.hoverPoints = JSON.parse(JSON.stringify(newL.points));
             layers.push(newL); activeLayerId = newL.id; saveHistory(); render();
         }
         function deleteLayer(e, id) { e.stopPropagation(); if (layers.length <= 1) return alert("Keep at least one layer"); layers = layers.filter(l => l.id !== id); if (activeLayerId === id) activeLayerId = layers[0].id; saveHistory(); render(); }
