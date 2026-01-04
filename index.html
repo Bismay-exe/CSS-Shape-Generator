@@ -219,7 +219,8 @@
         <div class="flex items-center gap-3">
             <div
                 class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold shadow-md shadow-indigo-100">
-                <i class="fa-solid fa-shapes"></i></div>
+                <i class="fa-solid fa-shapes"></i>
+            </div>
             <div>
                 <h1 class="text-sm font-bold tracking-tight text-slate-900 leading-none">Shape<span
                         class="text-indigo-600">Shifter</span></h1><span
@@ -560,6 +561,8 @@
                                 <div><span class="text-[10px] text-slate-400 block">Rotate</span><input type="range"
                                         id="imgRot" min="0" max="360" value="0" oninput="updateImagePos()"></div>
                             </div>
+                            <div><span class="text-[10px] text-slate-400 block">Blur</span><input type="range"
+                                    id="imgBlur" min="0" max="20" value="0" oninput="updateImagePos()"></div>
                         </div>
                     </div>
 
@@ -674,13 +677,19 @@
                             class="code-tab px-2 py-1 text-[10px] font-bold border rounded">React</button>
                     </div>
 
-                    <div class="flex gap-4 mb-2 px-1">
-                        <label class="flex items-center gap-1 text-[10px] text-slate-500 cursor-pointer"><input
-                                type="checkbox" id="codeMinify" onchange="generateCode()"> Minify</label>
-                        <label class="flex items-center gap-1 text-[10px] text-slate-500 cursor-pointer"><input
-                                type="checkbox" id="codeVars" onchange="generateCode()"> Vars</label>
-                        <label class="flex items-center gap-1 text-[10px] text-slate-500 cursor-pointer"><input
-                                type="checkbox" id="codeSupports" onchange="generateCode()"> @supports</label>
+                    <div class="flex justify-between items-center mb-2 px-1">
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-1 text-[10px] text-slate-500 cursor-pointer"><input
+                                    type="checkbox" id="codeMinify" onchange="generateCode()"> Minify</label>
+                            <label class="flex items-center gap-1 text-[10px] text-slate-500 cursor-pointer"><input
+                                    type="checkbox" id="codeVars" onchange="generateCode()"> Vars</label>
+                            <label class="flex items-center gap-1 text-[10px] text-slate-500 cursor-pointer"><input
+                                    type="checkbox" id="codeSupports" onchange="generateCode()"> @supports</label>
+                        </div>
+                        <button onclick="copyCode()"
+                            class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+                            <i class="fa-regular fa-copy"></i> Copy
+                        </button>
                     </div>
 
                     <textarea id="cssOutput"
@@ -703,7 +712,7 @@
         let layers = [{
             id: 'l1', name: 'Shape 1', visible: true,
             points: [], hoverPoints: [],
-            style: { type: 'color', value: '#6366f1', rotation: 0, scale: 100, dropShadow: false, dropShadowBlur: 10, innerShadow: false, innerShadowBlur: 10, blend: 'normal', opacity: 100, filter: 'none', filterVal: 50, borderActive: false, borderWidth: 5, borderColor: '#000000', imgPanX: 50, imgPanY: 50, imgZoom: 100, imgRot: 0 }
+            style: { type: 'color', value: '#6366f1', rotation: 0, scale: 100, dropShadow: false, dropShadowBlur: 10, innerShadow: false, innerShadowBlur: 10, blend: 'normal', opacity: 100, filter: 'none', filterVal: 50, borderActive: false, borderWidth: 5, borderColor: '#000000', imgPanX: 50, imgPanY: 50, imgZoom: 100, imgRot: 0, imgBlur: 0 }
         }];
         let activeLayerId = 'l1';
         let selectedPointIndex = 0;
@@ -822,7 +831,10 @@
                     const zoom = layer.style.imgZoom / 100;
                     const rot = layer.style.imgRot || 0;
 
+                    const blur = layer.style.imgBlur || 0;
+
                     content.style.transform = `translate(-50%, -50%) translate(${panX}px, ${panY}px) scale(${zoom}) rotate(${rot}deg)`;
+                    content.style.filter = `blur(${blur}px)`;
                 }
 
                 // Apply clipping to a parent of content
@@ -1114,7 +1126,12 @@
         }
         function updateImagePos() {
             const s = getActiveLayer().style;
-            s.imgPanX = document.getElementById('imgPanX').value; s.imgPanY = document.getElementById('imgPanY').value; s.imgZoom = document.getElementById('imgZoom').value; s.imgRot = document.getElementById('imgRot').value; render();
+            s.imgPanX = document.getElementById('imgPanX').value;
+            s.imgPanY = document.getElementById('imgPanY').value;
+            s.imgZoom = document.getElementById('imgZoom').value;
+            s.imgRot = document.getElementById('imgRot').value;
+            s.imgBlur = document.getElementById('imgBlur').value;
+            render();
         }
         function setFillType(t) { getActiveLayer().style.type = t; if (t === 'color') getActiveLayer().style.value = document.getElementById('fillColor').value; render(); syncUI(); }
         function triggerUpload() { document.getElementById('imgUpload').click(); }
@@ -1188,6 +1205,19 @@
             document.getElementById('cssOutput').value = out;
         }
 
+        async function copyCode() {
+            const el = document.getElementById('cssOutput');
+            el.select();
+            try {
+                await navigator.clipboard.writeText(el.value);
+                // Visual feedback could be added here, but alert is consistent with existing UI
+                alert("Code copied to clipboard!");
+            } catch (e) {
+                document.execCommand('copy');
+                alert("Code copied to clipboard!");
+            }
+        }
+
         async function exportFile(type) {
             if (type === 'css' || type === 'svg_code') {
                 const el = document.getElementById('cssOutput'); el.select();
@@ -1253,7 +1283,9 @@
                         ctx.rotate(rot * Math.PI / 180);
                         ctx.scale(zoom, zoom);
 
+                        if (l.style.imgBlur > 0) ctx.filter = `blur(${l.style.imgBlur * (w / 400)}px)`; // Scale blur relative to canvas width
                         ctx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
+                        ctx.filter = 'none';
 
                         // Reset transform for next layer (restore is called at end of loop, but good practice if more code added)
                         // Actually ctx.save()/restore() handles this in the loop.
@@ -1393,6 +1425,8 @@
                 document.getElementById('imgPanX').value = l.style.imgPanX;
                 document.getElementById('imgPanY').value = l.style.imgPanY;
                 document.getElementById('imgZoom').value = l.style.imgZoom;
+                document.getElementById('imgRot').value = l.style.imgRot || 0;
+                document.getElementById('imgBlur').value = l.style.imgBlur || 0;
             } else {
                 document.getElementById('imageControls').classList.add('hidden');
                 document.getElementById('removeImgBtn').classList.add('hidden');
