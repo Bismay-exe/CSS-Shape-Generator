@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,90 +9,207 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; user-select: none; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            user-select: none;
+        }
 
         /* Custom Scrollbar */
-        .custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
-        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 3px; }
+        .custom-scroll::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 3px;
+        }
 
         /* UI Elements */
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer; }
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+            cursor: pointer;
+        }
+
         input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%;
-            background: #4F46E5; margin-top: -5px; box-shadow: 0 1px 2px rgba(0,0,0,0.3); border: 2px solid white;
+            -webkit-appearance: none;
+            height: 14px;
+            width: 14px;
+            border-radius: 50%;
+            background: #4F46E5;
+            margin-top: -5px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            border: 2px solid white;
         }
+
         input[type=range]::-webkit-slider-runnable-track {
-            width: 100%; height: 4px; background: #cbd5e1; border-radius: 2px;
+            width: 100%;
+            height: 4px;
+            background: #cbd5e1;
+            border-radius: 2px;
         }
-        input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
 
         /* Canvas Background */
         .checkerboard {
             background-image: linear-gradient(45deg, #e2e8f0 25%, transparent 25%), linear-gradient(-45deg, #e2e8f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e2e8f0 75%), linear-gradient(-45deg, transparent 75%, #e2e8f0 75%);
-            background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
 
         /* Handles */
-        #handleLayer { pointer-events: none; } 
-        
+        #handleLayer {
+            pointer-events: none;
+        }
+
         .handle {
-            width: 12px; height: 12px; border: 1px solid white; border-radius: 50%;
-            position: absolute; transform: translate(-50%, -50%); cursor: grab; z-index: 50;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3); transition: transform 0.1s, background-color 0.1s;
+            width: 12px;
+            height: 12px;
+            border: 1px solid white;
+            border-radius: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+            z-index: 50;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            transition: transform 0.1s, background-color 0.1s;
             pointer-events: auto;
         }
-        .handle:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.2); }
-        .handle.selected { background-color: #4F46E5; z-index: 60; transform: translate(-50%, -50%) scale(1.3); border: 2px solid white; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2); }
-        .handle:not(.selected) { background-color: #F59E0B; }
-        
+
+        .handle:active {
+            cursor: grabbing;
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+
+        .handle.selected {
+            background-color: #4F46E5;
+            z-index: 60;
+            transform: translate(-50%, -50%) scale(1.3);
+            border: 2px solid white;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2);
+        }
+
+        .handle:not(.selected) {
+            background-color: #F59E0B;
+        }
+
         .bezier-handle {
-            width: 10px; height: 10px; border: 2px solid #EC4899; background: white; border-radius: 50%;
-            position: absolute; transform: translate(-50%, -50%); cursor: grab; z-index: 65;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            width: 10px;
+            height: 10px;
+            border: 2px solid #EC4899;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+            z-index: 65;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
             pointer-events: auto;
         }
-        .bezier-handle:hover { transform: translate(-50%, -50%) scale(1.2); background: #EC4899; }
+
+        .bezier-handle:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+            background: #EC4899;
+        }
 
         /* Animation */
         @keyframes morphPreview {
-            0% { clip-path: var(--clip-start); }
-            100% { clip-path: var(--clip-end); }
+            0% {
+                clip-path: var(--clip-start);
+            }
+
+            100% {
+                clip-path: var(--clip-end);
+            }
         }
-        .animating { animation: morphPreview 1s infinite alternate ease-in-out; }
-        
+
+        .animating {
+            animation: morphPreview 1s infinite alternate ease-in-out;
+        }
+
         /* Tab States */
-        .tab-btn { position: relative; color: #64748b; transition: color 0.2s; }
-        .tab-btn.active { color: #4F46E5; font-weight: 600; }
-        .tab-btn.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 2px; background: #4F46E5; }
-        
-        .layer-item.active { background-color: #eff6ff; border-left: 3px solid #4f46e5; }
-        
-        .drop-active { border: 2px dashed #4F46E5; background-color: rgba(79, 70, 229, 0.05); }
-        .code-tab.active { background-color: #f1f5f9; color: #4f46e5; border-color: #e2e8f0; }
-        
+        .tab-btn {
+            position: relative;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+
+        .tab-btn.active {
+            color: #4F46E5;
+            font-weight: 600;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #4F46E5;
+        }
+
+        .layer-item.active {
+            background-color: #eff6ff;
+            border-left: 3px solid #4f46e5;
+        }
+
+        .drop-active {
+            border: 2px dashed #4F46E5;
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+
+        .code-tab.active {
+            background-color: #f1f5f9;
+            color: #4f46e5;
+            border-color: #e2e8f0;
+        }
+
         /* Box Border */
-        .canvas-boundary { border: 2px dashed #cbd5e1; }
-        
+        .canvas-boundary {
+            border: 2px dashed #cbd5e1;
+        }
+
         /* Cursors */
-        .cursor-pan-image { cursor: grab; }
-        .cursor-pan-image:active { cursor: grabbing; }
+        .cursor-pan-image {
+            cursor: grab;
+        }
+
+        .cursor-pan-image:active {
+            cursor: grabbing;
+        }
     </style>
 </head>
-<body class="h-screen flex flex-col overflow-hidden text-slate-800" onkeydown="handleKeyDown(event)" onclick="closeMenus(event)">
+
+<body class="h-screen flex flex-col overflow-hidden text-slate-800" onkeydown="handleKeyDown(event)"
+    onclick="closeMenus(event)">
 
     <!-- SVG Filters -->
     <svg width="0" height="0" class="absolute pointer-events-none">
         <defs>
             <filter id="noise">
-                <feTurbulence id="noiseVal" type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/>
-                <feColorMatrix type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 19 -9" result="noise"/>
-                <feComposite in="SourceGraphic" in2="noise" operator="in"/>
+                <feTurbulence id="noiseVal" type="fractalNoise" baseFrequency="0.8" numOctaves="3"
+                    stitchTiles="stitch" />
+                <feColorMatrix type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 19 -9" result="noise" />
+                <feComposite in="SourceGraphic" in2="noise" operator="in" />
             </filter>
             <filter id="sketchy">
-                <feTurbulence id="sketchyVal" type="turbulence" baseFrequency="0.05" numOctaves="2" result="turbulence"/>
-                <feDisplacementMap in2="turbulence" in="SourceGraphic" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+                <feTurbulence id="sketchyVal" type="turbulence" baseFrequency="0.05" numOctaves="2"
+                    result="turbulence" />
+                <feDisplacementMap in2="turbulence" in="SourceGraphic" scale="5" xChannelSelector="R"
+                    yChannelSelector="G" />
             </filter>
         </defs>
     </svg>
@@ -99,45 +217,72 @@
     <!-- Top Bar -->
     <nav class="bg-white border-b border-slate-200 px-4 h-14 flex items-center justify-between shrink-0 z-30">
         <div class="flex items-center gap-3">
-            <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold shadow-md shadow-indigo-100"><i class="fa-solid fa-shapes"></i></div>
-            <div><h1 class="text-sm font-bold tracking-tight text-slate-900 leading-none">Shape<span class="text-indigo-600">Shifter</span></h1><span class="text-[10px] font-medium text-slate-400 uppercase tracking-widest">Ultimate</span></div>
+            <div
+                class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold shadow-md shadow-indigo-100">
+                <i class="fa-solid fa-shapes"></i></div>
+            <div>
+                <h1 class="text-sm font-bold tracking-tight text-slate-900 leading-none">Shape<span
+                        class="text-indigo-600">Shifter</span></h1><span
+                    class="text-[10px] font-medium text-slate-400 uppercase tracking-widest">Ultimate</span>
+            </div>
         </div>
-        
+
         <div class="flex items-center gap-3">
-            <button onclick="shareState()" class="text-xs font-medium text-indigo-600 hover:bg-indigo-50 px-3 py-1.5 rounded-md border border-indigo-100 transition-colors flex items-center gap-2"><i class="fa-solid fa-share-nodes"></i> Share</button>
+            <button onclick="shareState()"
+                class="text-xs font-medium text-indigo-600 hover:bg-indigo-50 px-3 py-1.5 rounded-md border border-indigo-100 transition-colors flex items-center gap-2"><i
+                    class="fa-solid fa-share-nodes"></i> Share</button>
             <div class="h-6 w-px bg-slate-200"></div>
             <div class="flex bg-slate-100 rounded-lg p-1 gap-1">
-                <button onclick="setAspectRatio(1)" class="w-7 h-7 rounded flex items-center justify-center text-xs text-slate-500 hover:bg-white hover:shadow-sm" title="Square"><i class="fa-regular fa-square"></i></button>
-                <button onclick="setAspectRatio(4/3)" class="w-7 h-7 rounded flex items-center justify-center text-xs text-slate-500 hover:bg-white hover:shadow-sm" title="4:3"><i class="fa-solid fa-tv"></i></button>
-                <button onclick="setAspectRatio(16/9)" class="w-7 h-7 rounded flex items-center justify-center text-xs text-slate-500 hover:bg-white hover:shadow-sm" title="16:9"><i class="fa-solid fa-desktop"></i></button>
+                <button onclick="setAspectRatio(1)"
+                    class="w-7 h-7 rounded flex items-center justify-center text-xs text-slate-500 hover:bg-white hover:shadow-sm"
+                    title="Square"><i class="fa-regular fa-square"></i></button>
+                <button onclick="setAspectRatio(4/3)"
+                    class="w-7 h-7 rounded flex items-center justify-center text-xs text-slate-500 hover:bg-white hover:shadow-sm"
+                    title="4:3"><i class="fa-solid fa-tv"></i></button>
+                <button onclick="setAspectRatio(16/9)"
+                    class="w-7 h-7 rounded flex items-center justify-center text-xs text-slate-500 hover:bg-white hover:shadow-sm"
+                    title="16:9"><i class="fa-solid fa-desktop"></i></button>
             </div>
             <div class="relative">
-                <button onclick="toggleMenu('exportMenu', event)" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors flex items-center gap-2 shadow-sm">Export <i class="fa-solid fa-chevron-down text-[10px]"></i></button>
-                <div id="exportMenu" class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 p-1 z-50">
+                <button onclick="toggleMenu('exportMenu', event)"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors flex items-center gap-2 shadow-sm">Export
+                    <i class="fa-solid fa-chevron-down text-[10px]"></i></button>
+                <div id="exportMenu"
+                    class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 p-1 z-50">
                     <div class="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase">Code</div>
-                    <button onclick="exportFile('css')" class="w-full text-left px-3 py-2 text-xs font-medium text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 rounded">Copy CSS</button>
-                    <button onclick="exportFile('svg_code')" class="w-full text-left px-3 py-2 text-xs font-medium text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 rounded">Copy SVG Code</button>
+                    <button onclick="exportFile('css')"
+                        class="w-full text-left px-3 py-2 text-xs font-medium text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 rounded">Copy
+                        CSS</button>
+                    <button onclick="exportFile('svg_code')"
+                        class="w-full text-left px-3 py-2 text-xs font-medium text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 rounded">Copy
+                        SVG Code</button>
                     <div class="border-t border-slate-100 my-1"></div>
                     <div class="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase">Download</div>
-                    <button onclick="exportFile('svg')" class="w-full text-left px-3 py-2 text-xs font-medium text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 rounded">As SVG File</button>
-                    <button onclick="exportFile('png')" class="w-full text-left px-3 py-2 text-xs font-medium text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 rounded">As PNG (Raster)</button>
+                    <button onclick="exportFile('svg')"
+                        class="w-full text-left px-3 py-2 text-xs font-medium text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 rounded">As
+                        SVG File</button>
+                    <button onclick="exportFile('png')"
+                        class="w-full text-left px-3 py-2 text-xs font-medium text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 rounded">As
+                        PNG (Raster)</button>
                 </div>
             </div>
         </div>
     </nav>
 
     <div class="flex-1 flex overflow-hidden">
-        
+
         <!-- Sidebar: Layers & Primitives -->
         <aside class="w-60 bg-white border-r border-slate-200 flex flex-col shrink-0 z-20">
             <div class="p-3 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Layers</span>
                 <div class="flex gap-1">
-                    <button onclick="addLayer()" class="text-xs bg-white border border-slate-200 hover:text-indigo-600 px-2 py-1 rounded shadow-sm" title="Add Layer"><i class="fa-solid fa-plus"></i></button>
+                    <button onclick="addLayer()"
+                        class="text-xs bg-white border border-slate-200 hover:text-indigo-600 px-2 py-1 rounded shadow-sm"
+                        title="Add Layer"><i class="fa-solid fa-plus"></i></button>
                 </div>
             </div>
             <div id="layerList" class="flex-1 overflow-y-auto custom-scroll p-2 space-y-1"></div>
-            
+
             <div class="p-4 border-t border-slate-100 bg-slate-50 space-y-4">
                 <div>
                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-2">Generators</span>
@@ -148,13 +293,16 @@
                                 <option value="star">Star</option>
                                 <option value="blob">Blob</option>
                             </select>
-                            <input type="number" id="genPoints" value="5" class="w-10 text-xs border border-slate-200 rounded p-1 text-center" min="3" max="20">
+                            <input type="number" id="genPoints" value="5"
+                                class="w-10 text-xs border border-slate-200 rounded p-1 text-center" min="3" max="20">
                         </div>
                         <div id="starParams" class="hidden flex gap-1 items-center">
                             <span class="text-[10px] text-slate-400">Inset:</span>
                             <input type="range" id="genInset" min="10" max="90" value="50" class="flex-1">
                         </div>
-                        <button onclick="runGenerator()" class="w-full py-1.5 bg-white border border-slate-200 text-xs font-medium text-slate-600 rounded hover:text-indigo-600 hover:border-indigo-300">Generate Shape</button>
+                        <button onclick="runGenerator()"
+                            class="w-full py-1.5 bg-white border border-slate-200 text-xs font-medium text-slate-600 rounded hover:text-indigo-600 hover:border-indigo-300">Generate
+                            Shape</button>
                     </div>
                 </div>
 
@@ -162,20 +310,34 @@
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Primitives</span>
                         <div class="relative">
-                            <button onclick="toggleMenu('presetMenu', event)" class="text-[10px] text-indigo-600 font-bold hover:underline">MORE</button>
-                            <div id="presetMenu" class="hidden absolute bottom-full left-0 mb-1 w-32 bg-white border border-slate-200 rounded shadow-lg p-1 z-50">
-                                <button onclick="applyPreset('message')" class="w-full text-left px-2 py-1 text-xs hover:bg-indigo-50 text-slate-600 rounded">Message</button>
-                                <button onclick="applyPreset('shield')" class="w-full text-left px-2 py-1 text-xs hover:bg-indigo-50 text-slate-600 rounded">Shield</button>
-                                <button onclick="applyPreset('cross')" class="w-full text-left px-2 py-1 text-xs hover:bg-indigo-50 text-slate-600 rounded">Cross</button>
-                                <button onclick="applyPreset('frame')" class="w-full text-left px-2 py-1 text-xs hover:bg-indigo-50 text-slate-600 rounded">Frame</button>
+                            <button onclick="toggleMenu('presetMenu', event)"
+                                class="text-[10px] text-indigo-600 font-bold hover:underline">MORE</button>
+                            <div id="presetMenu"
+                                class="hidden absolute bottom-full left-0 mb-1 w-32 bg-white border border-slate-200 rounded shadow-lg p-1 z-50">
+                                <button onclick="applyPreset('message')"
+                                    class="w-full text-left px-2 py-1 text-xs hover:bg-indigo-50 text-slate-600 rounded">Message</button>
+                                <button onclick="applyPreset('shield')"
+                                    class="w-full text-left px-2 py-1 text-xs hover:bg-indigo-50 text-slate-600 rounded">Shield</button>
+                                <button onclick="applyPreset('cross')"
+                                    class="w-full text-left px-2 py-1 text-xs hover:bg-indigo-50 text-slate-600 rounded">Cross</button>
+                                <button onclick="applyPreset('frame')"
+                                    class="w-full text-left px-2 py-1 text-xs hover:bg-indigo-50 text-slate-600 rounded">Frame</button>
                             </div>
                         </div>
                     </div>
                     <div class="grid grid-cols-4 gap-2">
-                        <button onclick="applyPreset('pentagon')" class="aspect-square border border-slate-200 bg-white rounded hover:border-indigo-400 flex items-center justify-center text-slate-400 hover:text-indigo-500"><i class="fa-solid fa-play fa-rotate-270 text-[10px]"></i></button>
-                        <button onclick="applyPreset('circle')" class="aspect-square border border-slate-200 bg-white rounded hover:border-indigo-400 flex items-center justify-center text-slate-400 hover:text-indigo-500"><i class="fa-regular fa-circle text-[10px]"></i></button>
-                        <button onclick="applyPreset('star')" class="aspect-square border border-slate-200 bg-white rounded hover:border-indigo-400 flex items-center justify-center text-slate-400 hover:text-indigo-500"><i class="fa-solid fa-star text-[10px]"></i></button>
-                        <button onclick="applyPreset('arrow')" class="aspect-square border border-slate-200 bg-white rounded hover:border-indigo-400 flex items-center justify-center text-slate-400 hover:text-indigo-500"><i class="fa-solid fa-arrow-right text-[10px]"></i></button>
+                        <button onclick="applyPreset('pentagon')"
+                            class="aspect-square border border-slate-200 bg-white rounded hover:border-indigo-400 flex items-center justify-center text-slate-400 hover:text-indigo-500"><i
+                                class="fa-solid fa-play fa-rotate-270 text-[10px]"></i></button>
+                        <button onclick="applyPreset('circle')"
+                            class="aspect-square border border-slate-200 bg-white rounded hover:border-indigo-400 flex items-center justify-center text-slate-400 hover:text-indigo-500"><i
+                                class="fa-regular fa-circle text-[10px]"></i></button>
+                        <button onclick="applyPreset('star')"
+                            class="aspect-square border border-slate-200 bg-white rounded hover:border-indigo-400 flex items-center justify-center text-slate-400 hover:text-indigo-500"><i
+                                class="fa-solid fa-star text-[10px]"></i></button>
+                        <button onclick="applyPreset('arrow')"
+                            class="aspect-square border border-slate-200 bg-white rounded hover:border-indigo-400 flex items-center justify-center text-slate-400 hover:text-indigo-500"><i
+                                class="fa-solid fa-arrow-right text-[10px]"></i></button>
                     </div>
                 </div>
             </div>
@@ -184,111 +346,166 @@
         <!-- Canvas Area -->
         <main class="flex-1 flex flex-col relative bg-slate-100/50">
             <!-- Toolbar -->
-            <div class="h-10 bg-white/80 backdrop-blur border-b border-slate-200 flex items-center justify-center gap-4 px-4">
+            <div
+                class="h-10 bg-white/80 backdrop-blur border-b border-slate-200 flex items-center justify-center gap-4 px-4">
                 <div class="flex items-center gap-1">
-                    <button onclick="historyUndo()" id="btnUndo" disabled class="w-7 h-7 flex items-center justify-center rounded hover:bg-slate-100 text-slate-500 disabled:opacity-30"><i class="fa-solid fa-rotate-left text-xs"></i></button>
-                    <button onclick="historyRedo()" id="btnRedo" disabled class="w-7 h-7 flex items-center justify-center rounded hover:bg-slate-100 text-slate-500 disabled:opacity-30"><i class="fa-solid fa-rotate-right text-xs"></i></button>
+                    <button onclick="historyUndo()" id="btnUndo" disabled
+                        class="w-7 h-7 flex items-center justify-center rounded hover:bg-slate-100 text-slate-500 disabled:opacity-30"><i
+                            class="fa-solid fa-rotate-left text-xs"></i></button>
+                    <button onclick="historyRedo()" id="btnRedo" disabled
+                        class="w-7 h-7 flex items-center justify-center rounded hover:bg-slate-100 text-slate-500 disabled:opacity-30"><i
+                            class="fa-solid fa-rotate-right text-xs"></i></button>
                 </div>
                 <div class="w-px h-4 bg-slate-300"></div>
                 <div class="flex items-center gap-1">
-                    <button onclick="flipGeometry('h')" class="w-7 h-7 flex items-center justify-center rounded hover:bg-slate-100 text-slate-500"><i class="fa-solid fa-arrows-left-right text-xs"></i></button>
-                    <button onclick="flipGeometry('v')" class="w-7 h-7 flex items-center justify-center rounded hover:bg-slate-100 text-slate-500"><i class="fa-solid fa-arrows-up-down text-xs"></i></button>
-                    <button onclick="centerGeometry()" class="w-7 h-7 flex items-center justify-center rounded hover:bg-slate-100 text-slate-500"><i class="fa-solid fa-compress text-xs"></i></button>
+                    <button onclick="flipGeometry('h')"
+                        class="w-7 h-7 flex items-center justify-center rounded hover:bg-slate-100 text-slate-500"><i
+                            class="fa-solid fa-arrows-left-right text-xs"></i></button>
+                    <button onclick="flipGeometry('v')"
+                        class="w-7 h-7 flex items-center justify-center rounded hover:bg-slate-100 text-slate-500"><i
+                            class="fa-solid fa-arrows-up-down text-xs"></i></button>
+                    <button onclick="centerGeometry()"
+                        class="w-7 h-7 flex items-center justify-center rounded hover:bg-slate-100 text-slate-500"><i
+                            class="fa-solid fa-compress text-xs"></i></button>
                 </div>
                 <div class="w-px h-4 bg-slate-300"></div>
                 <div class="flex items-center gap-2">
                     <span class="text-[10px] font-bold text-slate-400 uppercase">Sym</span>
-                    <button onclick="toggleSymmetry('x')" id="symX" class="px-2 py-0.5 rounded text-[10px] border border-slate-300 text-slate-500 hover:border-indigo-500 hover:text-indigo-600 transition-colors">X</button>
-                    <button onclick="toggleSymmetry('y')" id="symY" class="px-2 py-0.5 rounded text-[10px] border border-slate-300 text-slate-500 hover:border-indigo-500 hover:text-indigo-600 transition-colors">Y</button>
+                    <button onclick="toggleSymmetry('x')" id="symX"
+                        class="px-2 py-0.5 rounded text-[10px] border border-slate-300 text-slate-500 hover:border-indigo-500 hover:text-indigo-600 transition-colors">X</button>
+                    <button onclick="toggleSymmetry('y')" id="symY"
+                        class="px-2 py-0.5 rounded text-[10px] border border-slate-300 text-slate-500 hover:border-indigo-500 hover:text-indigo-600 transition-colors">Y</button>
                 </div>
             </div>
 
-            <div id="canvasZone" class="flex-1 flex items-center justify-center overflow-visible checkerboard relative p-10">
-                <div id="aspectContainer" class="relative transition-all duration-300 canvas-boundary" style="width: 400px; height: 400px;">
+            <div id="canvasZone"
+                class="flex-1 flex items-center justify-center overflow-visible checkerboard relative p-10">
+                <div id="aspectContainer" class="relative transition-all duration-300 canvas-boundary"
+                    style="width: 400px; height: 400px;">
                     <!-- Removed onmousedown to prevent shape moving as requested -->
                     <div id="layersContainer" class="absolute inset-0 w-full h-full"></div>
-                    
-                    <div id="ghostOverlay" class="absolute inset-0 w-full h-full pointer-events-none opacity-30 hidden border-2 border-dashed border-indigo-300"></div>
-                    
-                    <svg id="uiOverlay" class="absolute inset-0 w-full h-full z-50 pointer-events-none overflow-visible"></svg>
+
+                    <div id="ghostOverlay"
+                        class="absolute inset-0 w-full h-full pointer-events-none opacity-30 hidden border-2 border-dashed border-indigo-300">
+                    </div>
+
+                    <svg id="uiOverlay"
+                        class="absolute inset-0 w-full h-full z-50 pointer-events-none overflow-visible"></svg>
                     <div id="handleLayer" class="absolute inset-0 w-full h-full z-50 pointer-events-none"></div>
                 </div>
-                <div id="hoverIndicator" class="hidden absolute top-4 left-4 bg-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg pointer-events-none flex items-center gap-2 animate-pulse">
+                <div id="hoverIndicator"
+                    class="hidden absolute top-4 left-4 bg-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg pointer-events-none flex items-center gap-2 animate-pulse">
                     <span class="w-2 h-2 rounded-full bg-white"></span> EDITING HOVER STATE
                 </div>
             </div>
-            
-            <div class="h-6 bg-white border-t border-slate-200 flex items-center justify-between px-3 text-[10px] text-slate-400">
+
+            <div
+                class="h-6 bg-white border-t border-slate-200 flex items-center justify-between px-3 text-[10px] text-slate-400">
                 <span id="coordDisplay">x: 0% y: 0%</span>
-                <span class="flex items-center gap-2"><i class="fa-regular fa-keyboard"></i> <span>Arrow: Nudge</span> <span>Shift+Arrow: 10%</span></span>
+                <span class="flex items-center gap-2"><i class="fa-regular fa-keyboard"></i> <span>Arrow: Nudge</span>
+                    <span>Shift+Arrow: 10%</span></span>
             </div>
         </main>
 
         <!-- Right Sidebar: Properties -->
         <aside class="w-80 bg-white border-l border-slate-200 flex flex-col shrink-0 z-20">
             <div class="flex border-b border-slate-100">
-                <button onclick="setTab('shape')" id="tab-shape" class="tab-btn active flex-1 py-3 text-xs font-bold uppercase border-b-2">Shape</button>
-                <button onclick="setTab('fill')" id="tab-fill" class="tab-btn flex-1 py-3 text-xs font-bold uppercase border-b-2">Fill</button>
-                <button onclick="setTab('effects')" id="tab-effects" class="tab-btn flex-1 py-3 text-xs font-bold uppercase border-b-2">Effects</button>
-                <button onclick="setTab('anim')" id="tab-anim" class="tab-btn flex-1 py-3 text-xs font-bold uppercase border-b-2">Anim</button>
-                <button onclick="setTab('code')" id="tab-code" class="tab-btn flex-1 py-3 text-xs font-bold uppercase border-b-2">Code</button>
+                <button onclick="setTab('shape')" id="tab-shape"
+                    class="tab-btn active flex-1 py-3 text-xs font-bold uppercase border-b-2">Shape</button>
+                <button onclick="setTab('fill')" id="tab-fill"
+                    class="tab-btn flex-1 py-3 text-xs font-bold uppercase border-b-2">Fill</button>
+                <button onclick="setTab('effects')" id="tab-effects"
+                    class="tab-btn flex-1 py-3 text-xs font-bold uppercase border-b-2">Effects</button>
+                <button onclick="setTab('anim')" id="tab-anim"
+                    class="tab-btn flex-1 py-3 text-xs font-bold uppercase border-b-2">Anim</button>
+                <button onclick="setTab('code')" id="tab-code"
+                    class="tab-btn flex-1 py-3 text-xs font-bold uppercase border-b-2">Code</button>
             </div>
 
             <div class="flex-1 overflow-y-auto custom-scroll p-4 space-y-6">
-                
+
                 <!-- TAB: SHAPE (Geometry) -->
                 <div id="panel-shape" class="space-y-5">
                     <!-- Point Controls -->
                     <div class="bg-slate-50 border border-slate-100 rounded-lg p-3 space-y-3">
                         <div class="flex justify-between items-center mb-1">
                             <span class="text-xs font-bold text-slate-500 uppercase">Selected Point</span>
-                            <span id="pointIndex" class="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded font-mono">#1</span>
+                            <span id="pointIndex"
+                                class="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded font-mono">#1</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
-                            <div class="relative"><span class="absolute left-2 top-1.5 text-[10px] text-slate-400 font-bold">X</span><input type="number" id="inpX" class="w-full pl-6 pr-1 py-1 text-xs border border-slate-200 rounded outline-none focus:border-indigo-500" oninput="updatePointFromInput()"></div>
-                            <div class="relative"><span class="absolute left-2 top-1.5 text-[10px] text-slate-400 font-bold">Y</span><input type="number" id="inpY" class="w-full pl-6 pr-1 py-1 text-xs border border-slate-200 rounded outline-none focus:border-indigo-500" oninput="updatePointFromInput()"></div>
+                            <div class="relative"><span
+                                    class="absolute left-2 top-1.5 text-[10px] text-slate-400 font-bold">X</span><input
+                                    type="number" id="inpX"
+                                    class="w-full pl-6 pr-1 py-1 text-xs border border-slate-200 rounded outline-none focus:border-indigo-500"
+                                    oninput="updatePointFromInput()"></div>
+                            <div class="relative"><span
+                                    class="absolute left-2 top-1.5 text-[10px] text-slate-400 font-bold">Y</span><input
+                                    type="number" id="inpY"
+                                    class="w-full pl-6 pr-1 py-1 text-xs border border-slate-200 rounded outline-none focus:border-indigo-500"
+                                    oninput="updatePointFromInput()"></div>
                         </div>
-                        
+
                         <!-- Point Type Selector -->
                         <div>
                             <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Point Type</label>
                             <div class="grid grid-cols-4 bg-white rounded border border-slate-200 p-0.5 gap-0.5">
-                                <button onclick="setPointType('corner')" id="type-corner" class="py-1 text-[9px] rounded hover:bg-slate-50 text-slate-600">Corner</button>
-                                <button onclick="setPointType('smooth')" id="type-smooth" class="py-1 text-[9px] rounded hover:bg-slate-50 text-slate-600">Smooth</button>
-                                <button onclick="setPointType('rounded')" id="type-rounded" class="py-1 text-[9px] rounded hover:bg-slate-50 text-slate-600">Rounded</button>
-                                <button onclick="setPointType('bezier')" id="type-bezier" class="py-1 text-[9px] rounded hover:bg-slate-50 text-slate-600">Manual</button>
+                                <button onclick="setPointType('corner')" id="type-corner"
+                                    class="py-1 text-[9px] rounded hover:bg-slate-50 text-slate-600">Corner</button>
+                                <button onclick="setPointType('smooth')" id="type-smooth"
+                                    class="py-1 text-[9px] rounded hover:bg-slate-50 text-slate-600">Smooth</button>
+                                <button onclick="setPointType('rounded')" id="type-rounded"
+                                    class="py-1 text-[9px] rounded hover:bg-slate-50 text-slate-600">Rounded</button>
+                                <button onclick="setPointType('bezier')" id="type-bezier"
+                                    class="py-1 text-[9px] rounded hover:bg-slate-50 text-slate-600">Manual</button>
                             </div>
                         </div>
-                        
+
                         <div id="roundnessControl" class="hidden">
-                             <label class="flex justify-between text-xs font-bold text-slate-500 uppercase mb-1"><span>Radius</span> <span id="ptRoundVal" class="text-indigo-600">0%</span></label>
-                             <input type="range" id="ptRoundness" min="0" max="50" value="0" oninput="updateProp('roundness', this.value)">
+                            <label
+                                class="flex justify-between text-xs font-bold text-slate-500 uppercase mb-1"><span>Radius</span>
+                                <span id="ptRoundVal" class="text-indigo-600">0%</span></label>
+                            <input type="range" id="ptRoundness" min="0" max="50" value="0"
+                                oninput="updateProp('roundness', this.value)">
                         </div>
 
                         <!-- Actions -->
                         <div class="flex gap-2 pt-1 border-t border-slate-200">
-                            <button onclick="addPoint()" id="btnAddPoint" class="flex-1 py-1.5 bg-white border border-slate-200 rounded text-xs font-medium hover:text-indigo-600">Add Next</button>
-                            <button onclick="deletePoint()" id="btnDelPoint" class="flex-1 py-1.5 bg-white border border-slate-200 rounded text-xs font-medium hover:text-red-600">Delete</button>
+                            <button onclick="addPoint()" id="btnAddPoint"
+                                class="flex-1 py-1.5 bg-white border border-slate-200 rounded text-xs font-medium hover:text-indigo-600">Add
+                                Next</button>
+                            <button onclick="deletePoint()" id="btnDelPoint"
+                                class="flex-1 py-1.5 bg-white border border-slate-200 rounded text-xs font-medium hover:text-red-600">Delete</button>
                         </div>
-                        
-                        <label class="flex items-center gap-2 cursor-pointer pt-1"><input type="checkbox" id="snapGrid" class="accent-indigo-600"><span class="text-xs text-slate-600">Snap Grid</span></label>
+
+                        <label class="flex items-center gap-2 cursor-pointer pt-1"><input type="checkbox" id="snapGrid"
+                                class="accent-indigo-600"><span class="text-xs text-slate-600">Snap Grid</span></label>
                     </div>
 
                     <!-- Global Geo -->
                     <div class="space-y-4">
                         <div>
-                            <label class="flex justify-between text-xs font-bold text-slate-500 uppercase mb-1"><span>Rotation</span> <span id="rotVal" class="text-indigo-600">0°</span></label>
-                            <input type="range" id="rotSlider" min="0" max="360" value="0" oninput="rotateGeometry(this.value)">
+                            <label
+                                class="flex justify-between text-xs font-bold text-slate-500 uppercase mb-1"><span>Rotation</span>
+                                <span id="rotVal" class="text-indigo-600">0°</span></label>
+                            <input type="range" id="rotSlider" min="0" max="360" value="0"
+                                oninput="rotateGeometry(this.value)">
                         </div>
                         <div>
-                            <label class="flex justify-between text-xs font-bold text-slate-500 uppercase mb-1"><span>Shape Scale</span> <span id="scaleVal" class="text-indigo-600">100%</span></label>
-                            <input type="range" id="shapeScale" min="10" max="150" value="100" oninput="scaleGeometry(this.value)">
+                            <label class="flex justify-between text-xs font-bold text-slate-500 uppercase mb-1"><span>Shape
+                                    Scale</span> <span id="scaleVal" class="text-indigo-600">100%</span></label>
+                            <input type="range" id="shapeScale" min="10" max="150" value="100"
+                                oninput="scaleGeometry(this.value)">
                         </div>
                     </div>
-                    
-                     <div>
+
+                    <div>
                         <label class="text-xs font-bold text-slate-500 uppercase mb-1 block">Import SVG Path</label>
-                        <div class="flex gap-1"><input type="text" id="svgInput" placeholder="d='M10...'" class="flex-1 text-xs border border-slate-200 rounded px-2 py-1 outline-none"><button onclick="importSVG()" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-xs font-bold text-slate-600"><i class="fa-solid fa-arrow-right"></i></button></div>
+                        <div class="flex gap-1"><input type="text" id="svgInput" placeholder="d='M10...'"
+                                class="flex-1 text-xs border border-slate-200 rounded px-2 py-1 outline-none"><button
+                                onclick="importSVG()"
+                                class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-xs font-bold text-slate-600"><i
+                                    class="fa-solid fa-arrow-right"></i></button></div>
                     </div>
                 </div>
 
@@ -296,50 +513,68 @@
                 <div id="panel-fill" class="hidden space-y-5">
                     <div>
                         <label class="text-xs font-bold text-slate-500 uppercase mb-2 block">Background</label>
-                        
+
                         <!-- Color Section -->
                         <div class="mb-4">
-                             <label class="text-[10px] font-bold text-slate-400 block mb-1">Color</label>
-                             <div class="flex gap-2">
-                                 <input type="color" id="fillColor" class="flex-1 h-8 rounded cursor-pointer border border-slate-200" value="#6366f1" oninput="setFillType('color'); updateStyle('value', this.value)">
-                                 <button onclick="setRandomGradient()" class="px-3 py-1 bg-gradient-to-r from-pink-500 to-violet-500 text-white text-xs font-bold rounded shadow-sm hover:opacity-90">Colorful</button>
-                             </div>
+                            <label class="text-[10px] font-bold text-slate-400 block mb-1">Color</label>
+                            <div class="flex gap-2">
+                                <input type="color" id="fillColor"
+                                    class="flex-1 h-8 rounded cursor-pointer border border-slate-200" value="#6366f1"
+                                    oninput="setFillType('color'); updateStyle('value', this.value)">
+                                <button onclick="setRandomGradient()"
+                                    class="px-3 py-1 bg-gradient-to-r from-pink-500 to-violet-500 text-white text-xs font-bold rounded shadow-sm hover:opacity-90">Colorful</button>
+                            </div>
                         </div>
-                
+
                         <!-- Image Section -->
                         <div class="mb-4">
                             <label class="text-[10px] font-bold text-slate-400 block mb-1">Image</label>
                             <div class="flex gap-2">
-                                 <button onclick="triggerUpload()" class="flex-1 py-2 text-xs bg-white border border-slate-200 rounded hover:border-indigo-400 hover:text-indigo-600 transition-colors flex items-center justify-center gap-2">
+                                <button onclick="triggerUpload()"
+                                    class="flex-1 py-2 text-xs bg-white border border-slate-200 rounded hover:border-indigo-400 hover:text-indigo-600 transition-colors flex items-center justify-center gap-2">
                                     <i class="fa-solid fa-image"></i> Upload Image
-                                 </button>
-                                 <input type="file" id="imgUpload" hidden accept="image/*" onchange="handleImageUpload(this)">
-                                 <button id="removeImgBtn" onclick="removeImage()" class="hidden w-8 flex items-center justify-center bg-white border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 rounded transition-colors disabled:opacity-50" title="Remove Image">
+                                </button>
+                                <input type="file" id="imgUpload" hidden accept="image/*"
+                                    onchange="handleImageUpload(this)">
+                                <button id="removeImgBtn" onclick="removeImage()"
+                                    class="hidden w-8 flex items-center justify-center bg-white border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 rounded transition-colors disabled:opacity-50"
+                                    title="Remove Image">
                                     <i class="fa-solid fa-trash"></i>
-                                 </button>
+                                </button>
                             </div>
                         </div>
-                
+
                         <!-- Image Positioning (Hidden by default) -->
-                        <div id="imageControls" class="hidden space-y-3 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                        <div id="imageControls"
+                            class="hidden space-y-3 bg-slate-50 p-3 rounded-lg border border-slate-100">
                             <label class="text-xs font-bold text-slate-500 uppercase block">Image Position</label>
                             <div class="grid grid-cols-2 gap-2">
-                                <div><span class="text-[10px] text-slate-400 block">Pan X</span><input type="range" id="imgPanX" min="0" max="100" value="50" oninput="updateImagePos()"></div>
-                                <div><span class="text-[10px] text-slate-400 block">Pan Y</span><input type="range" id="imgPanY" min="0" max="100" value="50" oninput="updateImagePos()"></div>
+                                <div><span class="text-[10px] text-slate-400 block">Pan X</span><input type="range"
+                                        id="imgPanX" min="0" max="100" value="50" oninput="updateImagePos()"></div>
+                                <div><span class="text-[10px] text-slate-400 block">Pan Y</span><input type="range"
+                                        id="imgPanY" min="0" max="100" value="50" oninput="updateImagePos()"></div>
                             </div>
                             <div class="grid grid-cols-2 gap-2">
-                                <div><span class="text-[10px] text-slate-400 block">Zoom</span><input type="range" id="imgZoom" min="10" max="300" value="100" oninput="updateImagePos()"></div>
-                                <div><span class="text-[10px] text-slate-400 block">Rotate</span><input type="range" id="imgRot" min="0" max="360" value="0" oninput="updateImagePos()"></div>
+                                <div><span class="text-[10px] text-slate-400 block">Zoom</span><input type="range"
+                                        id="imgZoom" min="10" max="300" value="100" oninput="updateImagePos()"></div>
+                                <div><span class="text-[10px] text-slate-400 block">Rotate</span><input type="range"
+                                        id="imgRot" min="0" max="360" value="0" oninput="updateImagePos()"></div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="space-y-2 pt-2 border-t border-slate-100">
-                        <div class="flex items-center justify-between"><label class="text-xs font-bold text-slate-500 uppercase">Border (Wrapper)</label><input type="checkbox" id="hasBorder" class="accent-indigo-600" onchange="updateStyle('borderActive', this.checked)"></div>
+                        <div class="flex items-center justify-between"><label
+                                class="text-xs font-bold text-slate-500 uppercase">Border (Wrapper)</label><input
+                                type="checkbox" id="hasBorder" class="accent-indigo-600"
+                                onchange="updateStyle('borderActive', this.checked)"></div>
                         <div id="borderSettings" class="space-y-2 opacity-50 pointer-events-none">
-                            <div class="flex justify-between text-[10px] text-slate-400"><span>Width</span><span id="bwVal">5px</span></div>
-                            <input type="range" id="borderWidth" min="0" max="50" value="5" oninput="updateStyle('borderWidth', this.value)">
-                            <input type="color" id="borderColor" class="w-full h-6 rounded cursor-pointer" value="#000000" oninput="updateStyle('borderColor', this.value)">
+                            <div class="flex justify-between text-[10px] text-slate-400"><span>Width</span><span
+                                    id="bwVal">5px</span></div>
+                            <input type="range" id="borderWidth" min="0" max="50" value="5"
+                                oninput="updateStyle('borderWidth', this.value)">
+                            <input type="color" id="borderColor" class="w-full h-6 rounded cursor-pointer"
+                                value="#000000" oninput="updateStyle('borderColor', this.value)">
                         </div>
                     </div>
                 </div>
@@ -347,36 +582,57 @@
                 <!-- TAB: EFFECTS -->
                 <div id="panel-effects" class="hidden space-y-5">
                     <div class="space-y-3">
-                        <div class="flex items-center justify-between"><label class="text-xs font-bold text-slate-500 uppercase">Drop Shadow</label><input type="checkbox" id="hasDropShadow" class="accent-indigo-600" onchange="updateStyle('dropShadow', this.checked)"></div>
-                        <input type="range" id="dropShadowBlur" min="0" max="50" value="10" oninput="updateStyle('dropShadowBlur', this.value)" disabled>
-                        
-                        <div class="flex items-center justify-between pt-2"><label class="text-xs font-bold text-slate-500 uppercase">Inner Shadow</label><input type="checkbox" id="hasInnerShadow" class="accent-indigo-600" onchange="updateStyle('innerShadow', this.checked)"></div>
-                        <input type="range" id="innerShadowBlur" min="0" max="50" value="10" oninput="updateStyle('innerShadowBlur', this.value)" disabled>
+                        <div class="flex items-center justify-between"><label
+                                class="text-xs font-bold text-slate-500 uppercase">Drop Shadow</label><input
+                                type="checkbox" id="hasDropShadow" class="accent-indigo-600"
+                                onchange="updateStyle('dropShadow', this.checked)"></div>
+                        <input type="range" id="dropShadowBlur" min="0" max="50" value="10"
+                            oninput="updateStyle('dropShadowBlur', this.value)" disabled>
+
+                        <div class="flex items-center justify-between pt-2"><label
+                                class="text-xs font-bold text-slate-500 uppercase">Inner Shadow</label><input
+                                type="checkbox" id="hasInnerShadow" class="accent-indigo-600"
+                                onchange="updateStyle('innerShadow', this.checked)"></div>
+                        <input type="range" id="innerShadowBlur" min="0" max="50" value="10"
+                            oninput="updateStyle('innerShadowBlur', this.value)" disabled>
                     </div>
-                    
+
                     <div class="pt-4 border-t border-slate-100">
-                        <button onclick="document.getElementById('advEffects').classList.toggle('hidden')" class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase hover:text-indigo-600 transition-colors">
-                            <i class="fa-solid fa-flask"></i> Experimental <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                        <button onclick="document.getElementById('advEffects').classList.toggle('hidden')"
+                            class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase hover:text-indigo-600 transition-colors">
+                            <i class="fa-solid fa-flask"></i> Experimental <i
+                                class="fa-solid fa-chevron-down text-[10px]"></i>
                         </button>
-                        <div id="advEffects" class="hidden mt-3 space-y-4 bg-slate-50 p-3 rounded border border-slate-100">
+                        <div id="advEffects"
+                            class="hidden mt-3 space-y-4 bg-slate-50 p-3 rounded border border-slate-100">
                             <div>
                                 <label class="text-[10px] font-bold text-slate-500 block mb-1">SVG Filter</label>
-                                <select id="filterSelect" class="w-full text-xs border border-slate-200 rounded p-1" onchange="updateStyle('filter', this.value)">
-                                    <option value="none">None</option><option value="blur">Blur</option><option value="noise">Noise</option><option value="sketchy">Sketchy</option>
+                                <select id="filterSelect" class="w-full text-xs border border-slate-200 rounded p-1"
+                                    onchange="updateStyle('filter', this.value)">
+                                    <option value="none">None</option>
+                                    <option value="blur">Blur</option>
+                                    <option value="noise">Noise</option>
+                                    <option value="sketchy">Sketchy</option>
                                 </select>
                                 <div class="mt-2">
                                     <span class="text-[10px] text-slate-400">Intensity</span>
-                                    <input type="range" id="filterIntensity" min="0" max="100" value="50" oninput="updateFilterIntensity(this.value)">
+                                    <input type="range" id="filterIntensity" min="0" max="100" value="50"
+                                        oninput="updateFilterIntensity(this.value)">
                                 </div>
                             </div>
                             <div>
                                 <label class="text-[10px] font-bold text-slate-500 block mb-1">Mix Blend Mode</label>
-                                <select id="blendSelect" class="w-full text-xs border border-slate-200 rounded p-1" onchange="updateStyle('blend', this.value)">
-                                    <option value="normal">Normal</option><option value="multiply">Multiply</option><option value="screen">Screen</option><option value="overlay">Overlay</option>
+                                <select id="blendSelect" class="w-full text-xs border border-slate-200 rounded p-1"
+                                    onchange="updateStyle('blend', this.value)">
+                                    <option value="normal">Normal</option>
+                                    <option value="multiply">Multiply</option>
+                                    <option value="screen">Screen</option>
+                                    <option value="overlay">Overlay</option>
                                 </select>
                                 <div class="mt-2">
                                     <span class="text-[10px] text-slate-400">Opacity</span>
-                                    <input type="range" id="blendOpacity" min="0" max="100" value="100" oninput="updateStyle('opacity', this.value)">
+                                    <input type="range" id="blendOpacity" min="0" max="100" value="100"
+                                        oninput="updateStyle('opacity', this.value)">
                                 </div>
                             </div>
                         </div>
@@ -387,14 +643,22 @@
                 <div id="panel-anim" class="hidden space-y-5">
                     <div class="bg-indigo-50 border border-indigo-100 rounded-lg p-4 text-center">
                         <h3 class="text-indigo-900 font-bold text-sm mb-2">Hover Transition</h3>
-                        <p class="text-xs text-indigo-700 mb-4">Create a morph animation between the base shape and a hover state.</p>
-                        <button id="btnHoverEdit" onclick="toggleHoverEdit()" class="w-full py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 mb-2 shadow-sm">Edit Hover State</button>
-                        <button onclick="previewAnim()" class="w-full py-2 bg-white border border-indigo-200 text-indigo-700 rounded-md text-sm font-medium hover:bg-indigo-50"><i class="fa-solid fa-play mr-2"></i> Preview Loop</button>
+                        <p class="text-xs text-indigo-700 mb-4">Create a morph animation between the base shape and a
+                            hover state.</p>
+                        <button id="btnHoverEdit" onclick="toggleHoverEdit()"
+                            class="w-full py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 mb-2 shadow-sm">Edit
+                            Hover State</button>
+                        <button onclick="previewAnim()"
+                            class="w-full py-2 bg-white border border-indigo-200 text-indigo-700 rounded-md text-sm font-medium hover:bg-indigo-50"><i
+                                class="fa-solid fa-play mr-2"></i> Preview Loop</button>
                     </div>
                     <div>
                         <label class="text-xs font-bold text-slate-500 uppercase mb-2 block">Duration</label>
-                        <select id="animSpeed" class="w-full text-xs border border-slate-200 rounded p-2" onchange="generateCode()">
-                            <option value="0.2s">Fast (0.2s)</option><option value="0.5s" selected>Normal (0.5s)</option><option value="1s">Slow (1s)</option>
+                        <select id="animSpeed" class="w-full text-xs border border-slate-200 rounded p-2"
+                            onchange="generateCode()">
+                            <option value="0.2s">Fast (0.2s)</option>
+                            <option value="0.5s" selected>Normal (0.5s)</option>
+                            <option value="1s">Slow (1s)</option>
                         </select>
                     </div>
                 </div>
@@ -402,21 +666,32 @@
                 <!-- TAB: CODE -->
                 <div id="panel-code" class="hidden h-full flex flex-col">
                     <div class="flex flex-wrap gap-2 mb-3">
-                        <button onclick="setCodeMode('css')" class="code-tab active px-2 py-1 text-[10px] font-bold border rounded">CSS</button>
-                        <button onclick="setCodeMode('tailwind')" class="code-tab px-2 py-1 text-[10px] font-bold border rounded">Tailwind</button>
-                        <button onclick="setCodeMode('react')" class="code-tab px-2 py-1 text-[10px] font-bold border rounded">React</button>
+                        <button onclick="setCodeMode('css')"
+                            class="code-tab active px-2 py-1 text-[10px] font-bold border rounded">CSS</button>
+                        <button onclick="setCodeMode('tailwind')"
+                            class="code-tab px-2 py-1 text-[10px] font-bold border rounded">Tailwind</button>
+                        <button onclick="setCodeMode('react')"
+                            class="code-tab px-2 py-1 text-[10px] font-bold border rounded">React</button>
                     </div>
-                    
+
                     <div class="flex gap-4 mb-2 px-1">
-                        <label class="flex items-center gap-1 text-[10px] text-slate-500 cursor-pointer"><input type="checkbox" id="codeMinify" onchange="generateCode()"> Minify</label>
-                        <label class="flex items-center gap-1 text-[10px] text-slate-500 cursor-pointer"><input type="checkbox" id="codeVars" onchange="generateCode()"> Vars</label>
-                        <label class="flex items-center gap-1 text-[10px] text-slate-500 cursor-pointer"><input type="checkbox" id="codeSupports" onchange="generateCode()"> @supports</label>
+                        <label class="flex items-center gap-1 text-[10px] text-slate-500 cursor-pointer"><input
+                                type="checkbox" id="codeMinify" onchange="generateCode()"> Minify</label>
+                        <label class="flex items-center gap-1 text-[10px] text-slate-500 cursor-pointer"><input
+                                type="checkbox" id="codeVars" onchange="generateCode()"> Vars</label>
+                        <label class="flex items-center gap-1 text-[10px] text-slate-500 cursor-pointer"><input
+                                type="checkbox" id="codeSupports" onchange="generateCode()"> @supports</label>
                     </div>
-                    
-                    <textarea id="cssOutput" class="flex-1 w-full bg-slate-800 text-slate-300 text-xs font-mono p-3 rounded-lg resize-none focus:outline-none" readonly></textarea>
-                    
+
+                    <textarea id="cssOutput"
+                        class="flex-1 w-full bg-slate-800 text-slate-300 text-xs font-mono p-3 rounded-lg resize-none focus:outline-none"
+                        readonly></textarea>
+
                     <div class="mt-2 text-center">
-                        <label class="flex items-center justify-center gap-2 text-[10px] text-slate-500 cursor-pointer"><input type="checkbox" id="useMask" onchange="generateCode()"> Export as mask-image (Advanced)</label>
+                        <label
+                            class="flex items-center justify-center gap-2 text-[10px] text-slate-500 cursor-pointer"><input
+                                type="checkbox" id="useMask" onchange="generateCode()"> Export as mask-image
+                            (Advanced)</label>
                     </div>
                 </div>
             </div>
@@ -425,16 +700,16 @@
 
     <script>
         // --- STATE ---
-        let layers = [{ 
-            id: 'l1', name: 'Shape 1', visible: true, 
-            points: [], hoverPoints: [], 
-            style: { type: 'color', value: '#6366f1', rotation: 0, scale: 100, dropShadow: false, dropShadowBlur: 10, innerShadow: false, innerShadowBlur: 10, blend: 'normal', opacity: 100, filter:'none', filterVal: 50, borderActive: false, borderWidth: 5, borderColor: '#000000', imgPanX: 50, imgPanY: 50, imgZoom: 100, imgRot: 0 }
+        let layers = [{
+            id: 'l1', name: 'Shape 1', visible: true,
+            points: [], hoverPoints: [],
+            style: { type: 'color', value: '#6366f1', rotation: 0, scale: 100, dropShadow: false, dropShadowBlur: 10, innerShadow: false, innerShadowBlur: 10, blend: 'normal', opacity: 100, filter: 'none', filterVal: 50, borderActive: false, borderWidth: 5, borderColor: '#000000', imgPanX: 50, imgPanY: 50, imgZoom: 100, imgRot: 0 }
         }];
         let activeLayerId = 'l1';
         let selectedPointIndex = 0;
         let history = [];
         let historyIndex = -1;
-        
+
         // Mode flags
         let isDragging = false;
         let isHoverEditing = false;
@@ -447,18 +722,18 @@
         // --- INIT ---
         function init() {
             const hash = window.location.hash.slice(1);
-            if(hash) { try { layers = JSON.parse(atob(hash)); activeLayerId = layers[0].id; } catch(e) { initDefault(); } } else { initDefault(); }
+            if (hash) { try { layers = JSON.parse(atob(hash)); activeLayerId = layers[0].id; } catch (e) { initDefault(); } } else { initDefault(); }
             document.getElementById('genType').addEventListener('change', (e) => { document.getElementById('starParams').classList.toggle('hidden', e.target.value !== 'star'); });
             setupDragDrop();
             saveHistory();
             render();
         }
-        
+
         function initDefault() {
             const pts = []; const r = 40; const c = 50;
-            for(let i=0; i<5; i++) {
-                const a = (i * 2 * Math.PI / 5) - Math.PI/2;
-                pts.push({ x: c + r*Math.cos(a), y: c + r*Math.sin(a), type: 'corner', r: 0, cp1: {x:0, y:0}, cp2: {x:0, y:0} });
+            for (let i = 0; i < 5; i++) {
+                const a = (i * 2 * Math.PI / 5) - Math.PI / 2;
+                pts.push({ x: c + r * Math.cos(a), y: c + r * Math.sin(a), type: 'corner', r: 0, cp1: { x: 0, y: 0 }, cp2: { x: 0, y: 0 } });
             }
             layers[0].points = pts;
             layers[0].hoverPoints = JSON.parse(JSON.stringify(pts));
@@ -468,20 +743,20 @@
         function getActiveLayer() { return layers.find(l => l.id === activeLayerId) || layers[0]; }
         function getActivePoints() { const l = getActiveLayer(); return isHoverEditing ? l.hoverPoints : l.points; }
 
-        function saveHistory() { 
-            if(historyIndex < history.length-1) history=history.slice(0,historyIndex+1); 
-            history.push(JSON.stringify(layers)); 
-            if(history.length>30) history.shift(); else historyIndex++; 
-            updateHistoryBtns(); 
+        function saveHistory() {
+            if (historyIndex < history.length - 1) history = history.slice(0, historyIndex + 1);
+            history.push(JSON.stringify(layers));
+            if (history.length > 30) history.shift(); else historyIndex++;
+            updateHistoryBtns();
         }
 
-        function updateHistoryBtns() { 
+        function updateHistoryBtns() {
             const btnUndo = document.getElementById('btnUndo');
             const btnRedo = document.getElementById('btnRedo');
-            if (btnUndo) btnUndo.disabled = historyIndex<=0; 
-            if (btnRedo) btnRedo.disabled = historyIndex>=history.length-1; 
+            if (btnUndo) btnUndo.disabled = historyIndex <= 0;
+            if (btnRedo) btnRedo.disabled = historyIndex >= history.length - 1;
         }
-        
+
         // --- RENDER PIPELINE ---
         function render() {
             const container = document.getElementById('layersContainer');
@@ -489,41 +764,41 @@
             const svgOverlay = document.getElementById('uiOverlay');
             const layerList = document.getElementById('layerList');
             const ghost = document.getElementById('ghostOverlay');
-            
+
             container.innerHTML = ''; handleLayer.innerHTML = ''; svgOverlay.innerHTML = ''; layerList.innerHTML = '';
 
             // Render Layers
             layers.forEach((layer, idx) => {
                 const isSelected = layer.id === activeLayerId;
                 const ptsToRender = (isSelected && isHoverEditing) ? layer.hoverPoints : layer.points;
-                
+
                 if (isSelected && isHoverEditing) {
                     ghost.classList.remove('hidden');
                     const basePoly = getPolygonCSS(getTransformedPoints(layer.points, layer));
                     ghost.style.clipPath = basePoly;
-                } else if(isSelected) {
+                } else if (isSelected) {
                     ghost.classList.add('hidden');
                 }
 
                 const transformed = getTransformedPoints(ptsToRender, layer);
                 const polyCSS = getPolygonCSS(transformed);
-                
+
                 // Wrapper for Shadow/Border
                 const wrapper = document.createElement('div');
-                wrapper.className = `absolute inset-0 w-full h-full transition-all duration-200 ${layer.style.type==='image' ? 'cursor-pan-image' : ''}`;
+                wrapper.className = `absolute inset-0 w-full h-full transition-all duration-200 ${layer.style.type === 'image' ? 'cursor-pan-image' : ''}`;
                 wrapper.style.zIndex = idx;
                 wrapper.style.opacity = layer.style.opacity / 100;
-                
-                if(isSelected) {
+
+                if (isSelected) {
                     if (layer.style.type === 'image') {
                         wrapper.onmousedown = (e) => startDrag(e, -1, 'background');
                     }
                 }
-                
+
                 let filterStr = '';
-                if(layer.style.dropShadow) filterStr += `drop-shadow(0 10px ${layer.style.dropShadowBlur}px rgba(0,0,0,0.5)) `;
-                if(layer.style.filter !== 'none') {
-                    if(layer.style.filter === 'blur') filterStr += `blur(${layer.style.filterVal / 5}px) `;
+                if (layer.style.dropShadow) filterStr += `drop-shadow(0 10px ${layer.style.dropShadowBlur}px rgba(0,0,0,0.5)) `;
+                if (layer.style.filter !== 'none') {
+                    if (layer.style.filter === 'blur') filterStr += `blur(${layer.style.filterVal / 5}px) `;
                     else filterStr += `url(#${layer.style.filter}) `;
                 }
                 wrapper.style.filter = filterStr;
@@ -531,7 +806,7 @@
 
                 // Inner content
                 let content;
-                
+
                 if (layer.style.type === 'color') {
                     content = document.createElement('div');
                     content.className = 'w-full h-full';
@@ -541,12 +816,12 @@
                     content = document.createElement('img');
                     content.src = layer.style.value;
                     content.className = 'absolute top-1/2 left-1/2 min-w-full min-h-full object-cover';
-                    
-                    const panX = (layer.style.imgPanX - 50) * 5; 
+
+                    const panX = (layer.style.imgPanX - 50) * 5;
                     const panY = (layer.style.imgPanY - 50) * 5;
                     const zoom = layer.style.imgZoom / 100;
                     const rot = layer.style.imgRot || 0;
-                    
+
                     content.style.transform = `translate(-50%, -50%) translate(${panX}px, ${panY}px) scale(${zoom}) rotate(${rot}deg)`;
                 }
 
@@ -557,33 +832,33 @@
                 clipper.appendChild(content);
 
                 // Border Trick
-                if(layer.style.borderActive) {
+                if (layer.style.borderActive) {
                     const outerDiv = document.createElement('div');
                     outerDiv.className = 'w-full h-full';
                     outerDiv.style.backgroundColor = layer.style.borderColor;
                     outerDiv.style.clipPath = polyCSS;
-                    
+
                     // Scale down inner
-                    const s = 1 - (layer.style.borderWidth / 200); 
+                    const s = 1 - (layer.style.borderWidth / 200);
                     clipper.style.transform = `scale(${s})`;
-                    
+
                     outerDiv.appendChild(clipper); // clipper is now inner
                     wrapper.appendChild(outerDiv);
                 } else {
                     wrapper.appendChild(clipper);
                 }
-                
+
                 // Inner Shadow (needs to be on top of content but inside clip)
-                if(layer.style.innerShadow) {
-                     const sh = document.createElement('div');
-                     sh.className = 'absolute inset-0 pointer-events-none';
-                     sh.style.boxShadow = `inset 0 0 ${layer.style.innerShadowBlur}px rgba(0,0,0,0.8)`;
-                     // Append to the clipped element
-                     if(layer.style.borderActive) {
-                         clipper.appendChild(sh); // Inner is clipper
-                     } else {
-                         clipper.appendChild(sh);
-                     }
+                if (layer.style.innerShadow) {
+                    const sh = document.createElement('div');
+                    sh.className = 'absolute inset-0 pointer-events-none';
+                    sh.style.boxShadow = `inset 0 0 ${layer.style.innerShadowBlur}px rgba(0,0,0,0.8)`;
+                    // Append to the clipped element
+                    if (layer.style.borderActive) {
+                        clipper.appendChild(sh); // Inner is clipper
+                    } else {
+                        clipper.appendChild(sh);
+                    }
                 }
 
                 container.appendChild(wrapper);
@@ -591,14 +866,14 @@
                 const li = document.createElement('div');
                 li.className = `layer-item p-2 rounded cursor-pointer flex items-center justify-between group ${isSelected ? 'active' : 'hover:bg-slate-50'}`;
                 li.onclick = () => selectLayer(layer.id);
-                li.innerHTML = `<div class="flex items-center gap-2"><div class="w-3 h-3 rounded-sm border border-slate-300" style="background: ${layer.style.type==='color'?layer.style.value:'#ccc'}"></div><span class="text-xs font-medium ${isSelected?'text-indigo-700':'text-slate-600'}">${layer.name}</span></div><button onclick="deleteLayer(event, '${layer.id}')" class="text-slate-400 hover:text-red-500 px-1 opacity-0 group-hover:opacity-100"><i class="fa-solid fa-times"></i></button>`;
+                li.innerHTML = `<div class="flex items-center gap-2"><div class="w-3 h-3 rounded-sm border border-slate-300" style="background: ${layer.style.type === 'color' ? layer.style.value : '#ccc'}"></div><span class="text-xs font-medium ${isSelected ? 'text-indigo-700' : 'text-slate-600'}">${layer.name}</span></div><button onclick="deleteLayer(event, '${layer.id}')" class="text-slate-400 hover:text-red-500 px-1 opacity-0 group-hover:opacity-100"><i class="fa-solid fa-times"></i></button>`;
                 layerList.appendChild(li);
 
-                if(isSelected) {
+                if (isSelected) {
                     drawHandles(transformed, handleLayer, svgOverlay);
                 }
             });
-            
+
             generateCode();
             syncUI();
         }
@@ -608,7 +883,7 @@
             const rad = layer.style.rotation * (Math.PI / 180);
             const s = layer.style.scale / 100;
             const cx = 50; const cy = 50;
-            
+
             return pts.map(p => {
                 const tr = (x, y) => {
                     let dx = x - cx; let dy = y - cy;
@@ -618,11 +893,11 @@
                         y: (dx * Math.sin(rad) + dy * Math.cos(rad)) + cy
                     };
                 };
-                
+
                 const main = tr(p.x, p.y);
-                let cp1 = p.cp1 ? {x: p.cp1.x, y: p.cp1.y} : {x: p.x - 5, y: p.y};
-                let cp2 = p.cp2 ? {x: p.cp2.x, y: p.cp2.y} : {x: p.x + 5, y: p.y};
-                
+                let cp1 = p.cp1 ? { x: p.cp1.x, y: p.cp1.y } : { x: p.x - 5, y: p.y };
+                let cp2 = p.cp2 ? { x: p.cp2.x, y: p.cp2.y } : { x: p.x + 5, y: p.y };
+
                 const t_cp1 = tr(cp1.x, cp1.y);
                 const t_cp2 = tr(cp2.x, cp2.y);
 
@@ -631,49 +906,49 @@
         }
 
         function getPolygonCSS(points) {
-            if(!points.length) return 'polygon(0 0)';
+            if (!points.length) return 'polygon(0 0)';
             let tess = []; const len = points.length;
-            for(let i=0; i<len; i++) {
+            for (let i = 0; i < len; i++) {
                 const curr = points[i];
-                if(curr.type === 'corner') { 
-                    tess.push(curr); 
+                if (curr.type === 'corner') {
+                    tess.push(curr);
                 }
-                else if(curr.type === 'smooth') {
+                else if (curr.type === 'smooth') {
                     // Catmull-Rom
-                    const p0=points[(i-1+len)%len], next=points[(i+1)%len], p3=points[(i+2)%len];
-                    for(let t=0; t<1; t+=0.02) {
-                       const tt=t*t, ttt=tt*t;
-                       const q1=-ttt+2*tt-t, q2=3*ttt-5*tt+2, q3=-3*ttt+4*tt+t, q4=ttt-tt;
-                       tess.push({x: 0.5*(p0.x*q1+curr.x*q2+next.x*q3+p3.x*q4), y: 0.5*(p0.y*q1+curr.y*q2+next.y*q3+p3.y*q4)});
+                    const p0 = points[(i - 1 + len) % len], next = points[(i + 1) % len], p3 = points[(i + 2) % len];
+                    for (let t = 0; t < 1; t += 0.02) {
+                        const tt = t * t, ttt = tt * t;
+                        const q1 = -ttt + 2 * tt - t, q2 = 3 * ttt - 5 * tt + 2, q3 = -3 * ttt + 4 * tt + t, q4 = ttt - tt;
+                        tess.push({ x: 0.5 * (p0.x * q1 + curr.x * q2 + next.x * q3 + p3.x * q4), y: 0.5 * (p0.y * q1 + curr.y * q2 + next.y * q3 + p3.y * q4) });
                     }
-                } else if(curr.type === 'rounded') {
+                } else if (curr.type === 'rounded') {
                     // Quadratic Bezier Rounding
-                    const prev=points[(i-1+len)%len], next=points[(i+1)%len];
-                    const v1={x:prev.x-curr.x, y:prev.y-curr.y}, v2={x:next.x-curr.x, y:next.y-curr.y};
-                    const l1=Math.sqrt(v1.x*v1.x+v1.y*v1.y), l2=Math.sqrt(v2.x*v2.x+v2.y*v2.y);
-                    const maxR=Math.min(l1,l2)*0.5; const r=maxR*((curr.r||0)/50);
-                    
-                    if(r<0.5) { tess.push(curr); continue; }
-                    
-                    const sX=curr.x+(v1.x/l1)*r, sY=curr.y+(v1.y/l1)*r;
-                    const eX=curr.x+(v2.x/l2)*r, eY=curr.y+(v2.y/l2)*r;
-                    
-                    for(let s=0; s<=20; s++) {
-                        const t=s/20, mt=1-t;
-                        tess.push({x:(mt*mt*sX)+(2*mt*t*curr.x)+(t*t*eX), y:(mt*mt*sY)+(2*mt*t*curr.y)+(t*t*eY)});
+                    const prev = points[(i - 1 + len) % len], next = points[(i + 1) % len];
+                    const v1 = { x: prev.x - curr.x, y: prev.y - curr.y }, v2 = { x: next.x - curr.x, y: next.y - curr.y };
+                    const l1 = Math.sqrt(v1.x * v1.x + v1.y * v1.y), l2 = Math.sqrt(v2.x * v2.x + v2.y * v2.y);
+                    const maxR = Math.min(l1, l2) * 0.5; const r = maxR * ((curr.r || 0) / 50);
+
+                    if (r < 0.5) { tess.push(curr); continue; }
+
+                    const sX = curr.x + (v1.x / l1) * r, sY = curr.y + (v1.y / l1) * r;
+                    const eX = curr.x + (v2.x / l2) * r, eY = curr.y + (v2.y / l2) * r;
+
+                    for (let s = 0; s <= 20; s++) {
+                        const t = s / 20, mt = 1 - t;
+                        tess.push({ x: (mt * mt * sX) + (2 * mt * t * curr.x) + (t * t * eX), y: (mt * mt * sY) + (2 * mt * t * curr.y) + (t * t * eY) });
                     }
-                } else if(curr.type === 'bezier') {
-                    const next = points[(i+1)%len];
+                } else if (curr.type === 'bezier') {
+                    const next = points[(i + 1) % len];
                     const cp1 = curr.cp2; // Out handle of current
-                    const cp2 = (next.type==='bezier' && next.cp1) ? next.cp1 : {x: next.x, y: next.y}; 
-                    
-                    for(let t=0; t<1; t+=0.02) {
-                        const mt = 1-t;
-                        const mt2 = mt*mt; const mt3 = mt*mt*mt;
-                        const t2 = t*t; const t3 = t*t*t;
-                        const bx = mt3*curr.x + 3*mt2*t*cp1.x + 3*mt*t2*cp2.x + t3*next.x;
-                        const by = mt3*curr.y + 3*mt2*t*cp1.y + 3*mt*t2*cp2.y + t3*next.y;
-                        tess.push({x: bx, y: by});
+                    const cp2 = (next.type === 'bezier' && next.cp1) ? next.cp1 : { x: next.x, y: next.y };
+
+                    for (let t = 0; t < 1; t += 0.02) {
+                        const mt = 1 - t;
+                        const mt2 = mt * mt; const mt3 = mt * mt * mt;
+                        const t2 = t * t; const t3 = t * t * t;
+                        const bx = mt3 * curr.x + 3 * mt2 * t * cp1.x + 3 * mt * t2 * cp2.x + t3 * next.x;
+                        const by = mt3 * curr.y + 3 * mt2 * t * cp1.y + 3 * mt * t2 * cp2.y + t3 * next.y;
+                        tess.push({ x: bx, y: by });
                     }
                 }
             }
@@ -682,33 +957,33 @@
 
         function drawHandles(pts, htmlLayer, svgLayer) {
             pts.forEach((p, i) => {
-                const next = pts[(i+1)%pts.length];
+                const next = pts[(i + 1) % pts.length];
                 const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                line.setAttribute("x1", p.x+"%"); line.setAttribute("y1", p.y+"%");
-                line.setAttribute("x2", next.x+"%"); line.setAttribute("y2", next.y+"%");
+                line.setAttribute("x1", p.x + "%"); line.setAttribute("y1", p.y + "%");
+                line.setAttribute("x2", next.x + "%"); line.setAttribute("y2", next.y + "%");
                 line.setAttribute("stroke", "#6366f1"); line.setAttribute("stroke-opacity", "0.3");
                 line.setAttribute("stroke-width", "1");
                 svgLayer.appendChild(line);
-                
+
                 const h = document.createElement('div');
                 h.className = `handle ${i === selectedPointIndex ? 'selected' : ''}`;
                 h.style.left = p.x + '%'; h.style.top = p.y + '%';
-                if(p.type !== 'corner') h.style.borderRadius = '50%'; else h.style.borderRadius = '0';
-                
+                if (p.type !== 'corner') h.style.borderRadius = '50%'; else h.style.borderRadius = '0';
+
                 h.onmousedown = (e) => startDrag(e, i, 'point');
                 htmlLayer.appendChild(h);
-                
-                if(i === selectedPointIndex && p.type === 'bezier') {
+
+                if (i === selectedPointIndex && p.type === 'bezier') {
                     [p.cp1, p.cp2].forEach((cp, idx) => {
                         const l = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                        l.setAttribute("x1", p.x+"%"); l.setAttribute("y1", p.y+"%");
-                        l.setAttribute("x2", cp.x+"%"); l.setAttribute("y2", cp.y+"%");
+                        l.setAttribute("x1", p.x + "%"); l.setAttribute("y1", p.y + "%");
+                        l.setAttribute("x2", cp.x + "%"); l.setAttribute("y2", cp.y + "%");
                         l.setAttribute("stroke", "#EC4899"); l.setAttribute("stroke-width", "1");
                         svgLayer.appendChild(l);
                         const bh = document.createElement('div');
                         bh.className = 'bezier-handle';
                         bh.style.left = cp.x + '%'; bh.style.top = cp.y + '%';
-                        bh.onmousedown = (e) => startDrag(e, i, idx===0?'cp1':'cp2');
+                        bh.onmousedown = (e) => startDrag(e, i, idx === 0 ? 'cp1' : 'cp2');
                         htmlLayer.appendChild(bh);
                     });
                 }
@@ -719,7 +994,7 @@
         function startDrag(e, index, target) {
             e.stopPropagation(); e.preventDefault();
             isDragging = true; selectedPointIndex = index; dragTarget = target;
-            
+
             dragStartPos = { x: e.clientX, y: e.clientY };
             if (target === 'background') {
                 const l = getActiveLayer();
@@ -729,23 +1004,23 @@
             syncUI(); render();
             document.addEventListener('mousemove', onDrag); document.addEventListener('mouseup', endDrag);
         }
-        
+
         function onDrag(e) {
-            if(!isDragging) return;
+            if (!isDragging) return;
             const rect = document.getElementById('handleLayer').getBoundingClientRect();
-            
+
             // Handle Background Dragging
             if (dragTarget === 'background') {
                 const l = getActiveLayer();
                 if (l.style.type === 'image') {
                     const deltaX = e.clientX - dragStartPos.x;
                     const deltaY = e.clientY - dragStartPos.y;
-                    const percentX = (deltaX / rect.width) * 100; 
+                    const percentX = (deltaX / rect.width) * 100;
                     const percentY = (deltaY / rect.height) * 100;
-                    
+
                     l.style.imgPanX = Math.max(0, Math.min(100, dragStartPan.x + percentX));
                     l.style.imgPanY = Math.max(0, Math.min(100, dragStartPan.y + percentY));
-                    
+
                     syncUI(); render(); return;
                 }
                 return;
@@ -754,117 +1029,117 @@
             // Handle Point Dragging
             let x = ((e.clientX - rect.left) / rect.width) * 100;
             let y = ((e.clientY - rect.top) / rect.height) * 100;
-            
+
             // Constrain
             x = Math.max(0, Math.min(100, x));
             y = Math.max(0, Math.min(100, y));
 
             // Inverse Transform
             const l = getActiveLayer();
-            const rad = -l.style.rotation * (Math.PI / 180); const s = 100/l.style.scale;
-            const cx=50, cy=50;
+            const rad = -l.style.rotation * (Math.PI / 180); const s = 100 / l.style.scale;
+            const cx = 50, cy = 50;
             const tr = (vx, vy) => {
-                const dx = vx-cx, dy = vy-cy;
+                const dx = vx - cx, dy = vy - cy;
                 return { x: (dx * Math.cos(rad) - dy * Math.sin(rad)) * s + cx, y: (dx * Math.sin(rad) + dy * Math.cos(rad)) * s + cy };
             };
-            
+
             const raw = tr(x, y);
             const pts = getActivePoints();
             const p = pts[selectedPointIndex];
-            
-            if(!p.cp1) p.cp1 = {x: p.x-5, y:p.y};
-            if(!p.cp2) p.cp2 = {x: p.x+5, y:p.y};
 
-            if(dragTarget === 'point') {
+            if (!p.cp1) p.cp1 = { x: p.x - 5, y: p.y };
+            if (!p.cp2) p.cp2 = { x: p.x + 5, y: p.y };
+
+            if (dragTarget === 'point') {
                 const dx = raw.x - p.x;
                 const dy = raw.y - p.y;
                 p.x = raw.x; p.y = raw.y;
-                if(p.cp1) { p.cp1.x += dx; p.cp1.y += dy; }
-                if(p.cp2) { p.cp2.x += dx; p.cp2.y += dy; }
-            } else if(dragTarget === 'cp1') {
+                if (p.cp1) { p.cp1.x += dx; p.cp1.y += dy; }
+                if (p.cp2) { p.cp2.x += dx; p.cp2.y += dy; }
+            } else if (dragTarget === 'cp1') {
                 p.cp1 = raw;
-            } else if(dragTarget === 'cp2') {
+            } else if (dragTarget === 'cp2') {
                 p.cp2 = raw;
             }
-            
+
             render(); document.getElementById('coordDisplay').innerText = `x: ${Math.round(x)}% y: ${Math.round(y)}%`;
         }
-        
+
         function endDrag() { isDragging = false; saveHistory(); document.removeEventListener('mousemove', onDrag); document.removeEventListener('mouseup', endDrag); }
 
         function handleKeyDown(e) {
-            const pts = getActivePoints(); if(!pts[selectedPointIndex]) return;
+            const pts = getActivePoints(); if (!pts[selectedPointIndex]) return;
             const p = pts[selectedPointIndex]; const step = e.shiftKey ? 10 : 1;
-            
-            if(e.key==='ArrowUp') p.y -= step;
-            else if(e.key==='ArrowDown') p.y += step;
-            else if(e.key==='ArrowLeft') p.x -= step;
-            else if(e.key==='ArrowRight') p.x += step;
-            else if(e.key==='Delete' || e.key==='Backspace') { deletePoint(); return; }
+
+            if (e.key === 'ArrowUp') p.y -= step;
+            else if (e.key === 'ArrowDown') p.y += step;
+            else if (e.key === 'ArrowLeft') p.x -= step;
+            else if (e.key === 'ArrowRight') p.x += step;
+            else if (e.key === 'Delete' || e.key === 'Backspace') { deletePoint(); return; }
             else return;
-            
+
             render(); saveHistory();
         }
 
         // --- UPDATES ---
-        function updatePointFromInput() { 
-            const pts = getActivePoints(); 
-            pts[selectedPointIndex].x = parseFloat(document.getElementById('inpX').value); 
-            pts[selectedPointIndex].y = parseFloat(document.getElementById('inpY').value); 
-            render(); saveHistory(); 
+        function updatePointFromInput() {
+            const pts = getActivePoints();
+            pts[selectedPointIndex].x = parseFloat(document.getElementById('inpX').value);
+            pts[selectedPointIndex].y = parseFloat(document.getElementById('inpY').value);
+            render(); saveHistory();
         }
-        function rotateGeometry(v) { getActiveLayer().style.rotation = parseInt(v); document.getElementById('rotVal').innerText = v+'°'; render(); }
-        function scaleGeometry(v) { getActiveLayer().style.scale = parseInt(v); document.getElementById('scaleVal').innerText = v+'%'; render(); }
-        function updateStyle(k, v) { 
-            const s = getActiveLayer().style; 
-            if(k==='borderActive') { s.borderActive=v; document.getElementById('borderSettings').classList.toggle('opacity-50', !v); }
-            else if(k==='dropShadow') { s.dropShadow=v; document.getElementById('dropShadowBlur').disabled=!v; }
-            else if(k==='innerShadow') { s.innerShadow=v; document.getElementById('innerShadowBlur').disabled=!v; }
-            else if(k==='value') {
-                s.value = v; 
+        function rotateGeometry(v) { getActiveLayer().style.rotation = parseInt(v); document.getElementById('rotVal').innerText = v + '°'; render(); }
+        function scaleGeometry(v) { getActiveLayer().style.scale = parseInt(v); document.getElementById('scaleVal').innerText = v + '%'; render(); }
+        function updateStyle(k, v) {
+            const s = getActiveLayer().style;
+            if (k === 'borderActive') { s.borderActive = v; document.getElementById('borderSettings').classList.toggle('opacity-50', !v); }
+            else if (k === 'dropShadow') { s.dropShadow = v; document.getElementById('dropShadowBlur').disabled = !v; }
+            else if (k === 'innerShadow') { s.innerShadow = v; document.getElementById('innerShadowBlur').disabled = !v; }
+            else if (k === 'value') {
+                s.value = v;
                 // Auto-switch to color mode if picking color
-                if(s.type === 'image') {
+                if (s.type === 'image') {
                     s.type = 'color';
                     setFillType('color');
                 }
             }
-            else s[k]=v; 
-            render(); 
+            else s[k] = v;
+            render();
         }
         function updateFilterIntensity(v) {
             const l = getActiveLayer(); l.style.filterVal = v;
-            document.getElementById('noiseVal').setAttribute('baseFrequency', v/100);
-            document.getElementById('sketchyVal').setAttribute('baseFrequency', v/1000);
+            document.getElementById('noiseVal').setAttribute('baseFrequency', v / 100);
+            document.getElementById('sketchyVal').setAttribute('baseFrequency', v / 1000);
             render();
         }
         function updateImagePos() {
             const s = getActiveLayer().style;
             s.imgPanX = document.getElementById('imgPanX').value; s.imgPanY = document.getElementById('imgPanY').value; s.imgZoom = document.getElementById('imgZoom').value; s.imgRot = document.getElementById('imgRot').value; render();
         }
-        function setFillType(t) { getActiveLayer().style.type = t; if(t==='color') getActiveLayer().style.value = document.getElementById('fillColor').value; render(); syncUI(); }
+        function setFillType(t) { getActiveLayer().style.type = t; if (t === 'color') getActiveLayer().style.value = document.getElementById('fillColor').value; render(); syncUI(); }
         function triggerUpload() { document.getElementById('imgUpload').click(); }
-        function handleImageUpload(i) { if(i.files[0]) { const r = new FileReader(); r.onload=(e)=>{ getActiveLayer().style.type='image'; getActiveLayer().style.value=e.target.result; syncUI(); render(); }; r.readAsDataURL(i.files[0]); } }
+        function handleImageUpload(i) { if (i.files[0]) { const r = new FileReader(); r.onload = (e) => { getActiveLayer().style.type = 'image'; getActiveLayer().style.value = e.target.result; syncUI(); render(); }; r.readAsDataURL(i.files[0]); } }
         function removeImage() { const l = getActiveLayer(); l.style.type = 'color'; l.style.value = document.getElementById('fillColor').value || '#6366f1'; syncUI(); render(); }
         function updatePointFromInput() { const pts = getActivePoints(); pts[selectedPointIndex].x = parseFloat(document.getElementById('inpX').value); pts[selectedPointIndex].y = parseFloat(document.getElementById('inpY').value); render(); saveHistory(); }
-        function updateProp(prop, val) { if(prop === 'roundness') { const pts = getActivePoints(); if(pts[selectedPointIndex]) { pts[selectedPointIndex].r = parseInt(val); document.getElementById('ptRoundVal').textContent = val+'%'; } } render(); saveHistory(); }
-        
+        function updateProp(prop, val) { if (prop === 'roundness') { const pts = getActivePoints(); if (pts[selectedPointIndex]) { pts[selectedPointIndex].r = parseInt(val); document.getElementById('ptRoundVal').textContent = val + '%'; } } render(); saveHistory(); }
+
         function setRandomGradient() {
             const l = getActiveLayer();
             l.style.type = 'color';
-            const c1 = '#' + Math.floor(Math.random()*16777215).toString(16);
-            const c2 = '#' + Math.floor(Math.random()*16777215).toString(16);
+            const c1 = '#' + Math.floor(Math.random() * 16777215).toString(16);
+            const c2 = '#' + Math.floor(Math.random() * 16777215).toString(16);
             l.style.value = `linear-gradient(45deg, ${c1}, ${c2})`;
             // Can't set input type=color to gradient, so handle UI
             render(); syncUI();
         }
 
-        function toggleHoverEdit() { isHoverEditing = !isHoverEditing; if(isHoverEditing && !getActiveLayer().hoverPoints.length) getActiveLayer().hoverPoints = JSON.parse(JSON.stringify(getActiveLayer().points)); document.getElementById('btnHoverEdit').innerText = isHoverEditing ? "Stop Editing" : "Edit Hover State"; document.getElementById('btnHoverEdit').classList.toggle('bg-red-600', isHoverEditing); document.getElementById('btnHoverEdit').classList.toggle('bg-indigo-600', !isHoverEditing); document.getElementById('hoverIndicator').classList.toggle('hidden', !isHoverEditing); render(); }
+        function toggleHoverEdit() { isHoverEditing = !isHoverEditing; if (isHoverEditing && !getActiveLayer().hoverPoints.length) getActiveLayer().hoverPoints = JSON.parse(JSON.stringify(getActiveLayer().points)); document.getElementById('btnHoverEdit').innerText = isHoverEditing ? "Stop Editing" : "Edit Hover State"; document.getElementById('btnHoverEdit').classList.toggle('bg-red-600', isHoverEditing); document.getElementById('btnHoverEdit').classList.toggle('bg-indigo-600', !isHoverEditing); document.getElementById('hoverIndicator').classList.toggle('hidden', !isHoverEditing); render(); }
         function previewAnim() {
             const el = document.getElementById('layersContainer').children[layers.findIndex(l => l.id === activeLayerId)];
-            if(!el) return;
+            if (!el) return;
             const start = getPolygonCSS(getTransformedPoints(getActiveLayer().points, getActiveLayer()));
             const end = getPolygonCSS(getTransformedPoints(getActiveLayer().hoverPoints, getActiveLayer()));
-            const styleId = 'anim-style-' + activeLayerId; let s = document.getElementById(styleId); if(!s) { s = document.createElement('style'); s.id=styleId; document.head.appendChild(s); }
+            const styleId = 'anim-style-' + activeLayerId; let s = document.getElementById(styleId); if (!s) { s = document.createElement('style'); s.id = styleId; document.head.appendChild(s); }
             s.innerHTML = `@keyframes anim-${activeLayerId} { 0% { clip-path: ${start}; } 100% { clip-path: ${end}; } }`;
             const children = el.querySelectorAll('div'); children.forEach(c => { c.style.animation = `anim-${activeLayerId} 1s infinite alternate ease-in-out`; });
             setTimeout(() => { children.forEach(c => c.style.animation = ''); }, 3000);
@@ -874,7 +1149,7 @@
         function setCodeMode(m) {
             activeCodeMode = m;
             document.querySelectorAll('.code-tab').forEach(b => {
-                if(b.textContent.toLowerCase().includes(m)) b.classList.add('active', 'bg-slate-100', 'text-indigo-600');
+                if (b.textContent.toLowerCase().includes(m)) b.classList.add('active', 'bg-slate-100', 'text-indigo-600');
                 else b.classList.remove('active', 'bg-slate-100', 'text-indigo-600');
             });
             generateCode();
@@ -887,70 +1162,103 @@
             const supports = document.getElementById('codeSupports').checked;
             const isMask = document.getElementById('useMask').checked;
             let out = '';
-            
-            if(activeCodeMode === 'css') {
+
+            if (activeCodeMode === 'css') {
                 let rules = '';
-                if(vars) { rules += `--clip: ${poly};\n  clip-path: var(--clip);\n`; } 
-                else { rules += isMask ? `mask-image: ${poly.replace('polygon','url(...)')}; -webkit-mask-image: ${poly};\n` : `clip-path: ${poly};\n`; }
-                
+                if (vars) { rules += `--clip: ${poly};\n  clip-path: var(--clip);\n`; }
+                else { rules += isMask ? `mask-image: ${poly.replace('polygon', 'url(...)')}; -webkit-mask-image: ${poly};\n` : `clip-path: ${poly};\n`; }
+
                 if (l.style.type === 'color') rules += `  background: ${l.style.value};\n`;
                 else {
-                    rules += `  background: url(...);\n`; 
+                    rules += `  background: url(...);\n`;
                     rules += `  background-position: ${l.style.imgPanX}% ${l.style.imgPanY}%;\n  background-size: ${l.style.imgZoom}%;\n`;
                 }
-                if(l.style.dropShadow) rules += `  filter: drop-shadow(0 10px ${l.style.dropShadowBlur}px rgba(0,0,0,0.5));\n`;
+                if (l.style.dropShadow) rules += `  filter: drop-shadow(0 10px ${l.style.dropShadowBlur}px rgba(0,0,0,0.5));\n`;
                 out = `.shape {\n${rules}}`;
-                if(supports) out = `@supports (clip-path: polygon(0 0)) {\n  ${out.replace(/\n/g, '\n  ')}\n}`;
-                
-            } else if(activeCodeMode === 'tailwind') {
+                if (supports) out = `@supports (clip-path: polygon(0 0)) {\n  ${out.replace(/\n/g, '\n  ')}\n}`;
+
+            } else if (activeCodeMode === 'tailwind') {
                 const arbitrary = poly.replace(/\s+/g, '').replace(/,/g, '_');
-                out = `<div class="w-[300px] h-[300px] bg-indigo-500 ${isMask?'mask':'clip'}-[${arbitrary}]"></div>`;
-            } else if(activeCodeMode === 'react') {
+                out = `<div class="w-[300px] h-[300px] bg-indigo-500 ${isMask ? 'mask' : 'clip'}-[${arbitrary}]"></div>`;
+            } else if (activeCodeMode === 'react') {
                 const bgProp = l.style.type === 'image' ? `url(...)` : l.style.value;
                 out = `const Shape = () => (\n  <div style={{\n    clipPath: '${poly}',\n    background: '${l.style.type === 'image' ? 'url(...)' : l.style.value}'${l.style.type === 'image' ? `,\n    backgroundPosition: '${l.style.imgPanX}% ${l.style.imgPanY}%',\n    backgroundSize: '${l.style.imgZoom}%',\n    backgroundRepeat: 'no-repeat'` : ''}\n  }} />\n);`;
             }
-            if(minify) out = out.replace(/\s+/g, ' ').trim();
+            if (minify) out = out.replace(/\s+/g, ' ').trim();
             document.getElementById('cssOutput').value = out;
         }
 
         async function exportFile(type) {
-            if(type === 'css' || type === 'svg_code') {
-                const el = document.getElementById('cssOutput'); el.select(); 
-                try { await navigator.clipboard.writeText(el.value); alert("Copied!"); } catch(e) { document.execCommand('copy'); alert("Copied!"); }
+            if (type === 'css' || type === 'svg_code') {
+                const el = document.getElementById('cssOutput'); el.select();
+                try { await navigator.clipboard.writeText(el.value); alert("Copied!"); } catch (e) { document.execCommand('copy'); alert("Copied!"); }
             } else if (type === 'svg') {
                 const l = getActiveLayer(); const rot = getTransformedPoints(l.points, l); const polyStr = getPolygonCSS(rot);
                 const coords = polyStr.match(/[\d\.]+/g); let ptsStr = "";
-                if(coords) { for(let i=0; i<coords.length; i+=2) ptsStr += `${coords[i]},${coords[i+1]} `; }
-                const svgData = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><polygon points="${ptsStr}" fill="${l.style.type==='color'?l.style.value:'#000'}"/></svg>`;
-                const blob = new Blob([svgData], {type: "image/svg+xml"}); const url = URL.createObjectURL(blob);
+                if (coords) { for (let i = 0; i < coords.length; i += 2) ptsStr += `${coords[i]},${coords[i + 1]} `; }
+                const svgData = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><polygon points="${ptsStr}" fill="${l.style.type === 'color' ? l.style.value : '#000'}"/></svg>`;
+                const blob = new Blob([svgData], { type: "image/svg+xml" }); const url = URL.createObjectURL(blob);
                 const a = document.createElement("a"); a.href = url; a.download = 'shape.svg'; a.click();
-            } else { downloadRaster(type==='png'?'image/png':'image/webp', type); }
+            } else { downloadRaster(type === 'png' ? 'image/png' : 'image/webp', type); }
             document.getElementById('exportMenu').classList.add('hidden');
         }
-        
+
         async function downloadRaster(mime, ext) {
             const aspectDiv = document.getElementById('aspectContainer');
             const w = 1200; const h = w * (aspectDiv.offsetHeight / aspectDiv.offsetWidth);
             const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
             const ctx = canvas.getContext('2d');
-            for(const l of layers) {
-                if(!l.visible) continue;
+            for (const l of layers) {
+                if (!l.visible) continue;
                 ctx.save(); ctx.globalAlpha = l.style.opacity / 100;
                 const rot = getTransformedPoints(l.points, l); const polyStr = getPolygonCSS(rot); const coords = polyStr.match(/[\d\.]+/g);
                 ctx.beginPath();
-                if(coords) { for(let i=0; i<coords.length; i+=2) { const px = (parseFloat(coords[i])/100)*w; const py = (parseFloat(coords[i+1])/100)*h; if(i===0) ctx.moveTo(px, py); else ctx.lineTo(px, py); } }
+                if (coords) { for (let i = 0; i < coords.length; i += 2) { const px = (parseFloat(coords[i]) / 100) * w; const py = (parseFloat(coords[i + 1]) / 100) * h; if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); } }
                 ctx.closePath();
-                if(l.style.dropShadow) { ctx.shadowColor = "rgba(0,0,0,0.5)"; ctx.shadowBlur = l.style.dropShadowBlur * 2; ctx.shadowOffsetY = 10; }
-                if(l.style.borderActive) { ctx.fillStyle = l.style.borderColor; ctx.fill(); ctx.shadowColor = "transparent"; ctx.clip(); const s = 1 - (l.style.borderWidth/200); ctx.translate(w/2, h/2); ctx.scale(s,s); ctx.translate(-w/2, -h/2); } else { ctx.clip(); }
-                if(l.style.type === 'color') { ctx.fillStyle = l.style.value; ctx.fillRect(0,0,w,h); } 
+                if (l.style.dropShadow) { ctx.shadowColor = "rgba(0,0,0,0.5)"; ctx.shadowBlur = l.style.dropShadowBlur * 2; ctx.shadowOffsetY = 10; }
+                if (l.style.borderActive) { ctx.fillStyle = l.style.borderColor; ctx.fill(); ctx.shadowColor = "transparent"; ctx.clip(); const s = 1 - (l.style.borderWidth / 200); ctx.translate(w / 2, h / 2); ctx.scale(s, s); ctx.translate(-w / 2, -h / 2); } else { ctx.clip(); }
+                if (l.style.type === 'color') { ctx.fillStyle = l.style.value; ctx.fillRect(0, 0, w, h); }
                 else {
                     try {
-                        const img = new Image(); img.crossOrigin="Anonymous"; img.src = l.style.value;
+                        const img = new Image(); img.crossOrigin = "Anonymous"; img.src = l.style.value;
                         await new Promise((r) => { img.onload = r; img.onerror = r; });
-                        const drawW = w * (l.style.imgZoom / 100); const imgRatio = img.width / img.height; const drawH = drawW / imgRatio;
-                        const offX = (w - drawW) * (l.style.imgPanX / 100); const offY = (h - drawH) * (l.style.imgPanY / 100);
-                        ctx.drawImage(img, offX, offY, drawW, drawH);
-                    } catch(e) { ctx.fillStyle = '#6366f1'; ctx.fillRect(0,0,w,h); }
+
+                        // Calculate Aspect Ratios
+                        const imgRatio = img.width / img.height;
+                        const canvasRatio = w / h;
+
+                        // Simulate object-cover
+                        let drawW, drawH;
+                        if (imgRatio > canvasRatio) {
+                            // Image is wider than canvas (relative to aspect), height is the constraint
+                            drawH = h;
+                            drawW = h * imgRatio;
+                        } else {
+                            // Image is taller, width is the constraint
+                            drawW = w;
+                            drawH = w / imgRatio;
+                        }
+
+                        // Transforms
+                        const zoom = l.style.imgZoom / 100;
+                        const rot = l.style.imgRot || 0;
+                        // Map 50 -> 0. +/- 50 units. UI uses * 5 for 400px width.
+                        // Scale factor is w / 400. default w=1200 => 3.
+                        // offset = (val - 50) * 5 * (w / 400)
+                        const scaleFactor = w / 400;
+                        const panX = (l.style.imgPanX - 50) * 5 * scaleFactor;
+                        const panY = (l.style.imgPanY - 50) * 5 * scaleFactor;
+
+                        ctx.translate(w / 2 + panX, h / 2 + panY);
+                        ctx.rotate(rot * Math.PI / 180);
+                        ctx.scale(zoom, zoom);
+
+                        ctx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
+
+                        // Reset transform for next layer (restore is called at end of loop, but good practice if more code added)
+                        // Actually ctx.save()/restore() handles this in the loop.
+
+                    } catch (e) { ctx.fillStyle = '#6366f1'; ctx.fillRect(0, 0, w, h); }
                 }
                 ctx.restore();
             }
@@ -958,106 +1266,106 @@
         }
 
         function setTab(t) {
-            ['shape','fill','effects','anim','code'].forEach(x => { document.getElementById(`panel-${x}`).classList.add('hidden'); document.getElementById(`tab-${x}`).classList.remove('active'); });
+            ['shape', 'fill', 'effects', 'anim', 'code'].forEach(x => { document.getElementById(`panel-${x}`).classList.add('hidden'); document.getElementById(`tab-${x}`).classList.remove('active'); });
             document.getElementById(`panel-${t}`).classList.remove('hidden'); document.getElementById(`tab-${t}`).classList.add('active');
         }
         function toggleMenu(id, e) { e.stopPropagation(); document.getElementById(id).classList.toggle('hidden'); }
-        function closeMenus(e) { if(!e.target.closest('nav')) document.getElementById('exportMenu').classList.add('hidden'); if(!e.target.closest('.relative')) document.getElementById('presetMenu').classList.add('hidden'); }
-        function setupDragDrop() { const z = document.getElementById('canvasZone'); z.addEventListener('dragover', (e)=>{e.preventDefault(); z.classList.add('drop-active');}); z.addEventListener('dragleave', (e)=>{z.classList.remove('drop-active');}); z.addEventListener('drop', (e)=>{ e.preventDefault(); z.classList.remove('drop-active'); if(e.dataTransfer.files[0]) handleImageUpload({files:e.dataTransfer.files}); }); }
-        
+        function closeMenus(e) { if (!e.target.closest('nav')) document.getElementById('exportMenu').classList.add('hidden'); if (!e.target.closest('.relative')) document.getElementById('presetMenu').classList.add('hidden'); }
+        function setupDragDrop() { const z = document.getElementById('canvasZone'); z.addEventListener('dragover', (e) => { e.preventDefault(); z.classList.add('drop-active'); }); z.addEventListener('dragleave', (e) => { z.classList.remove('drop-active'); }); z.addEventListener('drop', (e) => { e.preventDefault(); z.classList.remove('drop-active'); if (e.dataTransfer.files[0]) handleImageUpload({ files: e.dataTransfer.files }); }); }
+
         function selectLayer(id) { activeLayerId = id; selectedPointIndex = 0; syncUI(); render(); }
-        function runGenerator() { const type = document.getElementById('genType').value; const count = parseInt(document.getElementById('genPoints').value); const pts = []; const c=50, r=40; if (type === 'poly') { for(let i=0; i<count; i++) { const a = (i*2*Math.PI/count)-Math.PI/2; pts.push({x: c+r*Math.cos(a), y: c+r*Math.sin(a), type:'corner'}); } } else if (type === 'star') { const inset = parseInt(document.getElementById('genInset').value) / 100; for(let i=0; i<count*2; i++) { const a = (i*Math.PI/count)-Math.PI/2; const rad = i%2===0 ? r : r*inset; pts.push({x: c+rad*Math.cos(a), y: c+rad*Math.sin(a), type:'corner'}); } } else if (type === 'blob') { for(let i=0; i<count; i++) { const a = (i*2*Math.PI/count); const rad = r * (0.6 + Math.random()*0.4); pts.push({x: c+rad*Math.cos(a), y: c+rad*Math.sin(a), type:'smooth'}); } } getActiveLayer().points = pts; getActiveLayer().hoverPoints = JSON.parse(JSON.stringify(pts)); saveHistory(); render(); }
+        function runGenerator() { const type = document.getElementById('genType').value; const count = parseInt(document.getElementById('genPoints').value); const pts = []; const c = 50, r = 40; if (type === 'poly') { for (let i = 0; i < count; i++) { const a = (i * 2 * Math.PI / count) - Math.PI / 2; pts.push({ x: c + r * Math.cos(a), y: c + r * Math.sin(a), type: 'corner' }); } } else if (type === 'star') { const inset = parseInt(document.getElementById('genInset').value) / 100; for (let i = 0; i < count * 2; i++) { const a = (i * Math.PI / count) - Math.PI / 2; const rad = i % 2 === 0 ? r : r * inset; pts.push({ x: c + rad * Math.cos(a), y: c + rad * Math.sin(a), type: 'corner' }); } } else if (type === 'blob') { for (let i = 0; i < count; i++) { const a = (i * 2 * Math.PI / count); const rad = r * (0.6 + Math.random() * 0.4); pts.push({ x: c + rad * Math.cos(a), y: c + rad * Math.sin(a), type: 'smooth' }); } } getActiveLayer().points = pts; getActiveLayer().hoverPoints = JSON.parse(JSON.stringify(pts)); saveHistory(); render(); }
         function importSVG() {
-            const s = document.getElementById('svgInput').value; 
+            const s = document.getElementById('svgInput').value;
             const m = s.match(/[-+]?[0-9]*\.?[0-9]+/g);
-            if(m && m.length>=6) {
-                const pts=[]; 
-                for(let i=0; i<m.length; i+=2) { 
-                    if(pts.length>30)break; 
-                    let x=parseFloat(m[i]), y=parseFloat(m[i+1]); 
-                    if(x>100)x=100; if(y>100)y=100; 
-                    pts.push({x,y,type:'corner', r:0, cp1:{x:x-5,y}, cp2:{x:x+5,y}}); 
+            if (m && m.length >= 6) {
+                const pts = [];
+                for (let i = 0; i < m.length; i += 2) {
+                    if (pts.length > 30) break;
+                    let x = parseFloat(m[i]), y = parseFloat(m[i + 1]);
+                    if (x > 100) x = 100; if (y > 100) y = 100;
+                    pts.push({ x, y, type: 'corner', r: 0, cp1: { x: x - 5, y }, cp2: { x: x + 5, y } });
                 }
-                getActiveLayer().points = pts; 
+                getActiveLayer().points = pts;
                 getActiveLayer().hoverPoints = JSON.parse(JSON.stringify(pts));
-                saveHistory(); 
+                saveHistory();
                 render();
             }
         }
-        
+
         function addLayer() {
             const newL = JSON.parse(JSON.stringify(layers[0]));
-            newL.id = `layer-${Date.now()}`; newL.name = `Shape ${layers.length+1}`; newL.style.value = '#F43F5E';
+            newL.id = `layer-${Date.now()}`; newL.name = `Shape ${layers.length + 1}`; newL.style.value = '#F43F5E';
             layers.push(newL); activeLayerId = newL.id; saveHistory(); render();
         }
-        function deleteLayer(e, id) { e.stopPropagation(); if(layers.length <= 1) return alert("Keep at least one layer"); layers = layers.filter(l => l.id !== id); if(activeLayerId === id) activeLayerId = layers[0].id; saveHistory(); render(); }
-        function addPoint() { const pts=getActivePoints(); const next=(selectedPointIndex+1)%pts.length; const p1=pts[selectedPointIndex], p2=pts[next]; pts.splice(selectedPointIndex+1,0,{x:(p1.x+p2.x)/2, y:(p1.y+p2.y)/2, type:'corner', r:0}); const l = getActiveLayer(); if(!isHoverEditing && l.hoverPoints && l.hoverPoints.length === pts.length - 1) l.hoverPoints = JSON.parse(JSON.stringify(l.points)); saveHistory(); render(); }
-        function deletePoint() { const pts=getActivePoints(); if(pts.length>3){ pts.splice(selectedPointIndex,1); selectedPointIndex=Math.max(0,selectedPointIndex-1); const l = getActiveLayer(); if(!isHoverEditing && l.hoverPoints) l.hoverPoints = JSON.parse(JSON.stringify(l.points)); saveHistory(); render(); } }
-        function centerGeometry() { const pts = getActivePoints(); let mnX=100,mxX=0,mnY=100,mxY=0; pts.forEach(p=>{if(p.x<mnX)mnX=p.x;if(p.x>mxX)mxX=p.x;if(p.y<mnY)mnY=p.y;if(p.y>mxY)mxY=p.y}); const dx=50-(mnX+mxX)/2, dy=50-(mnY+mxY)/2; pts.forEach(p=>{p.x+=dx;p.y+=dy}); saveHistory(); render(); }
+        function deleteLayer(e, id) { e.stopPropagation(); if (layers.length <= 1) return alert("Keep at least one layer"); layers = layers.filter(l => l.id !== id); if (activeLayerId === id) activeLayerId = layers[0].id; saveHistory(); render(); }
+        function addPoint() { const pts = getActivePoints(); const next = (selectedPointIndex + 1) % pts.length; const p1 = pts[selectedPointIndex], p2 = pts[next]; pts.splice(selectedPointIndex + 1, 0, { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2, type: 'corner', r: 0 }); const l = getActiveLayer(); if (!isHoverEditing && l.hoverPoints && l.hoverPoints.length === pts.length - 1) l.hoverPoints = JSON.parse(JSON.stringify(l.points)); saveHistory(); render(); }
+        function deletePoint() { const pts = getActivePoints(); if (pts.length > 3) { pts.splice(selectedPointIndex, 1); selectedPointIndex = Math.max(0, selectedPointIndex - 1); const l = getActiveLayer(); if (!isHoverEditing && l.hoverPoints) l.hoverPoints = JSON.parse(JSON.stringify(l.points)); saveHistory(); render(); } }
+        function centerGeometry() { const pts = getActivePoints(); let mnX = 100, mxX = 0, mnY = 100, mxY = 0; pts.forEach(p => { if (p.x < mnX) mnX = p.x; if (p.x > mxX) mxX = p.x; if (p.y < mnY) mnY = p.y; if (p.y > mxY) mxY = p.y }); const dx = 50 - (mnX + mxX) / 2, dy = 50 - (mnY + mxY) / 2; pts.forEach(p => { p.x += dx; p.y += dy }); saveHistory(); render(); }
         function toggleSymmetry(axis) { symmetry[axis] = !symmetry[axis]; document.getElementById(`sym${axis.toUpperCase()}`).classList.toggle('bg-indigo-600', symmetry[axis]); document.getElementById(`sym${axis.toUpperCase()}`).classList.toggle('text-white', symmetry[axis]); }
-        function flipGeometry(a) { const pts = getActivePoints(); pts.forEach(p => a==='h' ? p.x=100-p.x : p.y=100-p.y); saveHistory(); render(); }
-        function setAspectRatio(r) { const w = 400; const h = r===16/9 ? w/r : (r===4/3 ? w/r : w); document.getElementById('aspectContainer').style.width = w+'px'; document.getElementById('aspectContainer').style.height = h+'px'; }
+        function flipGeometry(a) { const pts = getActivePoints(); pts.forEach(p => a === 'h' ? p.x = 100 - p.x : p.y = 100 - p.y); saveHistory(); render(); }
+        function setAspectRatio(r) { const w = 400; const h = r === 16 / 9 ? w / r : (r === 4 / 3 ? w / r : w); document.getElementById('aspectContainer').style.width = w + 'px'; document.getElementById('aspectContainer').style.height = h + 'px'; }
         function shareState() { const json = JSON.stringify(layers); const b64 = btoa(json); window.location.hash = b64; alert("URL updated!"); }
         function takeSnapshot() { alert("Snapshot saved!"); }
         function setPointType(type) {
             const pts = getActivePoints();
             if (!pts || !pts[selectedPointIndex]) return;
             pts[selectedPointIndex].type = type;
-            if(type === 'bezier') {
+            if (type === 'bezier') {
                 const p = pts[selectedPointIndex];
-                if(!p.cp1) { p.cp1 = {x: p.x-5, y: p.y}; p.cp2 = {x: p.x+5, y: p.y}; }
+                if (!p.cp1) { p.cp1 = { x: p.x - 5, y: p.y }; p.cp2 = { x: p.x + 5, y: p.y }; }
             }
             syncUI(); render(); saveHistory();
         }
-        
+
         function initPolygon(sides) {
             const pts = []; const r = 40; const c = 50;
-            for(let i=0; i<sides; i++) {
-                const a = (i * 2 * Math.PI / sides) - Math.PI/2;
-                pts.push({ x: c + r*Math.cos(a), y: c + r*Math.sin(a), type: 'corner', r: 0, cp1: {x:c + r*Math.cos(a)-5, y:c + r*Math.sin(a)}, cp2: {x:c + r*Math.cos(a)+5, y:c + r*Math.sin(a)} });
+            for (let i = 0; i < sides; i++) {
+                const a = (i * 2 * Math.PI / sides) - Math.PI / 2;
+                pts.push({ x: c + r * Math.cos(a), y: c + r * Math.sin(a), type: 'corner', r: 0, cp1: { x: c + r * Math.cos(a) - 5, y: c + r * Math.sin(a) }, cp2: { x: c + r * Math.cos(a) + 5, y: c + r * Math.sin(a) } });
             }
             const l = getActiveLayer();
             l.points = pts;
             l.hoverPoints = JSON.parse(JSON.stringify(pts));
-            saveHistory(); 
+            saveHistory();
             render();
         }
 
         function applyPreset(name) {
-            let pts = []; const mk = (arr) => arr.map(p => ({x:p.x, y:p.y, smooth: false, type:'corner', r:0, cp1:{x:p.x-5,y:p.y}, cp2:{x:p.x+5,y:p.y}}));
-            if(name==='pentagon') { initPolygon(5); return; }
-            if(name==='hexagon') { initPolygon(6); return; }
-            if(name==='circle') { const sides=8; const r=45; for(let i=0; i<sides; i++){ const a=(i*2*Math.PI/sides); pts.push({x:50+r*Math.cos(a), y:50+r*Math.sin(a), type:'smooth', r:0, cp1:{x:0,y:0}, cp2:{x:0,y:0}}); } }
-            else if(name==='star') pts = mk([{x:50,y:0},{x:61,y:35},{x:98,y:35},{x:68,y:57},{x:79,y:91},{x:50,y:70},{x:21,y:91},{x:32,y:57},{x:2,y:35},{x:39,y:35}]);
-            else if(name==='shield') pts = mk([{x:50,y:0},{x:100,y:20},{x:100,y:50},{x:50,y:100},{x:0,y:50},{x:0,y:20}]);
-            else if(name==='message') pts = mk([{x:5,y:5},{x:95,y:5},{x:95,y:75},{x:75,y:75},{x:75,y:95},{x:50,y:75},{x:5,y:75}]);
-            else if(name==='cross') pts = mk([{x:35,y:5},{x:65,y:5},{x:65,y:35},{x:95,y:35},{x:95,y:65},{x:65,y:65},{x:65,y:95},{x:35,y:95},{x:35,y:65},{x:5,y:65},{x:5,y:35},{x:35,y:35}]);
-            else if(name==='arrow') pts = mk([{x:0,y:25},{x:50,y:25},{x:50,y:0},{x:100,y:50},{x:50,y:100},{x:50,y:75},{x:0,y:75}]);
-            else if(name==='frame') pts = mk([{x:0,y:0},{x:100,y:0},{x:100,y:100},{x:0,y:100},{x:10,y:10},{x:90,y:10},{x:90,y:90},{x:10,y:90},{x:10,y:10}]);
+            let pts = []; const mk = (arr) => arr.map(p => ({ x: p.x, y: p.y, smooth: false, type: 'corner', r: 0, cp1: { x: p.x - 5, y: p.y }, cp2: { x: p.x + 5, y: p.y } }));
+            if (name === 'pentagon') { initPolygon(5); return; }
+            if (name === 'hexagon') { initPolygon(6); return; }
+            if (name === 'circle') { const sides = 8; const r = 45; for (let i = 0; i < sides; i++) { const a = (i * 2 * Math.PI / sides); pts.push({ x: 50 + r * Math.cos(a), y: 50 + r * Math.sin(a), type: 'smooth', r: 0, cp1: { x: 0, y: 0 }, cp2: { x: 0, y: 0 } }); } }
+            else if (name === 'star') pts = mk([{ x: 50, y: 0 }, { x: 61, y: 35 }, { x: 98, y: 35 }, { x: 68, y: 57 }, { x: 79, y: 91 }, { x: 50, y: 70 }, { x: 21, y: 91 }, { x: 32, y: 57 }, { x: 2, y: 35 }, { x: 39, y: 35 }]);
+            else if (name === 'shield') pts = mk([{ x: 50, y: 0 }, { x: 100, y: 20 }, { x: 100, y: 50 }, { x: 50, y: 100 }, { x: 0, y: 50 }, { x: 0, y: 20 }]);
+            else if (name === 'message') pts = mk([{ x: 5, y: 5 }, { x: 95, y: 5 }, { x: 95, y: 75 }, { x: 75, y: 75 }, { x: 75, y: 95 }, { x: 50, y: 75 }, { x: 5, y: 75 }]);
+            else if (name === 'cross') pts = mk([{ x: 35, y: 5 }, { x: 65, y: 5 }, { x: 65, y: 35 }, { x: 95, y: 35 }, { x: 95, y: 65 }, { x: 65, y: 65 }, { x: 65, y: 95 }, { x: 35, y: 95 }, { x: 35, y: 65 }, { x: 5, y: 65 }, { x: 5, y: 35 }, { x: 35, y: 35 }]);
+            else if (name === 'arrow') pts = mk([{ x: 0, y: 25 }, { x: 50, y: 25 }, { x: 50, y: 0 }, { x: 100, y: 50 }, { x: 50, y: 100 }, { x: 50, y: 75 }, { x: 0, y: 75 }]);
+            else if (name === 'frame') pts = mk([{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 100 }, { x: 0, y: 100 }, { x: 10, y: 10 }, { x: 90, y: 10 }, { x: 90, y: 90 }, { x: 10, y: 90 }, { x: 10, y: 10 }]);
             getActiveLayer().points = pts; getActiveLayer().hoverPoints = JSON.parse(JSON.stringify(pts)); saveHistory(); render();
         }
 
         function syncUI() {
             const l = getActiveLayer();
             const p = getActivePoints()[selectedPointIndex];
-            
+
             // Point Controls
-            if(p) {
-                document.getElementById('pointIndex').innerText = `#${selectedPointIndex+1}`;
+            if (p) {
+                document.getElementById('pointIndex').innerText = `#${selectedPointIndex + 1}`;
                 document.getElementById('inpX').value = Math.round(p.x);
                 document.getElementById('inpY').value = Math.round(p.y);
-                
+
                 const type = p.type || 'corner';
                 // Button styles
                 const baseClass = "flex-1 py-1 text-[9px] rounded";
                 const activeClass = "bg-indigo-100 text-indigo-700";
                 const inactiveClass = "hover:bg-slate-50 text-slate-600";
-                
-                document.getElementById('type-corner').className = `${baseClass} ${type==='corner'?activeClass:inactiveClass}`;
-                document.getElementById('type-smooth').className = `${baseClass} ${type==='smooth'?activeClass:inactiveClass}`;
-                document.getElementById('type-rounded').className = `${baseClass} ${type==='rounded'?activeClass:inactiveClass}`;
-                document.getElementById('type-bezier').className = `${baseClass} ${type==='bezier'?activeClass:inactiveClass}`;
-                
+
+                document.getElementById('type-corner').className = `${baseClass} ${type === 'corner' ? activeClass : inactiveClass}`;
+                document.getElementById('type-smooth').className = `${baseClass} ${type === 'smooth' ? activeClass : inactiveClass}`;
+                document.getElementById('type-rounded').className = `${baseClass} ${type === 'rounded' ? activeClass : inactiveClass}`;
+                document.getElementById('type-bezier').className = `${baseClass} ${type === 'bezier' ? activeClass : inactiveClass}`;
+
                 const roundnessControl = document.getElementById('roundnessControl');
                 if (type === 'rounded') {
                     roundnessControl.classList.remove('hidden');
@@ -1077,9 +1385,9 @@
 
             // Fill
             document.getElementById('fillColor').value = l.style.type === 'color' ? l.style.value : '#6366f1';
-            
+
             // Image Controls
-            if(l.style.type === 'image') {
+            if (l.style.type === 'image') {
                 document.getElementById('imageControls').classList.remove('hidden');
                 document.getElementById('removeImgBtn').classList.remove('hidden');
                 document.getElementById('imgPanX').value = l.style.imgPanX;
@@ -1093,7 +1401,7 @@
             // Border
             document.getElementById('hasBorder').checked = l.style.borderActive;
             const borderSettings = document.getElementById('borderSettings');
-            if(l.style.borderActive) {
+            if (l.style.borderActive) {
                 borderSettings.classList.remove('opacity-50', 'pointer-events-none');
             } else {
                 borderSettings.classList.add('opacity-50', 'pointer-events-none');
@@ -1106,7 +1414,7 @@
             document.getElementById('hasDropShadow').checked = l.style.dropShadow;
             document.getElementById('dropShadowBlur').value = l.style.dropShadowBlur;
             document.getElementById('dropShadowBlur').disabled = !l.style.dropShadow;
-            
+
             document.getElementById('hasInnerShadow').checked = l.style.innerShadow;
             document.getElementById('innerShadowBlur').value = l.style.innerShadowBlur;
             document.getElementById('innerShadowBlur').disabled = !l.style.innerShadow;
@@ -1121,4 +1429,5 @@
         init();
     </script>
 </body>
+
 </html>
