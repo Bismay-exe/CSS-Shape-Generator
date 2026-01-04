@@ -55,8 +55,7 @@
             0% { clip-path: var(--clip-start); }
             100% { clip-path: var(--clip-end); }
         }
-        /* Apply animation to both wrapper and inner content */
-        .animating, .animating div { animation: morphPreview 1s infinite alternate ease-in-out; }
+        .animating { animation: morphPreview 1s infinite alternate ease-in-out; }
         
         /* Tab States */
         .tab-btn { position: relative; color: #64748b; transition: color 0.2s; }
@@ -154,6 +153,15 @@
                 <div>
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Primitives</span>
+                        <div class="relative">
+                            <button onclick="toggleMenu('presetMenu', event)" class="text-[10px] text-indigo-600 font-bold hover:underline">MORE</button>
+                            <div id="presetMenu" class="hidden absolute bottom-full left-0 mb-1 w-32 bg-white border border-slate-200 rounded shadow-lg p-1 z-50">
+                                <button onclick="applyPreset('message')" class="w-full text-left px-2 py-1 text-xs hover:bg-indigo-50 text-slate-600 rounded">Message</button>
+                                <button onclick="applyPreset('shield')" class="w-full text-left px-2 py-1 text-xs hover:bg-indigo-50 text-slate-600 rounded">Shield</button>
+                                <button onclick="applyPreset('cross')" class="w-full text-left px-2 py-1 text-xs hover:bg-indigo-50 text-slate-600 rounded">Cross</button>
+                                <button onclick="applyPreset('frame')" class="w-full text-left px-2 py-1 text-xs hover:bg-indigo-50 text-slate-600 rounded">Frame</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="grid grid-cols-4 gap-2">
                         <button onclick="applyPreset('pentagon')" class="aspect-square border border-slate-200 bg-white rounded hover:border-indigo-400 flex items-center justify-center text-slate-400 hover:text-indigo-500"><i class="fa-solid fa-play fa-rotate-270 text-[10px]"></i></button>
@@ -766,74 +774,39 @@
         
         function toggleHoverEdit() { 
             isHoverEditing = !isHoverEditing; 
-            const l = getActiveLayer();
-            
-            if(isHoverEditing) {
-                // Entering edit mode
-                // IMPORTANT: Ensure hover points match base points in count/structure
-                // If they don't exist or length mismatch, RESET them to base.
-                if(!l.hoverPoints || l.hoverPoints.length !== l.points.length) {
-                     l.hoverPoints = JSON.parse(JSON.stringify(l.points));
-                }
-                
-                document.getElementById('btnHoverEdit').innerText = "Stop Editing";
-                document.getElementById('btnHoverEdit').classList.replace('bg-indigo-600', 'bg-red-600');
-                document.getElementById('hoverIndicator').classList.remove('hidden');
-                
-                // Disable add/delete buttons to preserve topology
-                document.getElementById('btnAddPoint').disabled = true;
-                document.getElementById('btnDelPoint').disabled = true;
-                document.getElementById('btnAddPoint').classList.add('opacity-50', 'cursor-not-allowed');
-                document.getElementById('btnDelPoint').classList.add('opacity-50', 'cursor-not-allowed');
-
-            } else {
-                // Exiting edit mode
-                document.getElementById('btnHoverEdit').innerText = "Edit Hover State";
-                document.getElementById('btnHoverEdit').classList.replace('bg-red-600', 'bg-indigo-600');
-                document.getElementById('hoverIndicator').classList.add('hidden');
-                
-                // Re-enable buttons
-                document.getElementById('btnAddPoint').disabled = false;
-                document.getElementById('btnDelPoint').disabled = false;
-                document.getElementById('btnAddPoint').classList.remove('opacity-50', 'cursor-not-allowed');
-                document.getElementById('btnDelPoint').classList.remove('opacity-50', 'cursor-not-allowed');
-            }
+            if(isHoverEditing && !getActiveLayer().hoverPoints.length) getActiveLayer().hoverPoints = JSON.parse(JSON.stringify(getActiveLayer().points));
+            document.getElementById('btnHoverEdit').innerText = isHoverEditing ? "Stop Editing" : "Edit Hover State";
+            document.getElementById('btnHoverEdit').classList.toggle('bg-red-600', isHoverEditing);
+            document.getElementById('btnHoverEdit').classList.toggle('bg-indigo-600', !isHoverEditing);
+            document.getElementById('hoverIndicator').classList.toggle('hidden', !isHoverEditing);
             render();
         }
         
         function previewAnim() {
             const el = document.getElementById('layersContainer').children[layers.findIndex(l => l.id === activeLayerId)];
             if(!el) return;
-            
-            // Generate full CSS polygons
+            // Get raw polygon strings
             const start = getPolygonCSS(getTransformedPoints(getActiveLayer().points, getActiveLayer()));
             const end = getPolygonCSS(getTransformedPoints(getActiveLayer().hoverPoints, getActiveLayer()));
             
-            // We need to inject a temporary stylesheet for the keyframes
-            // because inline styles can't define keyframes
-            const styleId = 'anim-preview-style';
-            let styleTag = document.getElementById(styleId);
-            if(styleTag) styleTag.remove();
+            // Apply to the specific layer style via CSS vars or direct style injection
+            // Since we use inline clip-path, we need to inject keyframes
+            // Simple approach: Toggle class and inject style
+            const styleId = 'anim-style-' + activeLayerId;
+            let s = document.getElementById(styleId);
+            if(!s) { s = document.createElement('style'); s.id=styleId; document.head.appendChild(s); }
             
-            styleTag = document.createElement('style');
-            styleTag.id = styleId;
-            styleTag.innerHTML = `
-                @keyframes tempMorph {
-                    0% { clip-path: ${start}; }
-                    100% { clip-path: ${end}; }
-                }
-                .preview-animate-active, .preview-animate-active > div, .preview-animate-active > div > div {
-                    animation: tempMorph ${document.getElementById('animSpeed').value} infinite alternate ease-in-out !important;
-                }
-            `;
-            document.head.appendChild(styleTag);
+            // We need to target the internal div that has the clip-path
+            s.innerHTML = `@keyframes anim-${activeLayerId} { 0% { clip-path: ${start}; } 100% { clip-path: ${end}; } }`;
             
-            // Apply class to wrapper and ensure children inherit (via CSS selector above)
-            el.classList.add('preview-animate-active');
+            // Find the clipped element(s)
+            const children = el.querySelectorAll('div');
+            children.forEach(c => {
+                c.style.animation = `anim-${activeLayerId} 1s infinite alternate ease-in-out`;
+            });
             
             setTimeout(() => {
-                el.classList.remove('preview-animate-active');
-                if(styleTag) styleTag.remove();
+                children.forEach(c => c.style.animation = '');
             }, 3000);
         }
 
@@ -1001,7 +974,304 @@
             document.getElementById(`tab-${t}`).classList.add('active');
         }
         function toggleMenu(id, e) { e.stopPropagation(); document.getElementById(id).classList.toggle('hidden'); }
-        function closeMenus(e) { if(!e.target.closest('nav')) document.getElementById('exportMenu').classList.add('hidden'); if(!e.target.closest('.relative')) document.getElementById('presetMenu').classList.add('hidden'); }
+        
+        function closeMenus(e) { 
+            if(!e.target.closest('nav')) {
+                const em = document.getElementById('exportMenu');
+                if(em) em.classList.add('hidden');
+            }
+            if(!e.target.closest('.relative')) {
+                const pm = document.getElementById('presetMenu');
+                if(pm) pm.classList.add('hidden');
+            }
+        }
+        
+        function setPointType(type) {
+            getActivePoints()[selectedPointIndex].type = type;
+            if(type === 'bezier') {
+                const p = getActivePoints()[selectedPointIndex];
+                if(!p.cp1) { p.cp1 = {x: p.x-5, y: p.y}; p.cp2 = {x: p.x+5, y: p.y}; }
+            }
+            syncUI(); render(); saveHistory();
+        }
+        
+        function addLayer() {
+            const newL = JSON.parse(JSON.stringify(layers[0]));
+            newL.id = `layer-${Date.now()}`; newL.name = `Shape ${layers.length+1}`; newL.style.value = '#F43F5E';
+            layers.push(newL); activeLayerId = newL.id; saveHistory(); render();
+        }
+        function deleteLayer(e, id) {
+            e.stopPropagation();
+            if(layers.length <= 1) return alert("Keep at least one layer");
+            layers = layers.filter(l => l.id !== id);
+            if(activeLayerId === id) activeLayerId = layers[0].id;
+            saveHistory(); render();
+        }
+        
+        function addPoint() { 
+            const pts=getActivePoints(); const next=(selectedPointIndex+1)%pts.length; const p1=pts[selectedPointIndex], p2=pts[next]; 
+            pts.splice(selectedPointIndex+1,0,{x:(p1.x+p2.x)/2, y:(p1.y+p2.y)/2, type:'corner', r:0}); 
+            // Also sync hover if it exists
+            const l = getActiveLayer();
+            if(!isHoverEditing && l.hoverPoints && l.hoverPoints.length === pts.length - 1) {
+                 // Re-clone to stay safe
+                 l.hoverPoints = JSON.parse(JSON.stringify(l.points));
+            }
+            saveHistory(); render(); 
+        }
+        
+        function deletePoint() { 
+            const pts=getActivePoints(); 
+            if(pts.length>3){ 
+                pts.splice(selectedPointIndex,1); 
+                selectedPointIndex=Math.max(0,selectedPointIndex-1); 
+                // Sync hover
+                const l = getActiveLayer();
+                if(!isHoverEditing && l.hoverPoints) l.hoverPoints = JSON.parse(JSON.stringify(l.points));
+                saveHistory(); render(); 
+            } 
+        }
+        
+        function rotateGeometry(v) { getActiveLayer().style.rotation = parseInt(v); document.getElementById('rotVal').innerText = v+'°'; render(); }
+        function scaleGeometry(v) { getActiveLayer().style.scale = parseInt(v); document.getElementById('scaleVal').innerText = v+'%'; render(); }
+        function updateStyle(k, v) { 
+            const s = getActiveLayer().style; 
+            if(k==='borderActive') { s.borderActive=v; document.getElementById('borderSettings').classList.toggle('opacity-50', !v); }
+            else if(k==='dropShadow') { s.dropShadow=v; document.getElementById('dropShadowBlur').disabled=!v; }
+            else if(k==='innerShadow') { s.innerShadow=v; document.getElementById('innerShadowBlur').disabled=!v; }
+            else s[k]=v; 
+            render(); 
+        }
+        function updateFilterIntensity(v) {
+            const l = getActiveLayer(); l.style.filterVal = v;
+            document.getElementById('noiseVal').setAttribute('baseFrequency', v/100);
+            document.getElementById('sketchyVal').setAttribute('baseFrequency', v/1000);
+            render();
+        }
+        function updateImagePos() {
+            const s = getActiveLayer().style;
+            s.imgPanX = document.getElementById('imgPanX').value; s.imgPanY = document.getElementById('imgPanY').value; s.imgZoom = document.getElementById('imgZoom').value;
+            render();
+        }
+        function setFillType(t) { getActiveLayer().style.type = t; if(t==='color') getActiveLayer().style.value = document.getElementById('fillColor').value; render(); }
+        function triggerUpload() { document.getElementById('imgUpload').click(); }
+        function handleImageUpload(i) { if(i.files[0]) { const r = new FileReader(); r.onload=(e)=>{ getActiveLayer().style.type='image'; getActiveLayer().style.value=e.target.result; render(); }; r.readAsDataURL(i.files[0]); } }
+        function updatePointFromInput() { const pts = getActivePoints(); pts[selectedPointIndex].x = parseFloat(document.getElementById('inpX').value); pts[selectedPointIndex].y = parseFloat(document.getElementById('inpY').value); render(); saveHistory(); }
+        function updateProp(prop, val) { if(prop === 'roundness') { const pts = getActivePoints(); if(pts[selectedPointIndex]) { pts[selectedPointIndex].r = parseInt(val); document.getElementById('ptRoundVal').textContent = val+'%'; } } render(); saveHistory(); }
+        
+        function toggleHoverEdit() { 
+            isHoverEditing = !isHoverEditing; 
+            if(isHoverEditing && !getActiveLayer().hoverPoints.length) getActiveLayer().hoverPoints = JSON.parse(JSON.stringify(getActiveLayer().points));
+            document.getElementById('btnHoverEdit').innerText = isHoverEditing ? "Stop Editing" : "Edit Hover State";
+            document.getElementById('btnHoverEdit').classList.toggle('bg-red-600', isHoverEditing);
+            document.getElementById('btnHoverEdit').classList.toggle('bg-indigo-600', !isHoverEditing);
+            document.getElementById('hoverIndicator').classList.toggle('hidden', !isHoverEditing);
+            render();
+        }
+        
+        function previewAnim() {
+            const el = document.getElementById('layersContainer').children[layers.findIndex(l => l.id === activeLayerId)];
+            if(!el) return;
+            // Get raw polygon strings
+            const start = getPolygonCSS(getTransformedPoints(getActiveLayer().points, getActiveLayer()));
+            const end = getPolygonCSS(getTransformedPoints(getActiveLayer().hoverPoints, getActiveLayer()));
+            
+            // Apply to the specific layer style via CSS vars or direct style injection
+            // Since we use inline clip-path, we need to inject keyframes
+            // Simple approach: Toggle class and inject style
+            const styleId = 'anim-style-' + activeLayerId;
+            let s = document.getElementById(styleId);
+            if(!s) { s = document.createElement('style'); s.id=styleId; document.head.appendChild(s); }
+            
+            // We need to target the internal div that has the clip-path
+            s.innerHTML = `@keyframes anim-${activeLayerId} { 0% { clip-path: ${start}; } 100% { clip-path: ${end}; } }`;
+            
+            // Find the clipped element(s)
+            const children = el.querySelectorAll('div');
+            children.forEach(c => {
+                c.style.animation = `anim-${activeLayerId} 1s infinite alternate ease-in-out`;
+            });
+            
+            setTimeout(() => {
+                children.forEach(c => c.style.animation = '');
+            }, 3000);
+        }
+
+        // --- CODE GEN ---
+        function setCodeMode(m) {
+            activeCodeMode = m;
+            document.querySelectorAll('.code-tab').forEach(b => {
+                if(b.textContent.toLowerCase().includes(m)) b.classList.add('active', 'bg-slate-100', 'text-indigo-600');
+                else b.classList.remove('active', 'bg-slate-100', 'text-indigo-600');
+            });
+            generateCode();
+        }
+        function generateCode() {
+            const l = getActiveLayer();
+            const poly = getPolygonCSS(getTransformedPoints(l.points, l));
+            const minify = document.getElementById('codeMinify').checked;
+            const vars = document.getElementById('codeVars').checked;
+            const supports = document.getElementById('codeSupports').checked;
+            const isMask = document.getElementById('useMask').checked;
+            
+            let out = '';
+            
+            if(activeCodeMode === 'css') {
+                let rules = '';
+                if(vars) {
+                    rules += `--clip: ${poly};\n  clip-path: var(--clip);\n`;
+                } else {
+                    rules += isMask ? `mask-image: ${poly.replace('polygon','url(...)')}; -webkit-mask-image: ${poly};\n` : `clip-path: ${poly};\n`;
+                }
+                
+                rules += `  background: ${l.style.type==='color'?l.style.value:'url(...)'};\n`;
+                if(l.style.type==='image') rules += `  background-position: ${l.style.imgPanX}% ${l.style.imgPanY}%;\n  background-size: ${l.style.imgZoom}%;\n`;
+                
+                if(l.style.dropShadow) rules += `  filter: drop-shadow(0 10px ${l.style.dropShadowBlur}px rgba(0,0,0,0.5));\n`;
+                
+                out = `.shape {\n${rules}}`;
+                if(supports) out = `@supports (clip-path: polygon(0 0)) {\n  ${out.replace(/\n/g, '\n  ')}\n}`;
+                
+            } else if(activeCodeMode === 'tailwind') {
+                const arbitrary = poly.replace(/\s+/g, '').replace(/,/g, '_');
+                out = `<div class="w-[300px] h-[300px] bg-indigo-500 ${isMask?'mask':'clip'}-[${arbitrary}]"></div>`;
+            } else if(activeCodeMode === 'react') {
+                out = `const Shape = () => (\n  <div style={{\n    clipPath: '${poly}',\n    background: '${l.style.value}'\n  }} />\n);`;
+            }
+            
+            if(minify) out = out.replace(/\s+/g, ' ').trim();
+            document.getElementById('cssOutput').value = out;
+        }
+
+        // --- EXPORT ---
+        async function exportFile(type) {
+            if(type === 'css' || type === 'svg_code') {
+                const el = document.getElementById('cssOutput');
+                el.select(); 
+                try {
+                    await navigator.clipboard.writeText(el.value);
+                    alert("Copied to clipboard!");
+                } catch(err) {
+                    document.execCommand('copy'); // Fallback
+                    alert("Copied!");
+                }
+            } else if (type === 'svg') {
+                const l = getActiveLayer(); 
+                const rot = getTransformedPoints(l.points, l);
+                // Extract points from CSS string logic
+                const polyStr = getPolygonCSS(rot);
+                const coords = polyStr.match(/[\d\.]+/g);
+                let ptsStr = "";
+                if(coords) {
+                    for(let i=0; i<coords.length; i+=2) ptsStr += `${coords[i]},${coords[i+1]} `;
+                }
+                const svgData = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><polygon points="${ptsStr}" fill="${l.style.type==='color'?l.style.value:'#000'}"/></svg>`;
+                const blob = new Blob([svgData], {type: "image/svg+xml"});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a"); a.href = url; a.download = 'shape.svg'; a.click();
+            } else {
+                downloadRaster(type==='png'?'image/png':'image/webp', type);
+            }
+            document.getElementById('exportMenu').classList.add('hidden');
+        }
+        
+        async function downloadRaster(mime, ext) {
+            const aspectDiv = document.getElementById('aspectContainer');
+            const w = 1200; const h = w * (aspectDiv.offsetHeight / aspectDiv.offsetWidth);
+            const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            
+            for(const l of layers) {
+                if(!l.visible) continue;
+                ctx.save();
+                ctx.globalAlpha = l.style.opacity / 100;
+                
+                const rot = getTransformedPoints(l.points, l);
+                const polyStr = getPolygonCSS(rot);
+                const coords = polyStr.match(/[\d\.]+/g);
+                
+                ctx.beginPath();
+                if(coords) {
+                    for(let i=0; i<coords.length; i+=2) {
+                        const px = (parseFloat(coords[i])/100)*w;
+                        const py = (parseFloat(coords[i+1])/100)*h;
+                        if(i===0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+                    }
+                }
+                ctx.closePath();
+                
+                // Shadow
+                if(l.style.dropShadow) {
+                    ctx.shadowColor = "rgba(0,0,0,0.5)";
+                    ctx.shadowBlur = l.style.dropShadowBlur * 2;
+                    ctx.shadowOffsetY = 10;
+                }
+                
+                // Draw Border or Content
+                if(l.style.borderActive) {
+                    ctx.fillStyle = l.style.borderColor; ctx.fill();
+                    ctx.shadowColor = "transparent"; // Reset shadow for inner
+                    ctx.clip();
+                    const s = 1 - (l.style.borderWidth/200);
+                    ctx.translate(w/2, h/2); ctx.scale(s,s); ctx.translate(-w/2, -h/2);
+                } else {
+                    ctx.clip();
+                }
+                
+                if(l.style.type === 'color') {
+                    ctx.fillStyle = l.style.value; ctx.fillRect(0,0,w,h);
+                } else {
+                    try {
+                        const img = new Image(); img.crossOrigin="Anonymous"; img.src = l.style.value;
+                        await new Promise((r, rej) => { img.onload = r; img.onerror = () => { console.log('Err'); r(); }; });
+                        
+                        // Correct Logic matching CSS background-size & background-position
+                        // 1. Calculate base draw dimensions from zoom
+                        // CSS background-size: {zoom}% auto
+                        // "100%" means match container width
+                        const drawW = w * (l.style.imgZoom / 100);
+                        const imgRatio = img.width / img.height;
+                        const drawH = drawW / imgRatio;
+                        
+                        // 2. Calculate offsets from pan
+                        // CSS background-position: {panX}% {panY}%
+                        // Formula: (container_dim - content_dim) * (percent / 100)
+                        const panX_factor = l.style.imgPanX / 100;
+                        const panY_factor = l.style.imgPanY / 100;
+                        
+                        const drawX = (w - drawW) * panX_factor;
+                        const drawY = (h - drawH) * panY_factor;
+                        
+                        ctx.drawImage(img, drawX, drawY, drawW, drawH);
+                        
+                    } catch(e) { console.error(e); ctx.fillStyle = '#6366f1'; ctx.fillRect(0,0,w,h); }
+                }
+                ctx.restore();
+            }
+            const a = document.createElement('a'); a.download = `shape.${ext}`; a.href = canvas.toDataURL(mime); a.click();
+        }
+
+        // --- CORE UI ---
+        function setTab(t) {
+            ['shape','fill','effects','anim','code'].forEach(x => {
+                document.getElementById(`panel-${x}`).classList.add('hidden');
+                document.getElementById(`tab-${x}`).classList.remove('active');
+            });
+            document.getElementById(`panel-${t}`).classList.remove('hidden');
+            document.getElementById(`tab-${t}`).classList.add('active');
+        }
+        function toggleMenu(id, e) { e.stopPropagation(); document.getElementById(id).classList.toggle('hidden'); }
+        
+        function closeMenus(e) { 
+            if(!e.target.closest('nav')) {
+                const em = document.getElementById('exportMenu');
+                if(em) em.classList.add('hidden');
+            }
+            if(!e.target.closest('.relative')) {
+                const pm = document.getElementById('presetMenu');
+                if(pm) pm.classList.add('hidden');
+            }
+        }
         
         function setPointType(type) {
             getActivePoints()[selectedPointIndex].type = type;
