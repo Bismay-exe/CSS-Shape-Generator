@@ -133,10 +133,9 @@
                     <i class="fa-solid fa-shapes"></i>
                 </div>
                 <div class="flex flex-col">
-                    <h1 class="font-display font-black text-lg tracking-tighter leading-none">CSS SHAPE</h1>
+                    <h1 class="font-display font-black text-lg tracking-wider leading-none">CSS SHAPE</h1>
                     <div class="flex items-center gap-1 leading-none">
-                        <span
-                            class="font-display font-black text-lg tracking-wider text-neo-pink">GEN.</span>
+                        <span class="font-display font-black text-sm tracking-tighter text-neo-pink">GENERATOR</span>
                         <span
                             class="bg-black text-white px-1 text-[10px] font-bold border-2 border-neo-black transform -rotate-3 shadow-[2px_2px_0_0_#ccc]">PRO</span>
                     </div>
@@ -150,7 +149,7 @@
                 <a href="#community" class="hover:text-neo-green hover:underline decoration-4 underline-offset-4">Cool
                     Stuff</a>
             </div>
-            <a href="index.html"
+            <a href="/editor"
                 class="bg-neo-black text-neo-white px-6 py-2 font-bold uppercase hover:bg-neo-yellow hover:text-neo-black transition-colors border-2 border-transparent hover:border-neo-black">
                 Start Now
             </a>
@@ -165,7 +164,7 @@
             class="absolute top-20 left-10 w-24 h-24 bg-neo-yellow border-4 border-neo-black shadow-neo rounded-full animate-bounce delay-700">
         </div>
         <div class="absolute bottom-20 right-10 w-32 h-32 bg-neo-blue border-4 border-neo-black shadow-neo rotate-12 animate-pulse"
-            style="clip-path: polygon(50.00% 0.00%, 61.00% 35.00%, 98.00% 35.00%, 68.00% 57.00%, 79.00% 91.00%, 50.00% 70.00%, 21.00% 91.00%, 32.00% 57.00%, 2.00% 35.00%, 39.00% 35.00%);"></div>
+            style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
         <div class="absolute top-40 right-20 w-16 h-16 bg-neo-pink border-4 border-neo-black shadow-neo animate-spin-slow"
             style="clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%); animation-duration: 10s;"></div>
 
@@ -184,9 +183,8 @@
             </div>
 
             <h1 class="font-display text-7xl md:text-[10rem] leading-[0.85] font-black mb-8">
-                MAKE <span
-                    class="text-neo-pink text-outline hover:text-neo-pink transition-colors cursor-pointer">CRAZY</span><br>
-                SHAPES <span class="text-neo-blue">FAST</span>
+                MAKE <span class="text-neo-pink text-outline">CRAZY</span><br>
+                SHAPES <span class="text-neo-blue text-outline">FAST</span>
             </h1>
 
             <p
@@ -196,7 +194,7 @@
             </p>
 
             <div class="flex flex-col md:flex-row justify-center gap-6 items-center">
-                <a href="index.html"
+                <a href="/editor"
                     class="bg-neo-black text-neo-white text-2xl font-bold px-10 py-5 border-4 border-neo-black shadow-neo-lg hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all group overflow-hidden relative">
                     <span class="relative z-10 group-hover:text-neo-yellow">LAUNCH EDITOR</span>
                     <div
@@ -220,7 +218,7 @@
 
     <!-- Editor Preview (Demo) -->
     <section id="demo" class="max-w-7xl mx-auto px-6 mb-32 scroll-mt-32">
-        <div class="relative group cursor-pointer" onclick="window.location.href='index.html'">
+        <div class="relative group cursor-pointer" onclick="window.location.href='/editor'">
             <!-- Decorative Layers behind -->
             <div
                 class="absolute inset-0 bg-neo-black translate-x-4 translate-y-4 rounded-xl border-4 border-neo-black transition-transform group-hover:translate-x-6 group-hover:translate-y-6">
@@ -728,10 +726,9 @@
             <div class="md:w-1/2">
                 <div class="bg-neo-white border-4 border-black p-12 shadow-neo-xl">
                     <div
-                        class="w-full aspect-video bg-white border-4 border-black shadow-neo overflow-hidden relative group">
-                        <img src="https://images.unsplash.com/photo-1541701494587-cb58502866ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                            class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                            style="clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);">
+                        class="w-auto aspect-video bg-white overflow-hidden relative group">
+                        <img src="/assets/shape001.png"
+                            class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-500">
                         <div
                             class="absolute inset-0 border-4 border-transparent hover:border-neo-pink pointer-events-none transition-colors">
                         </div>
@@ -1168,7 +1165,9 @@
     </section>
 
     <!-- FAQ Section -->
-    <section class="max-w-4xl mx-auto px-6 py-20">
+    <section 
+        id="faq"
+        class="max-w-4xl mx-auto px-6 py-20">
         <h2 class="font-display text-5xl font-black mb-12 text-center text-black">NO BRAINER <span
                 class="text-neo-pink">FAQ</span></h2>
 
@@ -1239,22 +1238,96 @@
             <div
                 class="absolute inset-0 bg-neo-pink translate-y-3 translate-x-3 border-4 border-white transition-transform group-hover:translate-x-0 group-hover:translate-y-0">
             </div>
-            <a href="index.html"
+            <a href="/editor"
                 class="relative block bg-neo-blue text-black font-black text-3xl px-12 py-6 border-4 border-white hover:-translate-y-1 transition-transform">
                 OPEN THE TOOL
             </a>
         </div>
     </section>
 
-    <footer class="bg-neo-yellow border-t-4 border-neo-black py-12 px-6">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end">
-            <div>
-                <div class="font-display font-black text-4xl mb-2">CSS SHAPE GEN</div>
-                <div class="font-bold">Made with <span class="text-neo-pink">♥</span> by Bisma</div>
+    <footer class="bg-neo-yellow border-t-4 border-neo-black pt-16 pb-8 px-6 relative overflow-hidden">
+        <!-- Grid Pattern Overlay -->
+        <div class="absolute inset-0 opacity-5 pointer-events-none"
+            style="background-image: linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px); background-size: 40px 40px;">
+        </div>
+
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="grid md:grid-cols-4 gap-12 mb-16">
+                <!-- Brand Column -->
+                <div class="md:col-span-2">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div
+                            class="w-12 h-12 bg-white border-4 border-black flex items-center justify-center text-black text-xl font-bold shadow-neo">
+                            <i class="fa-solid fa-shapes"></i>
+                        </div>
+                        <div class="flex flex-col">
+                            <h1 class="font-display font-black text-2xl tracking-wider leading-none">CSS SHAPE</h1>
+                            <div class="flex items-center gap-2 leading-none">
+                                <span
+                                    class="font-display font-black text-xl tracking-tighter text-neo-pink">GENERATOR</span>
+                                <span
+                                    class="bg-black text-white px-2 py-0.5 text-xs font-bold border-2 border-white shadow-[2px_2px_0_0_#000] -rotate-2">PRO</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="font-medium text-lg max-w-sm mb-6">
+                        Stop fighting with clip-path. Start creating art. <br>
+                        The web's most aggressive shape editor.
+                    </p>
+                    <div class="inline-flex gap-2">
+                        <span class="bg-black text-white px-2 py-1 text-xs font-bold font-mono">v2.0.0</span>
+                        <span
+                            class="bg-white text-black border-2 border-black px-2 py-1 text-xs font-bold font-mono">OPEN
+                            SOURCE</span>
+                    </div>
+                </div>
+
+                <!-- Links Column -->
+                <div>
+                    <h3 class="font-black text-xl mb-6 uppercase border-b-4 border-black inline-block">Sitemap</h3>
+                    <ul class="space-y-3 font-bold text-lg">
+                        <li><a href="#"
+                                class="hover:underline decoration-2 underline-offset-4 hover:translate-x-1 inline-block transition-transform">Home</a>
+                        </li>
+                        <li><a href="/editor"
+                                class="hover:underline decoration-2 underline-offset-4 hover:translate-x-1 inline-block transition-transform">Editor</a>
+                        </li>
+                        <li><a href="#features"
+                                class="hover:underline decoration-2 underline-offset-4 hover:translate-x-1 inline-block transition-transform">Features</a>
+                        </li>
+                        <li><a href="#faq"
+                                class="hover:underline decoration-2 underline-offset-4 hover:translate-x-1 inline-block transition-transform">FAQ</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Socials Column -->
+                <div>
+                    <h3 class="font-black text-xl mb-6 uppercase border-b-4 border-black inline-block">Connect</h3>
+                    <div class="flex flex-col gap-4">
+                        <a href="#"
+                            class="group flex items-center gap-3 bg-white border-2 border-black p-3 shadow-neo hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all">
+                            <i class="fa-brands fa-github text-2xl"></i>
+                            <span class="font-bold group-hover:underline">GitHub</span>
+                        </a>
+                        <a href="#"
+                            class="group flex items-center gap-3 bg-neo-blue border-2 border-black p-3 shadow-neo hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all">
+                            <i class="fa-brands fa-twitter text-2xl"></i>
+                            <span class="font-bold group-hover:underline">Instagram</span>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="flex gap-4 mt-8 md:mt-0 font-bold text-xl underline decoration-4">
-                <a href="#" class="hover:text-white">Github</a>
-                <a href="#" class="hover:text-white">Twitter</a>
+
+            <!-- Bottom Bar -->
+            <div class="border-t-4 border-black pt-8 flex flex-col md:flex-row justify-between items-center font-bold">
+                <div>
+                    &copy; 2026 CSS Shape Generator Pro.
+                </div>
+                <div class="mt-4 md:mt-0">
+                    Made with <span class="text-neo-pink text-2xl mx-1 animate-pulse">♥</span> by <span
+                        class="bg-black text-white px-1">Bismay</span>
+                </div>
             </div>
         </div>
     </footer>
