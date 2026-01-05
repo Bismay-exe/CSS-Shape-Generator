@@ -110,6 +110,23 @@
             }
         }
 
+        @keyframes float {
+            0%, 100% {
+                transform: translateX(0) translateY(0);
+            }
+            25% {
+                transform: translateX(-120px) translateY(0);
+            }
+            50% {
+                transform: translateX(-120px) translateY(-120px);
+            }
+            75% {
+                transform: translateX(0) translateY(-120px);
+            }
+        }
+
+
+
         /* Interactive Blob */
         .blob-shape {
             transition: border-radius 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -124,23 +141,31 @@
 <body class="overflow-x-hidden text-neo-black">
 
     <!-- Navbar -->
-    <nav class="fixed top-0 w-full z-50 px-6 py-4 pointer-events-none">
+    <nav class="fixed top-0 w-full z-50 px-4 md:px-6 py-4 pointer-events-none">
         <div
-            class="max-w-7xl mx-auto flex justify-between items-center bg-neo-white border-4 border-neo-black shadow-neo rounded-xl px-6 py-3 pointer-events-auto transform hover:-translate-y-1 transition-transform">
+            class="max-w-7xl mx-auto flex justify-between items-center bg-neo-white border-4 border-neo-black shadow-neo rounded-xl px-4 md:px-6 py-3 pointer-events-auto transform md:hover:-translate-y-1 transition-transform relative">
             <div class="flex items-center gap-3">
                 <div
                     class="w-10 h-10 bg-neo-yellow border-2 border-black flex items-center justify-center text-black font-bold shadow-neo-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all cursor-pointer shrink-0">
                     <i class="fa-solid fa-shapes"></i>
                 </div>
-                <div class="flex flex-col">
-                    <h1 class="font-display font-black text-lg tracking-wider leading-none">CSS SHAPE</h1>
+                <!-- Brand Text (Hidden on very small screens, visible on mobile otherwise) -->
+                <div class="flex flex-col xs:flex">
+                    <h1
+                        class="flex flex-col md:block font-display font-black text-xs md:text-lg tracking-teghter md:tracking-wider leading-none">
+                        CSS <span>SHAPE</span></h1>
                     <div class="flex items-center gap-1 leading-none">
-                        <span class="font-display font-black text-sm tracking-tighter text-neo-pink">GENERATOR</span>
+                        <span
+                            class="font-display hidden md:block font-black text-[9px] md:text-sm tracking-tighter text-neo-pink">GENERATOR</span>
+                        <span
+                            class="font-display md:hidden font-black text-xs tracking-tighter text-neo-pink">GEN</span>
                         <span
                             class="bg-black text-white px-1 text-[10px] font-bold border-2 border-neo-black transform -rotate-3 shadow-[2px_2px_0_0_#ccc]">PRO</span>
                     </div>
                 </div>
             </div>
+
+            <!-- Desktop Menu -->
             <div class="hidden md:flex gap-6 font-bold text-sm uppercase tracking-wide">
                 <a href="#about" class="hover:text-neo-purple hover:underline decoration-4 underline-offset-4">How it
                     works</a>
@@ -149,24 +174,51 @@
                 <a href="#community" class="hover:text-neo-green hover:underline decoration-4 underline-offset-4">Cool
                     Stuff</a>
             </div>
-            <a href="/editor"
-                class="bg-neo-black text-neo-white px-6 py-2 font-bold uppercase hover:bg-neo-yellow hover:text-neo-black transition-colors border-2 border-transparent hover:border-neo-black">
-                Start Now
-            </a>
+
+            <!-- Right Side (Button + Hamburger) -->
+            <div class="flex items-center gap-4">
+                <a href="/editor"
+                    class="bg-neo-black text-neo-white px-4 md:px-6 py-2 font-bold uppercase hover:bg-neo-yellow hover:text-neo-black transition-colors border-2 border-transparent hover:border-neo-black text-sm md:text-base whitespace-nowrap">
+                    Start Now
+                </a>
+
+                <!-- Hamburger Button -->
+                <button id="mobileMenuBtn"
+                    class="md:hidden w-10 h-10 bg-white border-2 border-black flex items-center justify-center text-xl shadow-neo-sm active:shadow-none active:translate-x-0.5 active:translate-y-0.5 transition-all">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Dropdown -->
+            <div id="mobileMenu"
+                class="absolute top-full left-0 right-0 mt-4 bg-neo-white border-4 border-black shadow-neo-xl p-4 flex-col gap-4 hidden md:hidden z-50 mx-4">
+                <a href="#about"
+                    class="block bg-white border-2 border-black p-3 font-bold uppercase hover:bg-neo-purple hover:text-white transition-colors text-center"
+                    onclick="toggleMobileMenu()">How it works</a>
+                <a href="#features"
+                    class="block bg-white border-2 border-black p-3 font-bold uppercase hover:bg-neo-blue hover:text-white transition-colors text-center"
+                    onclick="toggleMobileMenu()">Features</a>
+                <a href="#community"
+                    class="block bg-white border-2 border-black p-3 font-bold uppercase hover:bg-neo-green hover:text-white transition-colors text-center"
+                    onclick="toggleMobileMenu()">Cool Stuff</a>
+            </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <header class="min-h-screen flex items-center justify-center pt-24 pb-12 relative overflow-hidden">
+    <header class="min-h-screen flex items-center justify-center pt-24 pb-12 md:pt-32 relative overflow-hidden">
 
         <!-- Floating Shapes Decoration -->
         <div
-            class="absolute top-20 left-10 w-24 h-24 bg-neo-yellow border-4 border-neo-black shadow-neo rounded-full animate-bounce delay-700">
+            class="absolute top-40 left-20 w-24 h-24 opacity-75 bg-neo-yellow rounded-full animate-bounce delay-700">
         </div>
-        <div class="absolute bottom-20 right-10 w-32 h-32 bg-neo-blue border-4 border-neo-black shadow-neo rotate-12 animate-pulse"
-            style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
-        <div class="absolute top-40 right-20 w-16 h-16 bg-neo-pink border-4 border-neo-black shadow-neo animate-spin-slow"
-            style="clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%); animation-duration: 10s;"></div>
+        <div class="absolute bottom-20 left-10 w-[400px] h-[400px] bg-neo-green opacity-75"
+            style="animation: spin 10s ease-in-out infinite; clip-path: polygon(46.11% 35.27%, 46.50% 34.67%, 46.89% 34.14%, 47.28% 33.67%, 47.67% 33.27%, 48.06% 32.92%, 48.45% 32.64%, 48.83% 32.42%, 49.22% 32.27%, 49.61% 32.17%, 50.00% 32.14%, 50.39% 32.17%, 50.78% 32.27%, 51.17% 32.42%, 51.55% 32.64%, 51.94% 32.92%, 52.33% 33.27%, 52.72% 33.67%, 53.11% 34.14%, 53.50% 34.67%, 53.89% 35.27%, 57.77% 41.52%, 64.92% 43.28%, 65.60% 43.47%, 66.23% 43.67%, 66.79% 43.90%, 67.30% 44.14%, 67.75% 44.41%, 68.14% 44.69%, 68.46% 44.99%, 68.73% 45.31%, 68.94% 45.65%, 69.09% 46.01%, 69.18% 46.39%, 69.21% 46.79%, 69.18% 47.21%, 69.10% 47.65%, 68.95% 48.10%, 68.74% 48.58%, 68.48% 49.07%, 68.15% 49.59%, 67.77% 50.12%, 67.32% 50.67%, 62.58% 56.30%, 63.11% 63.64%, 63.14% 64.35%, 63.14% 65.01%, 63.10% 65.62%, 63.02% 66.18%, 62.91% 66.68%, 62.76% 67.14%, 62.58% 67.54%, 62.35% 67.90%, 62.10% 68.20%, 61.80% 68.46%, 61.47% 68.66%, 61.10% 68.81%, 60.69% 68.91%, 60.25% 68.97%, 59.77% 68.97%, 59.25% 68.92%, 58.70% 68.82%, 58.11% 68.67%, 57.48% 68.46%, 56.82% 68.21%, 50.00% 65.44%, 43.18% 68.21%, 42.52% 68.46%, 41.89% 68.67%, 41.30% 68.82%, 40.75% 68.92%, 40.23% 68.97%, 39.75% 68.97%, 39.31% 68.91%, 38.90% 68.81%, 38.53% 68.66%, 38.20% 68.46%, 37.90% 68.20%, 37.65% 67.90%, 37.42% 67.54%, 37.24% 67.14%, 37.09% 66.68%, 36.98% 66.18%, 36.90% 65.62%, 36.86% 65.01%, 36.86% 64.35%, 36.89% 63.64%, 37.42% 56.30%, 32.68% 50.67%, 32.23% 50.12%, 31.85% 49.59%, 31.52% 49.07%, 31.26% 48.58%, 31.05% 48.10%, 30.90% 47.65%, 30.82% 47.21%, 30.79% 46.79%, 30.82% 46.39%, 30.91% 46.01%, 31.06% 45.65%, 31.27% 45.31%, 31.54% 44.99%, 31.86% 44.69%, 32.25% 44.41%, 32.70% 44.14%, 33.21% 43.90%, 33.77% 43.67%, 34.40% 43.47%, 35.08% 43.28%, 42.23% 41.52%);"></div>
+        <div class="absolute bottom-20 right-10 w-64 h-64 bg-neo-pink opacity-75"
+            style="animation: float 10s ease-in-out infinite; clip-path: polygon(41.30% 23.90%, 41.48% 23.73%, 41.69% 23.57%, 41.91% 23.41%, 42.15% 23.26%, 42.41% 23.12%, 42.69% 22.98%, 42.98% 22.85%, 43.29% 22.73%, 43.61% 22.62%, 43.94% 22.51%, 44.29% 22.41%, 44.65% 22.31%, 45.02% 22.23%, 45.40% 22.15%, 45.79% 22.07%, 46.19% 22.01%, 46.59% 21.95%, 47.00% 21.90%, 47.42% 21.85%, 47.84% 21.81%, 48.27% 21.78%, 48.70% 21.76%, 49.13% 21.74%, 49.57% 21.73%, 50.00% 21.73%, 50.43% 21.73%, 50.87% 21.74%, 51.30% 21.76%, 51.73% 21.78%, 52.16% 21.81%, 52.58% 21.85%, 53.00% 21.90%, 53.41% 21.95%, 53.81% 22.01%, 54.21% 22.07%, 54.60% 22.15%, 54.98% 22.23%, 55.35% 22.31%, 55.71% 22.41%, 56.06% 22.51%, 56.39% 22.62%, 56.71% 22.73%, 57.02% 22.85%, 57.31% 22.98%, 57.59% 23.12%, 57.85% 23.26%, 58.09% 23.41%, 58.31% 23.57%, 58.52% 23.73%, 58.70% 23.90%, 58.86% 24.08%, 59.01% 24.29%, 59.13% 24.51%, 59.24% 24.75%, 59.33% 25.01%, 59.40% 25.29%, 59.45% 25.58%, 59.50% 25.89%, 59.52% 26.21%, 59.54% 26.54%, 59.54% 26.89%, 59.53% 27.25%, 59.50% 27.62%, 59.47% 28.00%, 59.43% 28.39%, 59.38% 28.79%, 59.32% 29.19%, 59.26% 29.60%, 59.19% 30.02%, 59.12% 30.44%, 59.04% 30.87%, 58.96% 31.30%, 58.87% 31.73%, 58.79% 32.17%, 58.70% 32.60%, 58.61% 33.03%, 58.53% 33.47%, 58.44% 33.90%, 58.36% 34.33%, 58.28% 34.76%, 58.21% 35.18%, 58.14% 35.60%, 58.08% 36.01%, 58.02% 36.41%, 57.97% 36.81%, 57.93% 37.20%, 57.90% 37.58%, 57.87% 37.95%, 57.86% 38.31%, 57.86% 38.66%, 57.88% 38.99%, 57.90% 39.31%, 57.95% 39.62%, 58.00% 39.91%, 58.07% 40.19%, 58.16% 40.45%, 58.27% 40.69%, 58.39% 40.91%, 58.54% 41.12%, 58.70% 41.30%, 58.88% 41.46%, 59.09% 41.61%, 59.31% 41.73%, 59.55% 41.84%, 59.81% 41.93%, 60.09% 42.00%, 60.38% 42.05%, 60.69% 42.10%, 61.01% 42.12%, 61.34% 42.14%, 61.69% 42.14%, 62.05% 42.13%, 62.42% 42.10%, 62.80% 42.07%, 63.19% 42.03%, 63.59% 41.98%, 63.99% 41.92%, 64.40% 41.86%, 64.82% 41.79%, 65.24% 41.72%, 65.67% 41.64%, 66.10% 41.56%, 66.53% 41.47%, 66.97% 41.39%, 67.40% 41.30%, 67.83% 41.21%, 68.27% 41.13%, 68.70% 41.04%, 69.13% 40.96%, 69.56% 40.88%, 69.98% 40.81%, 70.40% 40.74%, 70.81% 40.68%, 71.21% 40.62%, 71.61% 40.57%, 72.00% 40.53%, 72.38% 40.50%, 72.75% 40.47%, 73.11% 40.46%, 73.46% 40.46%, 73.79% 40.48%, 74.11% 40.50%, 74.42% 40.55%, 74.71% 40.60%, 74.99% 40.67%, 75.25% 40.76%, 75.49% 40.87%, 75.71% 40.99%, 75.92% 41.14%, 76.10% 41.30%, 76.27% 41.48%, 76.43% 41.69%, 76.59% 41.91%, 76.74% 42.15%, 76.88% 42.41%, 77.02% 42.69%, 77.15% 42.98%, 77.27% 43.29%, 77.38% 43.61%, 77.49% 43.94%, 77.59% 44.29%, 77.69% 44.65%, 77.77% 45.02%, 77.85% 45.40%, 77.93% 45.79%, 77.99% 46.19%, 78.05% 46.59%, 78.10% 47.00%, 78.15% 47.42%, 78.19% 47.84%, 78.22% 48.27%, 78.24% 48.70%, 78.26% 49.13%, 78.27% 49.57%, 78.27% 50.00%, 78.27% 50.43%, 78.26% 50.87%, 78.24% 51.30%, 78.22% 51.73%, 78.19% 52.16%, 78.15% 52.58%, 78.10% 53.00%, 78.05% 53.41%, 77.99% 53.81%, 77.93% 54.21%, 77.85% 54.60%, 77.77% 54.98%, 77.69% 55.35%, 77.59% 55.71%, 77.49% 56.06%, 77.38% 56.39%, 77.27% 56.71%, 77.15% 57.02%, 77.02% 57.31%, 76.88% 57.59%, 76.74% 57.85%, 76.59% 58.09%, 76.43% 58.31%, 76.27% 58.52%, 76.10% 58.70%, 75.92% 58.86%, 75.71% 59.01%, 75.49% 59.13%, 75.25% 59.24%, 74.99% 59.33%, 74.71% 59.40%, 74.42% 59.45%, 74.11% 59.50%, 73.79% 59.52%, 73.46% 59.54%, 73.11% 59.54%, 72.75% 59.53%, 72.38% 59.50%, 72.00% 59.47%, 71.61% 59.43%, 71.21% 59.38%, 70.81% 59.32%, 70.40% 59.26%, 69.98% 59.19%, 69.56% 59.12%, 69.13% 59.04%, 68.70% 58.96%, 68.27% 58.87%, 67.83% 58.79%, 67.40% 58.70%, 66.97% 58.61%, 66.53% 58.53%, 66.10% 58.44%, 65.67% 58.36%, 65.24% 58.28%, 64.82% 58.21%, 64.40% 58.14%, 63.99% 58.08%, 63.59% 58.02%, 63.19% 57.97%, 62.80% 57.93%, 62.42% 57.90%, 62.05% 57.87%, 61.69% 57.86%, 61.34% 57.86%, 61.01% 57.88%, 60.69% 57.90%, 60.38% 57.95%, 60.09% 58.00%, 59.81% 58.07%, 59.55% 58.16%, 59.31% 58.27%, 59.09% 58.39%, 58.88% 58.54%, 58.70% 58.70%, 58.54% 58.88%, 58.39% 59.09%, 58.27% 59.31%, 58.16% 59.55%, 58.07% 59.81%, 58.00% 60.09%, 57.95% 60.38%, 57.90% 60.69%, 57.88% 61.01%, 57.86% 61.34%, 57.86% 61.69%, 57.87% 62.05%, 57.90% 62.42%, 57.93% 62.80%, 57.97% 63.19%, 58.02% 63.59%, 58.08% 63.99%, 58.14% 64.40%, 58.21% 64.82%, 58.28% 65.24%, 58.36% 65.67%, 58.44% 66.10%, 58.53% 66.53%, 58.61% 66.97%, 58.70% 67.40%, 58.79% 67.83%, 58.87% 68.27%, 58.96% 68.70%, 59.04% 69.13%, 59.12% 69.56%, 59.19% 69.98%, 59.26% 70.40%, 59.32% 70.81%, 59.38% 71.21%, 59.43% 71.61%, 59.47% 72.00%, 59.50% 72.38%, 59.53% 72.75%, 59.54% 73.11%, 59.54% 73.46%, 59.52% 73.79%, 59.50% 74.11%, 59.45% 74.42%, 59.40% 74.71%, 59.33% 74.99%, 59.24% 75.25%, 59.13% 75.49%, 59.01% 75.71%, 58.86% 75.92%, 58.70% 76.10%, 58.52% 76.27%, 58.31% 76.43%, 58.09% 76.59%, 57.85% 76.74%, 57.59% 76.88%, 57.31% 77.02%, 57.02% 77.15%, 56.71% 77.27%, 56.39% 77.38%, 56.06% 77.49%, 55.71% 77.59%, 55.35% 77.69%, 54.98% 77.77%, 54.60% 77.85%, 54.21% 77.93%, 53.81% 77.99%, 53.41% 78.05%, 53.00% 78.10%, 52.58% 78.15%, 52.16% 78.19%, 51.73% 78.22%, 51.30% 78.24%, 50.87% 78.26%, 50.43% 78.27%, 50.00% 78.27%, 49.57% 78.27%, 49.13% 78.26%, 48.70% 78.24%, 48.27% 78.22%, 47.84% 78.19%, 47.42% 78.15%, 47.00% 78.10%, 46.59% 78.05%, 46.19% 77.99%, 45.79% 77.93%, 45.40% 77.85%, 45.02% 77.77%, 44.65% 77.69%, 44.29% 77.59%, 43.94% 77.49%, 43.61% 77.38%, 43.29% 77.27%, 42.98% 77.15%, 42.69% 77.02%, 42.41% 76.88%, 42.15% 76.74%, 41.91% 76.59%, 41.69% 76.43%, 41.48% 76.27%, 41.30% 76.10%, 41.14% 75.92%, 40.99% 75.71%, 40.87% 75.49%, 40.76% 75.25%, 40.67% 74.99%, 40.60% 74.71%, 40.55% 74.42%, 40.50% 74.11%, 40.48% 73.79%, 40.46% 73.46%, 40.46% 73.11%, 40.47% 72.75%, 40.50% 72.38%, 40.53% 72.00%, 40.57% 71.61%, 40.62% 71.21%, 40.68% 70.81%, 40.74% 70.40%, 40.81% 69.98%, 40.88% 69.56%, 40.96% 69.13%, 41.04% 68.70%, 41.13% 68.27%, 41.21% 67.83%, 41.30% 67.40%, 41.39% 66.97%, 41.47% 66.53%, 41.56% 66.10%, 41.64% 65.67%, 41.72% 65.24%, 41.79% 64.82%, 41.86% 64.40%, 41.92% 63.99%, 41.98% 63.59%, 42.03% 63.19%, 42.07% 62.80%, 42.10% 62.42%, 42.13% 62.05%, 42.14% 61.69%, 42.14% 61.34%, 42.12% 61.01%, 42.10% 60.69%, 42.05% 60.38%, 42.00% 60.09%, 41.93% 59.81%, 41.84% 59.55%, 41.73% 59.31%, 41.61% 59.09%, 41.46% 58.88%, 41.30% 58.70%, 41.12% 58.54%, 40.91% 58.39%, 40.69% 58.27%, 40.45% 58.16%, 40.19% 58.07%, 39.91% 58.00%, 39.62% 57.95%, 39.31% 57.90%, 38.99% 57.88%, 38.66% 57.86%, 38.31% 57.86%, 37.95% 57.87%, 37.58% 57.90%, 37.20% 57.93%, 36.81% 57.97%, 36.41% 58.02%, 36.01% 58.08%, 35.60% 58.14%, 35.18% 58.21%, 34.76% 58.28%, 34.33% 58.36%, 33.90% 58.44%, 33.47% 58.53%, 33.03% 58.61%, 32.60% 58.70%, 32.17% 58.79%, 31.73% 58.87%, 31.30% 58.96%, 30.87% 59.04%, 30.44% 59.12%, 30.02% 59.19%, 29.60% 59.26%, 29.19% 59.32%, 28.79% 59.38%, 28.39% 59.43%, 28.00% 59.47%, 27.62% 59.50%, 27.25% 59.53%, 26.89% 59.54%, 26.54% 59.54%, 26.21% 59.52%, 25.89% 59.50%, 25.58% 59.45%, 25.29% 59.40%, 25.01% 59.33%, 24.75% 59.24%, 24.51% 59.13%, 24.29% 59.01%, 24.08% 58.86%, 23.90% 58.70%, 23.73% 58.52%, 23.57% 58.31%, 23.41% 58.09%, 23.26% 57.85%, 23.12% 57.59%, 22.98% 57.31%, 22.85% 57.02%, 22.73% 56.71%, 22.62% 56.39%, 22.51% 56.06%, 22.41% 55.71%, 22.31% 55.35%, 22.23% 54.98%, 22.15% 54.60%, 22.07% 54.21%, 22.01% 53.81%, 21.95% 53.41%, 21.90% 53.00%, 21.85% 52.58%, 21.81% 52.16%, 21.78% 51.73%, 21.76% 51.30%, 21.74% 50.87%, 21.73% 50.43%, 21.73% 50.00%, 21.73% 49.57%, 21.74% 49.13%, 21.76% 48.70%, 21.78% 48.27%, 21.81% 47.84%, 21.85% 47.42%, 21.90% 47.00%, 21.95% 46.59%, 22.01% 46.19%, 22.07% 45.79%, 22.15% 45.40%, 22.23% 45.02%, 22.31% 44.65%, 22.41% 44.29%, 22.51% 43.94%, 22.62% 43.61%, 22.73% 43.29%, 22.85% 42.98%, 22.98% 42.69%, 23.12% 42.41%, 23.26% 42.15%, 23.41% 41.91%, 23.57% 41.69%, 23.73% 41.48%, 23.90% 41.30%, 24.08% 41.14%, 24.29% 40.99%, 24.51% 40.87%, 24.75% 40.76%, 25.01% 40.67%, 25.29% 40.60%, 25.58% 40.55%, 25.89% 40.50%, 26.21% 40.48%, 26.54% 40.46%, 26.89% 40.46%, 27.25% 40.47%, 27.62% 40.50%, 28.00% 40.53%, 28.39% 40.57%, 28.79% 40.62%, 29.19% 40.68%, 29.60% 40.74%, 30.02% 40.81%, 30.44% 40.88%, 30.87% 40.96%, 31.30% 41.04%, 31.73% 41.13%, 32.17% 41.21%, 32.60% 41.30%, 33.03% 41.39%, 33.47% 41.47%, 33.90% 41.56%, 34.33% 41.64%, 34.76% 41.72%, 35.18% 41.79%, 35.60% 41.86%, 36.01% 41.92%, 36.41% 41.98%, 36.81% 42.03%, 37.20% 42.07%, 37.58% 42.10%, 37.95% 42.13%, 38.31% 42.14%, 38.66% 42.14%, 38.99% 42.12%, 39.31% 42.10%, 39.62% 42.05%, 39.91% 42.00%, 40.19% 41.93%, 40.45% 41.84%, 40.69% 41.73%, 40.91% 41.61%, 41.12% 41.46%, 41.30% 41.30%, 41.46% 41.12%, 41.61% 40.91%, 41.73% 40.69%, 41.84% 40.45%, 41.93% 40.19%, 42.00% 39.91%, 42.05% 39.62%, 42.10% 39.31%, 42.12% 38.99%, 42.14% 38.66%, 42.14% 38.31%, 42.13% 37.95%, 42.10% 37.58%, 42.07% 37.20%, 42.03% 36.81%, 41.98% 36.41%, 41.92% 36.01%, 41.86% 35.60%, 41.79% 35.18%, 41.72% 34.76%, 41.64% 34.33%, 41.56% 33.90%, 41.47% 33.47%, 41.39% 33.03%, 41.30% 32.60%, 41.21% 32.17%, 41.13% 31.73%, 41.04% 31.30%, 40.96% 30.87%, 40.88% 30.44%, 40.81% 30.02%, 40.74% 29.60%, 40.68% 29.19%, 40.62% 28.79%, 40.57% 28.39%, 40.53% 28.00%, 40.50% 27.62%, 40.47% 27.25%, 40.46% 26.89%, 40.46% 26.54%, 40.48% 26.21%, 40.50% 25.89%, 40.55% 25.58%, 40.60% 25.29%, 40.67% 25.01%, 40.76% 24.75%, 40.87% 24.51%, 40.99% 24.29%, 41.14% 24.08%);">
+        </div>
+        <div class="absolute top-40 right-20 w-48 h-48 opacity-60 bg-neo-blue border-4 border-neo-black shadow-neo"
+            style="animation: spin 10s linear infinite reverse; clip-path: polygon(21.00% 35.50%, 21.21% 35.24%, 21.44% 35.00%, 21.69% 34.79%, 21.95% 34.61%, 22.24% 34.46%, 22.54% 34.33%, 22.86% 34.23%, 23.20% 34.15%, 23.55% 34.09%, 23.92% 34.05%, 24.30% 34.03%, 24.69% 34.03%, 25.09% 34.04%, 25.51% 34.08%, 25.93% 34.12%, 26.37% 34.18%, 26.81% 34.26%, 27.26% 34.34%, 27.72% 34.44%, 28.18% 34.54%, 28.65% 34.66%, 29.12% 34.78%, 29.60% 34.90%, 30.08% 35.04%, 30.56% 35.17%, 31.04% 35.31%, 31.52% 35.45%, 32.00% 35.59%, 32.48% 35.73%, 32.96% 35.87%, 33.43% 36.00%, 33.90% 36.13%, 34.36% 36.26%, 34.82% 36.38%, 35.27% 36.49%, 35.72% 36.59%, 36.15% 36.69%, 36.58% 36.77%, 37.00% 36.84%, 37.41% 36.90%, 37.80% 36.94%, 38.18% 36.97%, 38.55% 36.99%, 38.91% 36.98%, 39.25% 36.96%, 39.57% 36.92%, 39.88% 36.85%, 40.17% 36.77%, 40.45% 36.66%, 40.70% 36.53%, 40.93% 36.36%, 41.14% 36.18%, 41.33% 35.96%, 41.50% 35.71%, 41.65% 35.44%, 41.78% 35.15%, 41.89% 34.83%, 41.99% 34.50%, 42.07% 34.14%, 42.13% 33.77%, 42.19% 33.38%, 42.23% 32.97%, 42.26% 32.55%, 42.28% 32.12%, 42.30% 31.68%, 42.30% 31.23%, 42.30% 30.77%, 42.29% 30.31%, 42.28% 29.84%, 42.27% 29.37%, 42.25% 28.90%, 42.23% 28.42%, 42.21% 27.95%, 42.19% 27.48%, 42.17% 27.01%, 42.16% 26.55%, 42.15% 26.10%, 42.14% 25.66%, 42.14% 25.22%, 42.15% 24.80%, 42.16% 24.39%, 42.19% 23.99%, 42.22% 23.61%, 42.27% 23.25%, 42.33% 22.91%, 42.40% 22.58%, 42.48% 22.28%, 42.59% 22.00%, 42.70% 21.75%, 42.84% 21.52%, 42.99% 21.32%, 43.17% 21.15%, 43.36% 21.01%, 43.58% 20.90%, 43.81% 20.82%, 44.08% 20.78%, 44.36% 20.78%, 44.68% 20.81%, 45.02% 20.89%, 45.39% 21.00%, 45.79% 21.15%, 46.25% 21.34%, 46.75% 21.56%, 47.29% 21.81%, 47.88% 22.10%, 48.50% 22.41%, 49.16% 22.75%, 49.85% 23.13%, 50.58% 23.53%, 51.33% 23.95%, 52.11% 24.40%, 52.92% 24.87%, 53.75% 25.37%, 54.60% 25.89%, 55.46% 26.43%, 56.34% 26.99%, 57.24% 27.56%, 58.14% 28.16%, 59.06% 28.77%, 59.98% 29.39%, 60.90% 30.03%, 61.82% 30.69%, 62.75% 31.35%, 63.67% 32.03%, 64.59% 32.72%, 65.50% 33.41%, 66.39% 34.12%, 67.28% 34.83%, 68.15% 35.54%, 69.01% 36.26%, 69.84% 36.99%, 70.66% 37.71%, 71.45% 38.44%, 72.21% 39.17%, 72.95% 39.90%, 73.65% 40.62%, 74.32% 41.35%, 74.96% 42.07%, 75.56% 42.78%, 76.12% 43.49%, 76.63% 44.19%, 77.11% 44.88%, 77.53% 45.56%, 77.91% 46.24%, 78.23% 46.90%, 78.50% 47.55%, 78.72% 48.18%, 78.87% 48.81%, 78.97% 49.41%, 79.00% 50.00%, 78.97% 50.59%, 78.87% 51.19%, 78.72% 51.82%, 78.50% 52.45%, 78.23% 53.10%, 77.91% 53.76%, 77.53% 54.44%, 77.11% 55.12%, 76.63% 55.81%, 76.12% 56.51%, 75.56% 57.22%, 74.96% 57.93%, 74.32% 58.65%, 73.65% 59.38%, 72.95% 60.10%, 72.21% 60.83%, 71.45% 61.56%, 70.66% 62.29%, 69.84% 63.01%, 69.01% 63.74%, 68.15% 64.46%, 67.28% 65.17%, 66.39% 65.88%, 65.50% 66.59%, 64.59% 67.28%, 63.67% 67.97%, 62.75% 68.65%, 61.82% 69.31%, 60.90% 69.97%, 59.98% 70.61%, 59.06% 71.23%, 58.14% 71.84%, 57.24% 72.44%, 56.34% 73.01%, 55.46% 73.57%, 54.60% 74.11%, 53.75% 74.63%, 52.92% 75.13%, 52.11% 75.60%, 51.33% 76.05%, 50.58% 76.47%, 49.85% 76.87%, 49.16% 77.25%, 48.50% 77.59%, 47.88% 77.90%, 47.29% 78.19%, 46.75% 78.44%, 46.25% 78.66%, 45.79% 78.85%, 45.39% 79.00%, 45.02% 79.11%, 44.68% 79.19%, 44.36% 79.22%, 44.08% 79.22%, 43.81% 79.18%, 43.58% 79.10%, 43.36% 78.99%, 43.17% 78.85%, 42.99% 78.68%, 42.84% 78.48%, 42.70% 78.25%, 42.59% 78.00%, 42.48% 77.72%, 42.40% 77.42%, 42.33% 77.09%, 42.27% 76.75%, 42.22% 76.39%, 42.19% 76.01%, 42.16% 75.61%, 42.15% 75.20%, 42.14% 74.78%, 42.14% 74.34%, 42.15% 73.90%, 42.16% 73.45%, 42.17% 72.99%, 42.19% 72.52%, 42.21% 72.05%, 42.23% 71.58%, 42.25% 71.10%, 42.27% 70.63%, 42.28% 70.16%, 42.29% 69.69%, 42.30% 69.23%, 42.30% 68.77%, 42.30% 68.32%, 42.28% 67.88%, 42.26% 67.45%, 42.23% 67.03%, 42.19% 66.62%, 42.13% 66.23%, 42.07% 65.86%, 41.99% 65.50%, 41.89% 65.17%, 41.78% 64.85%, 41.65% 64.56%, 41.50% 64.29%, 41.33% 64.04%, 41.14% 63.82%, 40.93% 63.64%, 40.70% 63.47%, 40.45% 63.34%, 40.17% 63.23%, 39.88% 63.15%, 39.57% 63.08%, 39.25% 63.04%, 38.91% 63.02%, 38.55% 63.01%, 38.18% 63.03%, 37.80% 63.06%, 37.41% 63.10%, 37.00% 63.16%, 36.58% 63.23%, 36.15% 63.31%, 35.72% 63.41%, 35.27% 63.51%, 34.82% 63.62%, 34.36% 63.74%, 33.90% 63.87%, 33.43% 64.00%, 32.96% 64.13%, 32.48% 64.27%, 32.00% 64.41%, 31.52% 64.55%, 31.04% 64.69%, 30.56% 64.83%, 30.08% 64.96%, 29.60% 65.10%, 29.12% 65.22%, 28.65% 65.34%, 28.18% 65.46%, 27.72% 65.56%, 27.26% 65.66%, 26.81% 65.74%, 26.37% 65.82%, 25.93% 65.88%, 25.51% 65.92%, 25.09% 65.96%, 24.69% 65.97%, 24.30% 65.97%, 23.92% 65.95%, 23.55% 65.91%, 23.20% 65.85%, 22.86% 65.77%, 22.54% 65.67%, 22.24% 65.54%, 21.95% 65.39%, 21.69% 65.21%, 21.44% 65.00%, 21.21% 64.76%, 21.00% 64.50%, 20.81% 64.20%, 20.62% 63.87%, 20.44% 63.51%, 20.28% 63.11%, 20.11% 62.68%, 19.96% 62.22%, 19.81% 61.74%, 19.68% 61.23%, 19.55% 60.70%, 19.42% 60.14%, 19.31% 59.56%, 19.20% 58.96%, 19.10% 58.35%, 19.01% 57.71%, 18.93% 57.06%, 18.86% 56.40%, 18.79% 55.72%, 18.73% 55.03%, 18.68% 54.33%, 18.64% 53.62%, 18.60% 52.91%, 18.57% 52.18%, 18.55% 51.46%, 18.54% 50.73%, 18.54% 50.00%, 18.54% 49.27%, 18.55% 48.54%, 18.57% 47.82%, 18.60% 47.09%, 18.64% 46.38%, 18.68% 45.67%, 18.73% 44.97%, 18.79% 44.28%, 18.86% 43.60%, 18.93% 42.94%, 19.01% 42.29%, 19.10% 41.65%, 19.20% 41.04%, 19.31% 40.44%, 19.42% 39.86%, 19.55% 39.30%, 19.68% 38.77%, 19.81% 38.26%, 19.96% 37.78%, 20.11% 37.32%, 20.28% 36.89%, 20.44% 36.49%, 20.62% 36.13%, 20.81% 35.80%);"></div>
 
         <!-- 3D Mock Container Background -->
         <div
@@ -182,20 +234,20 @@
                 ★ The Ultimate CSS Toy ★
             </div>
 
-            <h1 class="font-display text-7xl md:text-[10rem] leading-[0.85] font-black mb-8">
+            <h1 class="font-display text-5xl md:text-[10rem] leading-[0.85] font-black mb-8">
                 MAKE <span class="text-neo-pink text-outline">CRAZY</span><br>
                 SHAPES <span class="text-neo-blue text-outline">FAST</span>
             </h1>
 
             <p
-                class="text-xl md:text-2xl font-medium max-w-2xl mx-auto mb-12 bg-neo-white border-2 border-neo-black p-4 shadow-neo -rotate-1">
+                class="text-lg md:text-2xl font-medium max-w-2xl mx-auto mb-12 bg-neo-white border-2 border-neo-black p-4 shadow-neo -rotate-1">
                 Forget boring rectangles. Bend the web to your will with our drag-and-drop vector editor.
                 <span class="bg-neo-yellow px-1">100% Free.</span>
             </p>
 
             <div class="flex flex-col md:flex-row justify-center gap-6 items-center">
                 <a href="/editor"
-                    class="bg-neo-black text-neo-white text-2xl font-bold px-10 py-5 border-4 border-neo-black shadow-neo-lg hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all group overflow-hidden relative">
+                    class="bg-neo-black text-neo-white text-xl md:text-2xl font-bold px-8 md:px-10 py-4 md:py-5 border-4 border-neo-black shadow-neo-lg hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all group overflow-hidden relative">
                     <span class="relative z-10 group-hover:text-neo-yellow">LAUNCH EDITOR</span>
                     <div
                         class="absolute inset-0 bg-white transform -translate-x-full group-hover:translate-x-0 transition-transform mix-blend-difference">
@@ -203,7 +255,7 @@
                 </a>
 
                 <a href="#demo"
-                    class="bg-neo-white text-neo-black text-xl font-bold px-8 py-5 border-4 border-neo-black shadow-neo-lg hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center gap-3">
+                    class="bg-neo-white text-neo-black text-xl font-bold px-8 py-4 md:py-5 border-4 border-neo-black shadow-neo-lg hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center gap-3">
                     <div
                         class="w-8 h-8 bg-neo-pink rounded-full border-2 border-neo-black flex items-center justify-center">
                         <div
@@ -217,7 +269,7 @@
     </header>
 
     <!-- Editor Preview (Demo) -->
-    <section id="demo" class="max-w-7xl mx-auto px-6 mb-32 scroll-mt-32">
+    <section id="demo" class="max-w-7xl mx-auto px-6 mb-0 md:mb-32 scroll-mt-32">
         <div class="relative group cursor-pointer" onclick="window.location.href='/editor'">
             <!-- Decorative Layers behind -->
             <div
@@ -334,55 +386,66 @@
     <!-- Marquee -->
     <!-- Marquee -->
     <!-- Marquee -->
-    <section class="max-w-full overflow-hidden py-12 mb-20">
-        <div class="bg-neo-yellow border-y-4 border-neo-black py-4 rotate-[-2deg] scale-105 shadow-neo overflow-hidden">
-            <!-- Line 1 -->
-            <div class="marquee-container mb-2">
-                <div class="marquee-content font-display font-bold text-4xl uppercase gap-8">
-                    <span class="mx-8">★ CLIP-PATH</span>
-                    <span class="mx-8 text-outline text-neo-white">★ POLYGONS</span>
-                    <span class="mx-8">★ BLOBS</span>
-                    <span class="mx-8 text-outline text-neo-white">★ SVG EXPORT</span>
-                    <span class="mx-8">★ TAILWIND READY</span>
-                    <span class="mx-8 text-outline text-neo-white">★ NO LOGIN REQUIRED</span>
-                    <span class="mx-8">★ CLIP-PATH</span>
-                    <span class="mx-8 text-outline text-neo-white">★ POLYGONS</span>
-                    <span class="mx-8">★ BLOBS</span>
-                    <span class="mx-8 text-outline text-neo-white">★ SVG EXPORT</span>
-                    <span class="mx-8">★ TAILWIND READY</span>
-                    <span class="mx-8 text-outline text-neo-white">★ NO LOGIN REQUIRED</span>
+    <section class="relative w-full h-[400px]">
+        <div
+            class="absolute max-w-full h-full flex flex-col items-center justify-center overflow-hidden py-8 md:py-12 mb-12 md:mb-20">
+            <div
+                class="bg-neo-yellow flex flex-col gap-4 border-y-4 border-neo-black py-4 rotate-[-8deg] scale-105 shadow-neo overflow-hidden">
+                <!-- Line 1 -->
+                <div class="marquee-container border-neo-black">
+                    <div class="marquee-content font-display font-bold text-4xl uppercase gap-8"
+                        style="animation-name: marquee-rev;">
+                        <span class="mx-8">★ CLIP-PATH</span>
+                        <span class="mx-8 text-outline text-neo-white">★ POLYGONS</span>
+                        <span class="mx-8">★ BLOBS</span>
+                        <span class="mx-8 text-outline text-neo-white">★ SVG EXPORT</span>
+                        <span class="mx-8">★ TAILWIND READY</span>
+                        <span class="mx-8 text-outline text-neo-white">★ NO LOGIN REQUIRED</span>
+                        <span class="mx-8">★ CLIP-PATH</span>
+                        <span class="mx-8 text-outline text-neo-white">★ POLYGONS</span>
+                        <span class="mx-8">★ BLOBS</span>
+                        <span class="mx-8 text-outline text-neo-white">★ SVG EXPORT</span>
+                        <span class="mx-8">★ TAILWIND READY</span>
+                        <span class="mx-8 text-outline text-neo-white">★ NO LOGIN REQUIRED</span>
+                    </div>
                 </div>
             </div>
-            <!-- Line 2 (Reverse) -->
-            <div class="marquee-container">
-                <div class="marquee-content font-display font-bold text-4xl uppercase gap-8"
-                    style="animation-name: marquee-rev;">
-                    <span class="mx-8 text-outline text-neo-white">★ FREE FOREVER</span>
-                    <span class="mx-8">★ OPEN SOURCE</span>
-                    <span class="mx-8 text-outline text-neo-white">★ RESPONSIVE</span>
-                    <span class="mx-8">★ ULTRA FAST</span>
-                    <span class="mx-8 text-outline text-neo-white">★ CSS WIZARDRY</span>
-                    <span class="mx-8">★ DRAG IT</span>
-                    <span class="mx-8 text-outline text-neo-white">★ FREE FOREVER</span>
-                    <span class="mx-8">★ OPEN SOURCE</span>
-                    <span class="mx-8 text-outline text-neo-white">★ RESPONSIVE</span>
-                    <span class="mx-8">★ ULTRA FAST</span>
-                    <span class="mx-8 text-outline text-neo-white">★ CSS WIZARDRY</span>
-                    <span class="mx-8">★ DRAG IT</span>
+        </div>
+        <div
+            class="max-w-full h-full flex flex-col items-center justify-center overflow-hidden py-8 md:py-12 mb-12 md:mb-20">
+            <div
+                class="bg-neo-yellow flex flex-col gap-4 border-y-4 border-neo-black py-4 rotate-[8deg] scale-105 shadow-neo overflow-hidden">
+                <!-- Line 1 -->
+                <div class="marquee-container border-neo-black">
+                    <div class="marquee-content font-display font-bold text-4xl uppercase gap-8
+                    style=" animation-name: marquee-rev;">
+                        <span class="mx-8">★ CLIP-PATH</span>
+                        <span class="mx-8 text-outline text-neo-white">★ POLYGONS</span>
+                        <span class="mx-8">★ BLOBS</span>
+                        <span class="mx-8 text-outline text-neo-white">★ SVG EXPORT</span>
+                        <span class="mx-8">★ TAILWIND READY</span>
+                        <span class="mx-8 text-outline text-neo-white">★ NO LOGIN REQUIRED</span>
+                        <span class="mx-8">★ CLIP-PATH</span>
+                        <span class="mx-8 text-outline text-neo-white">★ POLYGONS</span>
+                        <span class="mx-8">★ BLOBS</span>
+                        <span class="mx-8 text-outline text-neo-white">★ SVG EXPORT</span>
+                        <span class="mx-8">★ TAILWIND READY</span>
+                        <span class="mx-8 text-outline text-neo-white">★ NO LOGIN REQUIRED</span>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Feature Grid -->
-    <section class="max-w-7xl mx-auto px-6 pb-32">
+    <section class="max-w-7xl mx-auto px-6 pt-0 md:pt-32 pb-20 md:pb-32">
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
             <!-- Box 1 -->
             <div
-                class="bg-neo-white border-4 border-neo-black shadow-neo-lg p-8 hover:-translate-y-2 transition-transform duration-300">
+                class="bg-neo-green border-4 border-neo-black shadow-neo-lg p-8 hover:-translate-y-2 transition-transform duration-300">
                 <div
-                    class="w-16 h-16 bg-neo-purple border-4 border-neo-black mb-6 flex items-center justify-center text-2xl font-bold text-white shadow-neo">
+                    class="w-16 h-16 bg-neo-white border-4 border-neo-black mb-6 flex items-center justify-center text-2xl font-bold text-black shadow-neo">
                     <i class="fa-solid fa-arrows-up-down-left-right"></i>
                 </div>
                 <h3 class="font-display text-3xl font-bold mb-4">DRAG & DROP</h3>
@@ -406,7 +469,7 @@
             <div
                 class="bg-neo-pink border-4 border-neo-black shadow-neo-lg p-8 hover:-translate-y-2 transition-transform duration-300">
                 <div
-                    class="w-16 h-16 bg-neo-yellow border-4 border-neo-black mb-6 flex items-center justify-center text-2xl font-bold shadow-neo">
+                    class="w-16 h-16 bg-neo-white border-4 border-neo-black mb-6 flex items-center justify-center text-2xl font-bold shadow-neo">
                     <i class="fa-solid fa-image"></i>
                 </div>
                 <h3 class="font-display text-3xl font-bold mb-4">IMAGE MASK</h3>
@@ -417,25 +480,26 @@
 
         <!-- Big Feature Block -->
         <div
-            class="mt-20 border-4 border-neo-black bg-neo-white shadow-neo-xl flex flex-col md:flex-row overflow-hidden">
-            <div class="p-12 md:w-1/2 flex flex-col justify-center">
+            class="mt-12 md:mt-20 border-4 border-neo-black bg-neo-white shadow-neo-xl flex flex-col md:flex-row overflow-hidden">
+            <div class="p-6 md:p-12 md:w-1/2 flex flex-col justify-center">
                 <div class="text-sm font-bold bg-neo-black text-neo-white inline-block px-3 py-1 mb-4 self-start">NEW
                     FEATURE</div>
-                <h2 class="font-display text-5xl font-black mb-6 uppercase">Tailwind <br>Support</h2>
-                <p class="text-xl font-medium mb-8">We generate the weird arbitrary values so you don't have to guess.
+                <h2 class="font-display text-3xl md:text-5xl font-black mb-6 uppercase">Tailwind <br>Support</h2>
+                <p class="text-lg md:text-xl font-medium mb-8">We generate the weird arbitrary values so you don't have
+                    to guess.
                     Just copy the class.</p>
-                <div class="bg-gray-100 p-4 border-2 border-black font-mono text-sm shadow-neo">
+                <div class="bg-gray-100 p-4 border-2 border-black font-mono text-sm shadow-neo overflow-x-auto">
                     <span class="text-blue-600">class</span>="<span class="text-purple-600">bg-red-500</span> <span
                         class="text-orange-600">clip-[polygon(0_0,100%_0,100%_100%)]</span>"
                 </div>
             </div>
             <div
-                class="md:w-1/2 bg-neo-green border-l-4 border-neo-black flex items-center justify-center p-12 relative overflow-hidden group">
+                class="md:w-1/2 bg-neo-purple border-t-4 md:border-t-0 md:border-l-4 border-neo-black flex items-center justify-center p-8 md:p-12 relative overflow-hidden group">
                 <div
                     class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagonal-stripes.png')] opacity-20">
                 </div>
                 <div
-                    class="w-64 h-64 bg-neo-white border-4 border-neo-black shadow-neo flex items-center justify-center text-4xl font-black group-hover:rotate-12 transition-transform duration-300 relative z-10">
+                    class="w-48 h-48 md:w-64 md:h-64 bg-neo-white border-4 border-neo-black shadow-neo flex items-center justify-center text-2xl md:text-4xl font-black group-hover:rotate-12 transition-transform duration-300 relative z-10">
                     HOVER ME
                 </div>
             </div>
@@ -445,9 +509,10 @@
     <!-- Playground Link / CTA -->
 
     <!-- How It Works Section -->
-    <section class="max-w-7xl mx-auto px-6 py-20" id="about">
-        <h2 class="font-display text-5xl md:text-9xl text-neo-black text-outline font-black mb-16 text-center">HOW IT <span
-                class="text-neo-purple">WORKS</span></h2>
+    <section class="max-w-7xl mx-auto px-6 py-12 md:py-20" id="about">
+        <h2 class="font-display text-5xl md:text-9xl text-neo-black text-outline font-black mb-16 text-center">HOW IT
+            <span class="text-neo-purple">WORKS</span>
+        </h2>
 
         <div class="grid md:grid-cols-3 gap-8">
             <!-- Step 1 -->
@@ -455,7 +520,10 @@
                 <div class="absolute inset-0 bg-neo-black translate-x-3 translate-y-3 border-2 border-black"></div>
                 <div
                     class="relative bg-white border-4 border-neo-black p-8 h-full hover:translate-x-1 hover:translate-y-1 transition-transform">
-                    <div class="text-8xl font-black text-neo-yellow absolute -top-6 -right-4 -z-10 select-none">01</div>
+                    <div
+                        class="absolute top-0 right-0 md:top-10 md:right-10 bg-neo-yellow border-4 border-black px-4 py-2 font-black shadow-neo rotate-12 z-40 animate-bounce cursor-default">
+                        STEP 01
+                    </div>
                     <div
                         class="w-16 h-16 bg-neo-yellow border-4 border-neo-black mb-6 flex items-center justify-center text-3xl font-bold shadow-neo">
                         <i class="fa-solid fa-arrow-pointer"></i>
@@ -471,7 +539,10 @@
                 <div class="absolute inset-0 bg-neo-black translate-x-3 translate-y-3 border-2 border-black"></div>
                 <div
                     class="relative bg-white border-4 border-neo-black p-8 h-full hover:translate-x-1 hover:translate-y-1 transition-transform">
-                    <div class="text-8xl font-black text-neo-green absolute -top-6 -right-4 -z-10 select-none">02</div>
+                    <div
+                        class="absolute top-0 right-0 md:top-10 md:right-10 bg-neo-green border-4 border-black px-4 py-2 font-black shadow-neo rotate-12 z-40 animate-bounce cursor-default">
+                        STEP 02
+                    </div>
                     <div
                         class="w-16 h-16 bg-neo-green border-4 border-neo-black mb-6 flex items-center justify-center text-3xl font-bold shadow-neo">
                         <i class="fa-solid fa-sliders"></i>
@@ -487,7 +558,10 @@
                 <div class="absolute inset-0 bg-neo-black translate-x-3 translate-y-3 border-2 border-black"></div>
                 <div
                     class="relative bg-white border-4 border-neo-black p-8 h-full hover:translate-x-1 hover:translate-y-1 transition-transform">
-                    <div class="text-8xl font-black text-neo-pink absolute -top-6 -right-4 -z-10 select-none">03</div>
+                    <div
+                        class="absolute top-0 right-0 md:top-10 md:right-10 bg-neo-pink border-4 border-black px-4 py-2 font-black shadow-neo rotate-12 z-40 animate-bounce cursor-default">
+                        STEP 03
+                    </div>
                     <div
                         class="w-16 h-16 bg-neo-pink border-4 border-neo-black mb-6 flex items-center justify-center text-3xl font-bold shadow-neo">
                         <i class="fa-solid fa-code"></i>
@@ -505,15 +579,20 @@
 
     <!-- Section 1: Layers -->
     <!-- Section 1: Layers -->
-    <section id="features" class="py-24">
-        <h2 class="font-display text-5xl md:text-9xl text-neo-black text-outline font-black mb-32 text-center">ALL THE <br/><span
-                class="text-neo-green">FEATURES</span></h2>
-        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+    <section id="features" class="py-16 md:py-24">
+        <h2 class="font-display text-5xl md:text-9xl text-neo-black text-outline font-black mb-20 md:mb-32 text-center">
+            ALL THE
+            <br /><span class="text-neo-green">FEATURES</span>
+        </h2>
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-8 md:gap-16">
             <div class="md:w-1/2">
-                <div class="inline-block bg-neo-black text-white font-bold px-3 py-1 mb-4 text-sm uppercase">Multi-Shape
+                <div
+                    class="inline-block bg-neo-blue text-black font-bold px-3 py-1 mb-4 text-sm uppercase border-2 border-black shadow-neo">
+                    Multi-Shape
                     Control</div>
-                <h2 class="font-display text-5xl font-black mb-6">UNLIMITED LAYERS</h2>
-                <p class="text-xl font-medium mb-8">Why stop at one shape? Stack 'em up. Create complex compositions by
+                <h2 class="font-display text-3xl md:text-5xl font-black mb-6">UNLIMITED LAYERS</h2>
+                <p class="text-lg md:text-xl font-medium mb-8">Why stop at one shape? Stack 'em up. Create complex
+                    compositions by
                     adding multiple layers. Each layer has its own unique path, color, and settings.</p>
                 <ul class="space-y-3 font-bold">
                     <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neo-green"></i> Independent
@@ -559,13 +638,16 @@
 
     <!-- Section 2: Generators -->
     <!-- Section 2: Generators -->
-    <section class="py-24">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row-reverse items-center gap-16">
+    <section class="py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row-reverse items-center gap-8 md:gap-16">
             <div class="md:w-1/2">
-                <div class="inline-block bg-neo-purple text-white font-bold px-3 py-1 mb-4 text-sm uppercase">Instant
+                <div
+                    class="inline-block bg-neo-purple text-white font-bold px-3 py-1 mb-4 text-sm uppercase border-2 border-black shadow-neo">
+                    Instant
                     Geometry</div>
-                <h2 class="font-display text-5xl font-black mb-6">GENERATORS</h2>
-                <p class="text-xl font-medium mb-8">Don't want to draw? Let math do it. Generate perfect polygons, stars
+                <h2 class="font-display text-3xl md:text-5xl font-black mb-6">GENERATORS</h2>
+                <p class="text-lg md:text-xl font-medium mb-8">Don't want to draw? Let math do it. Generate perfect
+                    polygons, stars
                     with specific counts, or random organic blobs instantly.</p>
                 <div class="flex flex-wrap gap-3">
                     <span
@@ -578,22 +660,64 @@
                         class="bg-neo-white border-2 border-black px-3 py-1 font-bold shadow-sm hover:translate-y-1 transition-transform cursor-default">Bursts</span>
                 </div>
             </div>
-            <div class="md:w-1/2">
-                <div class="bg-gray-100 border-4 border-black p-12 shadow-neo-xl">
-                    <div class="grid grid-cols-2 gap-6">
-                        <div
-                            class="aspect-square bg-neo-white border-4 border-black shadow-neo flex items-center justify-center p-4">
-                            <div class="w-full h-full bg-neo-green"
-                                style="clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);">
-                            </div>
-                        </div>
-                        <div
-                            class="aspect-square bg-neo-white border-4 border-black shadow-neo flex items-center justify-center p-4">
-                            <div class="w-full h-full bg-neo-purple"
-                                style="clip-path: polygon(0% 20%, 60% 20%, 60% 0%, 100% 50%, 60% 100%, 60% 80%, 0% 80%);">
-                            </div>
-                        </div>
+            <div
+                class="md:w-1/2 w-full relative h-[400px] bg-neo-white border-4 border-black shadow-neo-xl flex items-center justify-center mt-12 md:mt-0">
+
+                <!-- Card 3 (Back) -->
+                <div id="gen-card-0"
+                    class="gen-card absolute w-56 h-56 md:w-64 md:h-64 bg-neo-purple border-4 border-black shadow-neo-xl transition-all duration-700 ease-in-out z-30 flex flex-col items-center justify-between p-4 group">
+                    <div class="w-full flex justify-between items-center pb-2">
+                        <i class="fa-solid fa-gear text-xl animate-spin-slow"></i>
+                        <span class="font-bold text-sm bg-neo-yellow px-1 border border-black shadow-neo">GEN_V1</span>
                     </div>
+
+                    <div class="w-24 h-24 md:w-32 md:h-32 bg-neo-white border-4 border-black shadow-sm group-hover:rotate-12 transition-transform duration-300"
+                        style="clip-path: polygon(50.00% 10.00%, 88.04% 37.64%, 73.51% 82.36%, 26.49% 82.36%, 11.96% 37.64%);">
+                    </div>
+
+                    <div class="w-full bg-black text-white font-mono text-xs text-center py-1 font-bold mt-2">
+                        POLYGON
+                    </div>
+                </div>
+
+                <!-- Card 2 (Middle) -->
+                <div id="gen-card-1"
+                    class="gen-card absolute w-56 h-56 md:w-64 md:h-64 bg-neo-green border-4 border-black shadow-neo-xl transition-all duration-700 ease-in-out z-30 flex flex-col items-center justify-between p-4 group">
+                    <div class="w-full flex justify-between items-center pb-2">
+                        <i class="fa-solid fa-gear text-xl animate-spin-slow"></i>
+                        <span class="font-bold text-sm bg-neo-yellow px-1 border border-black shadow-neo">GEN_V1</span>
+                    </div>
+
+                    <div class="w-24 h-24 md:w-32 md:h-32 bg-neo-white border-4 border-black shadow-sm group-hover:rotate-12 transition-transform duration-300"
+                        style="clip-path: polygon(87.25% 29.04%, 87.52% 29.77%, 87.78% 30.54%, 88.01% 31.35%, 88.22% 32.21%, 88.41% 33.11%, 88.58% 34.04%, 88.72% 35.01%, 88.85% 36.01%, 88.96% 37.05%, 89.05% 38.11%, 89.12% 39.19%, 89.17% 40.31%, 89.21% 41.44%, 89.22% 42.60%, 89.22% 43.77%, 89.20% 44.95%, 89.17% 46.16%, 89.12% 47.37%, 89.06% 48.59%, 88.98% 49.82%, 88.88% 51.05%, 88.77% 52.28%, 88.65% 53.52%, 88.52% 54.75%, 88.37% 55.98%, 88.21% 57.20%, 88.03% 58.42%, 87.85% 59.62%, 87.65% 60.82%, 87.45% 61.99%, 87.23% 63.15%, 87.00% 64.29%, 86.77% 65.41%, 86.52% 66.51%, 86.27% 67.57%, 86.00% 68.62%, 85.73% 69.63%, 85.46% 70.61%, 85.17% 71.55%, 84.88% 72.46%, 84.58% 73.33%, 84.28% 74.16%, 83.97% 74.94%, 83.66% 75.68%, 83.34% 76.37%, 83.01% 77.01%, 82.69% 77.60%, 82.36% 78.14%, 82.03% 78.62%, 81.69% 79.04%, 81.35% 79.40%, 80.99% 79.71%, 80.61% 79.97%, 80.22% 80.17%, 79.81% 80.33%, 79.39% 80.43%, 78.95% 80.50%, 78.50% 80.52%, 78.04% 80.49%, 77.56% 80.43%, 77.08% 80.33%, 76.58% 80.20%, 76.07% 80.03%, 75.55% 79.83%, 75.01% 79.60%, 74.47% 79.35%, 73.92% 79.07%, 73.36% 78.76%, 72.79% 78.43%, 72.22% 78.08%, 71.64% 77.72%, 71.05% 77.34%, 70.45% 76.94%, 69.85% 76.54%, 69.24% 76.12%, 68.63% 75.70%, 68.01% 75.26%, 67.39% 74.83%, 66.76% 74.39%, 66.13% 73.96%, 65.50% 73.52%, 64.87% 73.09%, 64.24% 72.66%, 63.60% 72.24%, 62.96% 71.83%, 62.33% 71.44%, 61.69% 71.05%, 61.06% 70.68%, 60.42% 70.33%, 59.79% 70.00%, 59.16% 69.69%, 58.53% 69.40%, 57.91% 69.14%, 57.28% 68.91%, 56.67% 68.70%, 56.06% 68.53%, 55.45% 68.39%, 54.85% 68.28%, 54.25% 68.21%, 53.66% 68.18%, 53.07% 68.19%, 52.47% 68.25%, 51.86% 68.35%, 51.23% 68.49%, 50.60% 68.66%, 49.96% 68.87%, 49.31% 69.11%, 48.66% 69.38%, 48.00% 69.68%, 47.33% 70.01%, 46.66% 70.35%, 45.98% 70.72%, 45.30% 71.11%, 44.62% 71.52%, 43.93% 71.94%, 43.24% 72.37%, 42.55% 72.81%, 41.86% 73.26%, 41.17% 73.71%, 40.48% 74.17%, 39.79% 74.63%, 39.10% 75.08%, 38.42% 75.54%, 37.74% 75.98%, 37.06% 76.42%, 36.38% 76.85%, 35.71% 77.26%, 35.05% 77.66%, 34.39% 78.04%, 33.74% 78.41%, 33.10% 78.75%, 32.46% 79.06%, 31.83% 79.35%, 31.22% 79.61%, 30.61% 79.84%, 30.01% 80.04%, 29.42% 80.20%, 28.85% 80.32%, 28.29% 80.41%, 27.74% 80.45%, 27.20% 80.44%, 26.68% 80.39%, 26.18% 80.29%, 25.69% 80.14%, 25.21% 79.94%, 24.75% 79.68%, 24.31% 79.36%, 23.89% 78.98%, 23.49% 78.54%, 23.11% 78.03%, 22.73% 77.45%, 22.36% 76.77%, 21.99% 76.02%, 21.62% 75.18%, 21.25% 74.27%, 20.89% 73.28%, 20.52% 72.23%, 20.17% 71.11%, 19.81% 69.93%, 19.47% 68.69%, 19.13% 67.40%, 18.79% 66.06%, 18.46% 64.67%, 18.14% 63.23%, 17.83% 61.76%, 17.52% 60.25%, 17.23% 58.71%, 16.94% 57.15%, 16.67% 55.55%, 16.40% 53.94%, 16.15% 52.31%, 15.91% 50.67%, 15.68% 49.01%, 15.46% 47.35%, 15.26% 45.69%, 15.07% 44.03%, 14.90% 42.37%, 14.74% 40.73%, 14.60% 39.09%, 14.48% 37.47%, 14.37% 35.87%, 14.28% 34.30%, 14.20% 32.75%, 14.15% 31.23%, 14.11% 29.75%, 14.10% 28.30%, 14.11% 26.90%, 14.13% 25.54%, 14.18% 24.23%, 14.25% 22.98%, 14.34% 21.78%, 14.46% 20.64%, 14.60% 19.56%, 14.76% 18.56%, 14.95% 17.62%, 15.16% 16.76%, 15.41% 15.98%, 15.67% 15.28%, 15.97% 14.66%, 16.29% 14.14%, 16.65% 13.70%, 17.07% 13.34%, 17.54% 13.05%, 18.05% 12.83%, 18.61% 12.68%, 19.22% 12.60%, 19.87% 12.58%, 20.56% 12.61%, 21.29% 12.71%, 22.05% 12.85%, 22.85% 13.05%, 23.68% 13.30%, 24.54% 13.59%, 25.42% 13.92%, 26.33% 14.29%, 27.26% 14.70%, 28.21% 15.14%, 29.18% 15.62%, 30.17% 16.12%, 31.17% 16.65%, 32.18% 17.20%, 33.20% 17.77%, 34.23% 18.36%, 35.26% 18.96%, 36.30% 19.57%, 37.34% 20.19%, 38.37% 20.82%, 39.40% 21.45%, 40.43% 22.08%, 41.45% 22.71%, 42.45% 23.33%, 43.45% 23.94%, 44.43% 24.54%, 45.39% 25.13%, 46.33% 25.70%, 47.25% 26.25%, 48.15% 26.78%, 49.02% 27.28%, 49.87% 27.75%, 50.68% 28.20%, 51.47% 28.61%, 52.21% 28.98%, 52.93% 29.31%, 53.60% 29.60%, 54.23% 29.85%, 54.82% 30.05%, 55.36% 30.20%, 55.85% 30.29%, 56.30% 30.33%, 56.69% 30.30%, 57.03% 30.23%, 57.33% 30.11%, 57.57% 29.94%, 57.77% 29.74%, 57.93% 29.49%, 58.05% 29.21%, 58.13% 28.89%, 58.17% 28.54%, 58.18% 28.16%, 58.15% 27.75%, 58.10% 27.31%, 58.01% 26.85%, 57.90% 26.36%, 57.76% 25.85%, 57.60% 25.32%, 57.42% 24.77%, 57.22% 24.20%, 57.01% 23.62%, 56.77% 23.03%, 56.53% 22.43%, 56.27% 21.81%, 56.01% 21.20%, 55.73% 20.57%, 55.46% 19.95%, 55.18% 19.32%, 54.89% 18.69%, 54.61% 18.07%, 54.34% 17.45%, 54.06% 16.83%, 53.79% 16.23%, 53.54% 15.64%, 53.29% 15.05%, 53.05% 14.49%, 52.83% 13.93%, 52.63% 13.40%, 52.44% 12.89%, 52.28% 12.39%, 52.14% 11.93%, 52.02% 11.48%, 51.93% 11.07%, 51.87% 10.68%, 51.83% 10.33%, 51.83% 10.00%, 51.87% 9.72%, 51.94% 9.47%, 52.05% 9.26%, 52.20% 9.09%, 52.39% 8.96%, 52.62% 8.87%, 52.90% 8.84%, 53.23% 8.84%, 53.61% 8.86%, 54.02% 8.90%, 54.48% 8.96%, 54.97% 9.04%, 55.51% 9.14%, 56.07% 9.26%, 56.68% 9.40%, 57.31% 9.56%, 57.97% 9.74%, 58.66% 9.93%, 59.38% 10.15%, 60.12% 10.38%, 60.88% 10.63%, 61.66% 10.90%, 62.46% 11.18%, 63.28% 11.48%, 64.11% 11.80%, 64.96% 12.14%, 65.81% 12.49%, 66.68% 12.86%, 67.55% 13.24%, 68.42% 13.63%, 69.30% 14.05%, 70.19% 14.47%, 71.07% 14.91%, 71.95% 15.37%, 72.82% 15.84%, 73.69% 16.32%, 74.55% 16.81%, 75.40% 17.32%, 76.24% 17.84%, 77.07% 18.38%, 77.88% 18.92%, 78.68% 19.48%, 79.45% 20.05%, 80.20% 20.62%, 80.94% 21.21%, 81.64% 21.82%, 82.32% 22.43%, 82.97% 23.05%, 83.59% 23.68%, 84.18% 24.32%, 84.74% 24.97%, 85.26% 25.63%, 85.74% 26.29%, 86.18% 26.97%, 86.58% 27.65%, 86.94% 28.34%);">
+                    </div>
+
+                    <div class="w-full bg-black text-white font-mono text-xs text-center py-1 font-bold mt-2">
+                        BLOB
+                    </div>
+                </div>
+
+                <!-- Card 1 (Front - Main) -->
+                <div id="gen-card-2"
+                    class="gen-card absolute w-56 h-56 md:w-64 md:h-64 bg-neo-pink border-4 border-black shadow-neo-xl transition-all duration-700 ease-in-out z-30 flex flex-col items-center justify-between p-4 group">
+                    <div class="w-full flex justify-between items-center pb-2">
+                        <i class="fa-solid fa-gear text-xl animate-spin-slow"></i>
+                        <span class="font-bold text-sm bg-neo-yellow px-1 border border-black shadow-neo">GEN_V1</span>
+                    </div>
+
+                    <div class="w-24 h-24 md:w-32 md:h-32 bg-neo-white border-4 border-black shadow-sm group-hover:rotate-12 transition-transform duration-300"
+                        style="clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);">
+                    </div>
+
+                    <div class="w-full bg-black text-white font-mono text-xs text-center py-1 font-bold mt-2">
+                        STARBURST_12
+                    </div>
+                </div>
+
+                <!-- Floating Badge -->
+                <div
+                    class="absolute top-0 right-0 md:top-10 md:right-10 bg-neo-yellow border-4 border-black px-4 py-2 font-black shadow-neo rotate-12 z-40 animate-bounce cursor-default">
+                    1K+ VARIANTS
                 </div>
             </div>
         </div>
@@ -601,38 +725,80 @@
 
     <!-- Section 3: Primitives -->
     <!-- Section 3: Primitives -->
-    <section class="py-24">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+    <section class="py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-8 md:gap-16">
             <div class="md:w-1/2">
-                <div class="inline-block bg-neo-blue text-black font-bold px-3 py-1 mb-4 text-sm uppercase">The Basics
+                <div
+                    class="inline-block bg-neo-blue text-black font-bold px-3 py-1 mb-4 text-sm uppercase border-2 border-black shadow-neo">
+                    The Basics
                 </div>
-                <h2 class="font-display text-5xl font-black mb-6">PRIMITIVES</h2>
-                <p class="text-xl font-medium mb-8">Start with a solid foundation. Choose from a library of classic
+                <h2 class="font-display text-3xl md:text-5xl font-black mb-6">PRIMITIVES</h2>
+                <p class="text-lg md:text-xl font-medium mb-8">Start with a solid foundation. Choose from a library of
+                    classic
                     shapes: Triangles, Pentagons, Hexagons, and Rhombuses. They are essentially starting points for your
                     chaos.</p>
             </div>
             <div class="md:w-1/2">
-                <div class="bg-neo-yellow border-4 border-black p-12 shadow-neo-xl">
-                    <div class="bg-white border-4 border-black p-6 shadow-neo-lg rotate-2">
-                        <div class="grid grid-cols-3 gap-3">
+                <div class="bg-neo-yellow border-4 border-black p-4 md:p-8 shadow-neo-xl rotate-1">
+                    <div class="bg-white border-4 border-black p-6 shadow-sm">
+                        <div class="flex justify-between items-center mb-4 border-b-2 border-black pb-2">
+                            <span class="font-bold text-xs uppercase bg-black text-white px-2">Primitives_Lib_V1</span>
+                            <div class="flex gap-1">
+                                <div class="w-3 h-3 rounded-full bg-neo-pink border border-black"></div>
+                                <div class="w-3 h-3 rounded-full bg-neo-yellow border border-black"></div>
+                                <div class="w-3 h-3 rounded-full bg-neo-green border border-black"></div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4">
+                            <!-- TRIANGLE -->
                             <div
-                                class="w-16 h-16 bg-gray-50 border-2 border-black flex items-center justify-center font-bold text-xs hover:bg-black hover:text-white transition-colors">
-                                TRI</div>
+                                class="aspect-square bg-gray-50 border-2 border-black flex flex-col items-center justify-center gap-2 hover:bg-neo-pink hover:text-white transition-colors group cursor-default p-2">
+                                <div class="w-10 h-10 bg-black group-hover:bg-white transition-colors"
+                                    style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+                                <span class="font-bold text-[10px] uppercase">TRI</span>
+                            </div>
+
+                            <!-- RECT / SQUARE -->
                             <div
-                                class="w-16 h-16 bg-gray-50 border-2 border-black flex items-center justify-center font-bold text-xs hover:bg-black hover:text-white transition-colors">
-                                RECT</div>
+                                class="aspect-square bg-gray-50 border-2 border-black flex flex-col items-center justify-center gap-2 hover:bg-neo-blue hover:text-white transition-colors group cursor-default p-2">
+                                <div class="w-10 h-10 bg-black group-hover:bg-white transition-colors"></div>
+                                <span class="font-bold text-[10px] uppercase">SQUARE</span>
+                            </div>
+
+                            <!-- PENTAGON -->
                             <div
-                                class="w-16 h-16 bg-gray-50 border-2 border-black flex items-center justify-center font-bold text-xs hover:bg-black hover:text-white transition-colors">
-                                PENT</div>
+                                class="aspect-square bg-gray-50 border-2 border-black flex flex-col items-center justify-center gap-2 hover:bg-neo-green hover:text-white transition-colors group cursor-default p-2">
+                                <div class="w-10 h-10 bg-black group-hover:bg-white transition-colors"
+                                    style="clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);"></div>
+                                <span class="font-bold text-[10px] uppercase">PENT</span>
+                            </div>
+
+                            <!-- HEXAGON -->
                             <div
-                                class="w-16 h-16 bg-gray-50 border-2 border-black flex items-center justify-center font-bold text-xs hover:bg-black hover:text-white transition-colors">
-                                HEX</div>
+                                class="aspect-square bg-gray-50 border-2 border-black flex flex-col items-center justify-center gap-2 hover:bg-neo-purple hover:text-white transition-colors group cursor-default p-2">
+                                <div class="w-10 h-10 bg-black group-hover:bg-white transition-colors"
+                                    style="clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);">
+                                </div>
+                                <span class="font-bold text-[10px] uppercase">HEX</span>
+                            </div>
+
+                            <!-- OCTAGON -->
                             <div
-                                class="w-16 h-16 bg-gray-50 border-2 border-black flex items-center justify-center font-bold text-xs hover:bg-black hover:text-white transition-colors">
-                                OCT</div>
+                                class="aspect-square bg-gray-50 border-2 border-black flex flex-col items-center justify-center gap-2 hover:bg-neo-yellow hover:text-black transition-colors group cursor-default p-2">
+                                <div class="w-10 h-10 bg-black group-hover:bg-black transition-colors"
+                                    style="clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);">
+                                </div>
+                                <span class="font-bold text-[10px] uppercase">OCT</span>
+                            </div>
+
+                            <!-- STAR -->
                             <div
-                                class="w-16 h-16 bg-gray-50 border-2 border-black flex items-center justify-center font-bold text-xs hover:bg-black hover:text-white transition-colors">
-                                STAR</div>
+                                class="aspect-square bg-gray-50 border-2 border-black flex flex-col items-center justify-center gap-2 hover:bg-neo-red hover:text-white transition-colors group cursor-default p-2">
+                                <div class="w-10 h-10 bg-black group-hover:bg-white transition-colors"
+                                    style="clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);">
+                                </div>
+                                <span class="font-bold text-[10px] uppercase">STAR</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -641,9 +807,10 @@
     </section>
 
     <!-- Section 4: Canvas Functions -->
-    <div class="max-w-7xl mx-auto px-6 my-24">
-        <div class="border-4 border-neo-black bg-neo-black text-white shadow-neo-xl p-12">
-            <h2 class="font-display text-5xl font-black mb-16 text-center text-neo-yellow">CANVAS MASTERY</h2>
+    <div class="max-w-7xl mx-auto px-6 my-16 md:my-24">
+        <div class="border-4 border-neo-black bg-neo-black text-white shadow-neo-xl p-6 md:p-12">
+            <h2 class="font-display text-3xl md:text-5xl font-black mb-8 md:mb-16 text-center text-neo-yellow">CANVAS
+                MASTERY</h2>
             <div class="grid md:grid-cols-4 gap-6">
                 <div
                     class="bg-gray-900 border-4 border-white p-6 hover:bg-white hover:text-black transition-colors group">
@@ -675,13 +842,16 @@
 
     <!-- Section 5: Shape Control -->
     <!-- Section 5: Shape Control -->
-    <section class="py-24">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+    <section class="py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-8 md:gap-16">
             <div class="md:w-1/2">
-                <div class="inline-block bg-neo-pink text-white font-bold px-3 py-1 mb-4 text-sm uppercase">Total
+                <div
+                    class="inline-block bg-neo-pink text-white font-bold px-3 py-1 mb-4 text-sm uppercase border-2 border-black shadow-neo">
+                    Total
                     Precision</div>
-                <h2 class="font-display text-5xl font-black mb-6">SHAPE CONTROL</h2>
-                <p class="text-xl font-medium mb-8">It's not just about dragging dots. Fine tune everything. Adjust
+                <h2 class="font-display text-3xl md:text-5xl font-black mb-6">SHAPE CONTROL</h2>
+                <p class="text-lg md:text-xl font-medium mb-8">It's not just about dragging dots. Fine tune everything.
+                    Adjust
                     corner roundness globally or individually. Switch point types from sharp corners to smooth bezier
                     curves for organic flows.</p>
                 <div class="bg-gray-100 border-2 border-black p-4 font-mono text-sm shadow-sm">
@@ -714,13 +884,16 @@
     </section>
 
     <!-- Section 6: Image Support -->
-    <section class="py-24">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row-reverse items-center gap-16">
+    <section class="py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row-reverse items-center gap-8 md:gap-16">
             <div class="md:w-1/2">
-                <div class="inline-block bg-neo-black text-white font-bold px-3 py-1 mb-4 text-sm uppercase">Masking
+                <div
+                    class="inline-block bg-neo-green text-black font-bold px-3 py-1 mb-4 text-sm uppercase border-2 border-black shadow-neo">
+                    Masking
                     Engine</div>
-                <h2 class="font-display text-5xl font-black mb-6">IMAGE MASKS</h2>
-                <p class="text-xl font-medium mb-8">Turn any image into a shape. Upload your file, and we wrap the
+                <h2 class="font-display text-3xl md:text-5xl font-black mb-6">IMAGE MASKS</h2>
+                <p class="text-lg md:text-xl font-medium mb-8">Turn any image into a shape. Upload your file, and we
+                    wrap the
                     clip-path around it. Move the image inside the shape, scale it, fit it, or fill it.</p>
                 <button
                     class="bg-neo-yellow border-2 border-black px-6 py-2 font-bold hover:shadow-neo transition-all">UPLOAD
@@ -728,8 +901,7 @@
             </div>
             <div class="md:w-1/2">
                 <div class="bg-neo-white border-4 border-black p-12 shadow-neo-xl">
-                    <div
-                        class="w-auto aspect-video bg-white overflow-hidden relative group">
+                    <div class="w-auto aspect-video bg-white overflow-hidden relative group">
                         <img src="/assets/shape001.png"
                             class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-500">
                         <div
@@ -743,13 +915,15 @@
 
     <!-- Section 7: Effects -->
     <!-- Section 7: Effects -->
-    <section class="py-24">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+    <section class="py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-8 md:gap-16">
             <div class="md:w-1/2">
-                <div class="inline-block bg-neo-purple text-white font-bold px-3 py-1 mb-4 text-sm uppercase">Style It
+                <div
+                    class="inline-block bg-neo-purple text-white font-bold px-3 py-1 mb-4 text-sm uppercase border-2 border-black shadow-neo">
+                    Style It
                     Up</div>
-                <h2 class="font-display text-5xl font-black mb-6">EFFECTS</h2>
-                <p class="text-xl font-medium mb-8">Shapes are boring if they are flat. Add depth.</p>
+                <h2 class="font-display text-3xl md:text-5xl font-black mb-6">EFFECTS</h2>
+                <p class="text-lg md:text-xl font-medium mb-8">Shapes are boring if they are flat. Add depth.</p>
                 <div class="space-y-4">
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 bg-neo-white border-2 border-black shadow-[4px_4px_0_0_#000]"></div>
@@ -767,8 +941,25 @@
             </div>
             <div class="md:w-1/2">
                 <div class="bg-neo-green border-4 border-black p-12 shadow-neo-xl">
-                    <div
-                        class="w-64 h-64 bg-neo-pink border-4 border-black shadow-neo mx-auto rotate-6 hover:rotate-12 transition-transform">
+                    <div class="relative w-64 h-64 mx-auto group cursor-pointer perspective-1000">
+
+                        <!-- Layer 3: Drop Shadow (Deepest) -->
+                        <div class="absolute inset-0 bg-black opacity-40 transform translate-x-4 translate-y-4 group-hover:translate-x-12 group-hover:translate-y-12 transition-all duration-500 ease-out"
+                            style="clip-path: polygon(35.00% 5.00%, 35.32% 4.71%, 35.67% 4.42%, 36.06% 4.15%, 36.47% 3.90%, 36.92% 3.65%, 37.40% 3.42%, 37.90% 3.19%, 38.43% 2.98%, 38.98% 2.79%, 39.56% 2.60%, 40.16% 2.43%, 40.78% 2.26%, 41.41% 2.11%, 42.07% 1.98%, 42.74% 1.85%, 43.42% 1.74%, 44.12% 1.63%, 44.83% 1.54%, 45.55% 1.47%, 46.28% 1.40%, 47.02% 1.35%, 47.76% 1.30%, 48.50% 1.27%, 49.25% 1.26%, 50.00% 1.25%, 50.75% 1.26%, 51.50% 1.27%, 52.24% 1.30%, 52.98% 1.35%, 53.72% 1.40%, 54.45% 1.47%, 55.17% 1.54%, 55.88% 1.63%, 56.58% 1.74%, 57.26% 1.85%, 57.93% 1.98%, 58.59% 2.11%, 59.22% 2.26%, 59.84% 2.43%, 60.44% 2.60%, 61.02% 2.79%, 61.57% 2.98%, 62.10% 3.19%, 62.60% 3.42%, 63.08% 3.65%, 63.53% 3.90%, 63.94% 4.15%, 64.33% 4.42%, 64.68% 4.71%, 65.00% 5.00%, 65.28% 5.32%, 65.53% 5.67%, 65.74% 6.06%, 65.93% 6.47%, 66.08% 6.92%, 66.20% 7.40%, 66.30% 7.90%, 66.37% 8.43%, 66.42% 8.98%, 66.44% 9.56%, 66.44% 10.16%, 66.42% 10.78%, 66.39% 11.41%, 66.33% 12.07%, 66.26% 12.74%, 66.18% 13.42%, 66.08% 14.12%, 65.97% 14.83%, 65.85% 15.55%, 65.72% 16.28%, 65.58% 17.02%, 65.44% 17.76%, 65.30% 18.50%, 65.15% 19.25%, 65.00% 20.00%, 64.85% 20.75%, 64.70% 21.50%, 64.56% 22.24%, 64.42% 22.98%, 64.28% 23.72%, 64.15% 24.45%, 64.03% 25.17%, 63.92% 25.88%, 63.82% 26.58%, 63.74% 27.26%, 63.67% 27.93%, 63.61% 28.59%, 63.58% 29.22%, 63.56% 29.84%, 63.56% 30.44%, 63.58% 31.02%, 63.63% 31.57%, 63.70% 32.10%, 63.80% 32.60%, 63.92% 33.08%, 64.07% 33.53%, 64.26% 33.94%, 64.47% 34.33%, 64.72% 34.68%, 65.00% 35.00%, 65.32% 35.28%, 65.67% 35.53%, 66.06% 35.74%, 66.47% 35.93%, 66.92% 36.08%, 67.40% 36.20%, 67.90% 36.30%, 68.43% 36.37%, 68.98% 36.42%, 69.56% 36.44%, 70.16% 36.44%, 70.78% 36.42%, 71.41% 36.39%, 72.07% 36.33%, 72.74% 36.26%, 73.42% 36.18%, 74.12% 36.08%, 74.83% 35.97%, 75.55% 35.85%, 76.28% 35.72%, 77.02% 35.58%, 77.76% 35.44%, 78.50% 35.30%, 79.25% 35.15%, 80.00% 35.00%, 80.75% 34.85%, 81.50% 34.70%, 82.24% 34.56%, 82.98% 34.42%, 83.72% 34.28%, 84.45% 34.15%, 85.17% 34.03%, 85.88% 33.92%, 86.58% 33.82%, 87.26% 33.74%, 87.93% 33.67%, 88.59% 33.61%, 89.22% 33.58%, 89.84% 33.56%, 90.44% 33.56%, 91.02% 33.58%, 91.57% 33.63%, 92.10% 33.70%, 92.60% 33.80%, 93.08% 33.92%, 93.53% 34.07%, 93.94% 34.26%, 94.33% 34.47%, 94.68% 34.72%, 95.00% 35.00%, 95.29% 35.32%, 95.58% 35.67%, 95.85% 36.06%, 96.10% 36.47%, 96.35% 36.92%, 96.58% 37.40%, 96.81% 37.90%, 97.02% 38.43%, 97.21% 38.98%, 97.40% 39.56%, 97.57% 40.16%, 97.74% 40.78%, 97.89% 41.41%, 98.02% 42.07%, 98.15% 42.74%, 98.26% 43.42%, 98.37% 44.12%, 98.46% 44.83%, 98.53% 45.55%, 98.60% 46.28%, 98.65% 47.02%, 98.70% 47.76%, 98.73% 48.50%, 98.74% 49.25%, 98.75% 50.00%, 98.74% 50.75%, 98.73% 51.50%, 98.70% 52.24%, 98.65% 52.98%, 98.60% 53.72%, 98.53% 54.45%, 98.46% 55.17%, 98.37% 55.88%, 98.26% 56.58%, 98.15% 57.26%, 98.02% 57.93%, 97.89% 58.59%, 97.74% 59.22%, 97.57% 59.84%, 97.40% 60.44%, 97.21% 61.02%, 97.02% 61.57%, 96.81% 62.10%, 96.58% 62.60%, 96.35% 63.08%, 96.10% 63.53%, 95.85% 63.94%, 95.58% 64.33%, 95.29% 64.68%, 95.00% 65.00%, 94.68% 65.28%, 94.33% 65.53%, 93.94% 65.74%, 93.53% 65.93%, 93.08% 66.08%, 92.60% 66.20%, 92.10% 66.30%, 91.57% 66.37%, 91.02% 66.42%, 90.44% 66.44%, 89.84% 66.44%, 89.22% 66.42%, 88.59% 66.39%, 87.93% 66.33%, 87.26% 66.26%, 86.58% 66.18%, 85.88% 66.08%, 85.17% 65.97%, 84.45% 65.85%, 83.72% 65.72%, 82.98% 65.58%, 82.24% 65.44%, 81.50% 65.30%, 80.75% 65.15%, 80.00% 65.00%, 79.25% 64.85%, 78.50% 64.70%, 77.76% 64.56%, 77.02% 64.42%, 76.28% 64.28%, 75.55% 64.15%, 74.83% 64.03%, 74.12% 63.92%, 73.42% 63.82%, 72.74% 63.74%, 72.07% 63.67%, 71.41% 63.61%, 70.78% 63.58%, 70.16% 63.56%, 69.56% 63.56%, 68.98% 63.58%, 68.43% 63.63%, 67.90% 63.70%, 67.40% 63.80%, 66.92% 63.92%, 66.47% 64.07%, 66.06% 64.26%, 65.67% 64.47%, 65.32% 64.72%, 65.00% 65.00%, 64.72% 65.32%, 64.47% 65.67%, 64.26% 66.06%, 64.07% 66.47%, 63.92% 66.92%, 63.80% 67.40%, 63.70% 67.90%, 63.63% 68.43%, 63.58% 68.98%, 63.56% 69.56%, 63.56% 70.16%, 63.58% 70.78%, 63.61% 71.41%, 63.67% 72.07%, 63.74% 72.74%, 63.82% 73.42%, 63.92% 74.12%, 64.03% 74.83%, 64.15% 75.55%, 64.28% 76.28%, 64.42% 77.02%, 64.56% 77.76%, 64.70% 78.50%, 64.85% 79.25%, 65.00% 80.00%, 65.15% 80.75%, 65.30% 81.50%, 65.44% 82.24%, 65.58% 82.98%, 65.72% 83.72%, 65.85% 84.45%, 65.97% 85.17%, 66.08% 85.88%, 66.18% 86.58%, 66.26% 87.26%, 66.33% 87.93%, 66.39% 88.59%, 66.42% 89.22%, 66.44% 89.84%, 66.44% 90.44%, 66.42% 91.02%, 66.37% 91.57%, 66.30% 92.10%, 66.20% 92.60%, 66.08% 93.08%, 65.93% 93.53%, 65.74% 93.94%, 65.53% 94.33%, 65.28% 94.68%, 65.00% 95.00%, 64.68% 95.29%, 64.33% 95.58%, 63.94% 95.85%, 63.53% 96.10%, 63.08% 96.35%, 62.60% 96.58%, 62.10% 96.81%, 61.57% 97.02%, 61.02% 97.21%, 60.44% 97.40%, 59.84% 97.57%, 59.22% 97.74%, 58.59% 97.89%, 57.93% 98.02%, 57.26% 98.15%, 56.58% 98.26%, 55.88% 98.37%, 55.17% 98.46%, 54.45% 98.53%, 53.72% 98.60%, 52.98% 98.65%, 52.24% 98.70%, 51.50% 98.73%, 50.75% 98.74%, 50.00% 98.75%, 49.25% 98.74%, 48.50% 98.73%, 47.76% 98.70%, 47.02% 98.65%, 46.28% 98.60%, 45.55% 98.53%, 44.83% 98.46%, 44.12% 98.37%, 43.42% 98.26%, 42.74% 98.15%, 42.07% 98.02%, 41.41% 97.89%, 40.78% 97.74%, 40.16% 97.57%, 39.56% 97.40%, 38.98% 97.21%, 38.43% 97.02%, 37.90% 96.81%, 37.40% 96.58%, 36.92% 96.35%, 36.47% 96.10%, 36.06% 95.85%, 35.67% 95.58%, 35.32% 95.29%, 35.00% 95.00%, 34.72% 94.68%, 34.47% 94.33%, 34.26% 93.94%, 34.07% 93.53%, 33.92% 93.08%, 33.80% 92.60%, 33.70% 92.10%, 33.63% 91.57%, 33.58% 91.02%, 33.56% 90.44%, 33.56% 89.84%, 33.58% 89.22%, 33.61% 88.59%, 33.67% 87.93%, 33.74% 87.26%, 33.82% 86.58%, 33.92% 85.88%, 34.03% 85.17%, 34.15% 84.45%, 34.28% 83.72%, 34.42% 82.98%, 34.56% 82.24%, 34.70% 81.50%, 34.85% 80.75%, 35.00% 80.00%, 35.15% 79.25%, 35.30% 78.50%, 35.44% 77.76%, 35.58% 77.02%, 35.72% 76.28%, 35.85% 75.55%, 35.97% 74.83%, 36.08% 74.12%, 36.18% 73.42%, 36.26% 72.74%, 36.33% 72.07%, 36.39% 71.41%, 36.42% 70.78%, 36.44% 70.16%, 36.44% 69.56%, 36.42% 68.98%, 36.37% 68.43%, 36.30% 67.90%, 36.20% 67.40%, 36.08% 66.92%, 35.93% 66.47%, 35.74% 66.06%, 35.53% 65.67%, 35.28% 65.32%, 35.00% 65.00%, 34.68% 64.72%, 34.33% 64.47%, 33.94% 64.26%, 33.53% 64.07%, 33.08% 63.92%, 32.60% 63.80%, 32.10% 63.70%, 31.57% 63.63%, 31.02% 63.58%, 30.44% 63.56%, 29.84% 63.56%, 29.22% 63.58%, 28.59% 63.61%, 27.93% 63.67%, 27.26% 63.74%, 26.58% 63.82%, 25.88% 63.92%, 25.17% 64.03%, 24.45% 64.15%, 23.72% 64.28%, 22.98% 64.42%, 22.24% 64.56%, 21.50% 64.70%, 20.75% 64.85%, 20.00% 65.00%, 19.25% 65.15%, 18.50% 65.30%, 17.76% 65.44%, 17.02% 65.58%, 16.28% 65.72%, 15.55% 65.85%, 14.83% 65.97%, 14.12% 66.08%, 13.42% 66.18%, 12.74% 66.26%, 12.07% 66.33%, 11.41% 66.39%, 10.78% 66.42%, 10.16% 66.44%, 9.56% 66.44%, 8.98% 66.42%, 8.43% 66.37%, 7.90% 66.30%, 7.40% 66.20%, 6.92% 66.08%, 6.47% 65.93%, 6.06% 65.74%, 5.67% 65.53%, 5.32% 65.28%, 5.00% 65.00%, 4.71% 64.68%, 4.42% 64.33%, 4.15% 63.94%, 3.90% 63.53%, 3.65% 63.08%, 3.42% 62.60%, 3.19% 62.10%, 2.98% 61.57%, 2.79% 61.02%, 2.60% 60.44%, 2.43% 59.84%, 2.26% 59.22%, 2.11% 58.59%, 1.98% 57.93%, 1.85% 57.26%, 1.74% 56.58%, 1.63% 55.88%, 1.54% 55.17%, 1.47% 54.45%, 1.40% 53.72%, 1.35% 52.98%, 1.30% 52.24%, 1.27% 51.50%, 1.26% 50.75%, 1.25% 50.00%, 1.26% 49.25%, 1.27% 48.50%, 1.30% 47.76%, 1.35% 47.02%, 1.40% 46.28%, 1.47% 45.55%, 1.54% 44.83%, 1.63% 44.12%, 1.74% 43.42%, 1.85% 42.74%, 1.98% 42.07%, 2.11% 41.41%, 2.26% 40.78%, 2.43% 40.16%, 2.60% 39.56%, 2.79% 38.98%, 2.98% 38.43%, 3.19% 37.90%, 3.42% 37.40%, 3.65% 36.92%, 3.90% 36.47%, 4.15% 36.06%, 4.42% 35.67%, 4.71% 35.32%, 5.00% 35.00%, 5.32% 34.72%, 5.67% 34.47%, 6.06% 34.26%, 6.47% 34.07%, 6.92% 33.92%, 7.40% 33.80%, 7.90% 33.70%, 8.43% 33.63%, 8.98% 33.58%, 9.56% 33.56%, 10.16% 33.56%, 10.78% 33.58%, 11.41% 33.61%, 12.07% 33.67%, 12.74% 33.74%, 13.42% 33.82%, 14.12% 33.92%, 14.83% 34.03%, 15.55% 34.15%, 16.28% 34.28%, 17.02% 34.42%, 17.76% 34.56%, 18.50% 34.70%, 19.25% 34.85%, 20.00% 35.00%, 20.75% 35.15%, 21.50% 35.30%, 22.24% 35.44%, 22.98% 35.58%, 23.72% 35.72%, 24.45% 35.85%, 25.17% 35.97%, 25.88% 36.08%, 26.58% 36.18%, 27.26% 36.26%, 27.93% 36.33%, 28.59% 36.39%, 29.22% 36.42%, 29.84% 36.44%, 30.44% 36.44%, 31.02% 36.42%, 31.57% 36.37%, 32.10% 36.30%, 32.60% 36.20%, 33.08% 36.08%, 33.53% 35.93%, 33.94% 35.74%, 34.33% 35.53%, 34.68% 35.28%, 35.00% 35.00%, 35.28% 34.68%, 35.53% 34.33%, 35.74% 33.94%, 35.93% 33.53%, 36.08% 33.08%, 36.20% 32.60%, 36.30% 32.10%, 36.37% 31.57%, 36.42% 31.02%, 36.44% 30.44%, 36.44% 29.84%, 36.42% 29.22%, 36.39% 28.59%, 36.33% 27.93%, 36.26% 27.26%, 36.18% 26.58%, 36.08% 25.88%, 35.97% 25.17%, 35.85% 24.45%, 35.72% 23.72%, 35.58% 22.98%, 35.44% 22.24%, 35.30% 21.50%, 35.15% 20.75%, 35.00% 20.00%, 34.85% 19.25%, 34.70% 18.50%, 34.56% 17.76%, 34.42% 17.02%, 34.28% 16.28%, 34.15% 15.55%, 34.03% 14.83%, 33.92% 14.12%, 33.82% 13.42%, 33.74% 12.74%, 33.67% 12.07%, 33.61% 11.41%, 33.58% 10.78%, 33.56% 10.16%, 33.56% 9.56%, 33.58% 8.98%, 33.63% 8.43%, 33.70% 7.90%, 33.80% 7.40%, 33.92% 6.92%, 34.07% 6.47%, 34.26% 6.06%, 34.47% 5.67%, 34.72% 5.32%);">
+                        </div>
+
+                        <!-- Layer 1: Main Shape w/ Inner Shadow (Top) -->
+                        <div class="absolute h-full w-full inset-0 bg-neo-pink border-4 border-black flex items-center justify-center transform group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-500 ease-out z-10"
+                            style="clip-path: polygon(35.00% 5.00%, 35.32% 4.71%, 35.67% 4.42%, 36.06% 4.15%, 36.47% 3.90%, 36.92% 3.65%, 37.40% 3.42%, 37.90% 3.19%, 38.43% 2.98%, 38.98% 2.79%, 39.56% 2.60%, 40.16% 2.43%, 40.78% 2.26%, 41.41% 2.11%, 42.07% 1.98%, 42.74% 1.85%, 43.42% 1.74%, 44.12% 1.63%, 44.83% 1.54%, 45.55% 1.47%, 46.28% 1.40%, 47.02% 1.35%, 47.76% 1.30%, 48.50% 1.27%, 49.25% 1.26%, 50.00% 1.25%, 50.75% 1.26%, 51.50% 1.27%, 52.24% 1.30%, 52.98% 1.35%, 53.72% 1.40%, 54.45% 1.47%, 55.17% 1.54%, 55.88% 1.63%, 56.58% 1.74%, 57.26% 1.85%, 57.93% 1.98%, 58.59% 2.11%, 59.22% 2.26%, 59.84% 2.43%, 60.44% 2.60%, 61.02% 2.79%, 61.57% 2.98%, 62.10% 3.19%, 62.60% 3.42%, 63.08% 3.65%, 63.53% 3.90%, 63.94% 4.15%, 64.33% 4.42%, 64.68% 4.71%, 65.00% 5.00%, 65.28% 5.32%, 65.53% 5.67%, 65.74% 6.06%, 65.93% 6.47%, 66.08% 6.92%, 66.20% 7.40%, 66.30% 7.90%, 66.37% 8.43%, 66.42% 8.98%, 66.44% 9.56%, 66.44% 10.16%, 66.42% 10.78%, 66.39% 11.41%, 66.33% 12.07%, 66.26% 12.74%, 66.18% 13.42%, 66.08% 14.12%, 65.97% 14.83%, 65.85% 15.55%, 65.72% 16.28%, 65.58% 17.02%, 65.44% 17.76%, 65.30% 18.50%, 65.15% 19.25%, 65.00% 20.00%, 64.85% 20.75%, 64.70% 21.50%, 64.56% 22.24%, 64.42% 22.98%, 64.28% 23.72%, 64.15% 24.45%, 64.03% 25.17%, 63.92% 25.88%, 63.82% 26.58%, 63.74% 27.26%, 63.67% 27.93%, 63.61% 28.59%, 63.58% 29.22%, 63.56% 29.84%, 63.56% 30.44%, 63.58% 31.02%, 63.63% 31.57%, 63.70% 32.10%, 63.80% 32.60%, 63.92% 33.08%, 64.07% 33.53%, 64.26% 33.94%, 64.47% 34.33%, 64.72% 34.68%, 65.00% 35.00%, 65.32% 35.28%, 65.67% 35.53%, 66.06% 35.74%, 66.47% 35.93%, 66.92% 36.08%, 67.40% 36.20%, 67.90% 36.30%, 68.43% 36.37%, 68.98% 36.42%, 69.56% 36.44%, 70.16% 36.44%, 70.78% 36.42%, 71.41% 36.39%, 72.07% 36.33%, 72.74% 36.26%, 73.42% 36.18%, 74.12% 36.08%, 74.83% 35.97%, 75.55% 35.85%, 76.28% 35.72%, 77.02% 35.58%, 77.76% 35.44%, 78.50% 35.30%, 79.25% 35.15%, 80.00% 35.00%, 80.75% 34.85%, 81.50% 34.70%, 82.24% 34.56%, 82.98% 34.42%, 83.72% 34.28%, 84.45% 34.15%, 85.17% 34.03%, 85.88% 33.92%, 86.58% 33.82%, 87.26% 33.74%, 87.93% 33.67%, 88.59% 33.61%, 89.22% 33.58%, 89.84% 33.56%, 90.44% 33.56%, 91.02% 33.58%, 91.57% 33.63%, 92.10% 33.70%, 92.60% 33.80%, 93.08% 33.92%, 93.53% 34.07%, 93.94% 34.26%, 94.33% 34.47%, 94.68% 34.72%, 95.00% 35.00%, 95.29% 35.32%, 95.58% 35.67%, 95.85% 36.06%, 96.10% 36.47%, 96.35% 36.92%, 96.58% 37.40%, 96.81% 37.90%, 97.02% 38.43%, 97.21% 38.98%, 97.40% 39.56%, 97.57% 40.16%, 97.74% 40.78%, 97.89% 41.41%, 98.02% 42.07%, 98.15% 42.74%, 98.26% 43.42%, 98.37% 44.12%, 98.46% 44.83%, 98.53% 45.55%, 98.60% 46.28%, 98.65% 47.02%, 98.70% 47.76%, 98.73% 48.50%, 98.74% 49.25%, 98.75% 50.00%, 98.74% 50.75%, 98.73% 51.50%, 98.70% 52.24%, 98.65% 52.98%, 98.60% 53.72%, 98.53% 54.45%, 98.46% 55.17%, 98.37% 55.88%, 98.26% 56.58%, 98.15% 57.26%, 98.02% 57.93%, 97.89% 58.59%, 97.74% 59.22%, 97.57% 59.84%, 97.40% 60.44%, 97.21% 61.02%, 97.02% 61.57%, 96.81% 62.10%, 96.58% 62.60%, 96.35% 63.08%, 96.10% 63.53%, 95.85% 63.94%, 95.58% 64.33%, 95.29% 64.68%, 95.00% 65.00%, 94.68% 65.28%, 94.33% 65.53%, 93.94% 65.74%, 93.53% 65.93%, 93.08% 66.08%, 92.60% 66.20%, 92.10% 66.30%, 91.57% 66.37%, 91.02% 66.42%, 90.44% 66.44%, 89.84% 66.44%, 89.22% 66.42%, 88.59% 66.39%, 87.93% 66.33%, 87.26% 66.26%, 86.58% 66.18%, 85.88% 66.08%, 85.17% 65.97%, 84.45% 65.85%, 83.72% 65.72%, 82.98% 65.58%, 82.24% 65.44%, 81.50% 65.30%, 80.75% 65.15%, 80.00% 65.00%, 79.25% 64.85%, 78.50% 64.70%, 77.76% 64.56%, 77.02% 64.42%, 76.28% 64.28%, 75.55% 64.15%, 74.83% 64.03%, 74.12% 63.92%, 73.42% 63.82%, 72.74% 63.74%, 72.07% 63.67%, 71.41% 63.61%, 70.78% 63.58%, 70.16% 63.56%, 69.56% 63.56%, 68.98% 63.58%, 68.43% 63.63%, 67.90% 63.70%, 67.40% 63.80%, 66.92% 63.92%, 66.47% 64.07%, 66.06% 64.26%, 65.67% 64.47%, 65.32% 64.72%, 65.00% 65.00%, 64.72% 65.32%, 64.47% 65.67%, 64.26% 66.06%, 64.07% 66.47%, 63.92% 66.92%, 63.80% 67.40%, 63.70% 67.90%, 63.63% 68.43%, 63.58% 68.98%, 63.56% 69.56%, 63.56% 70.16%, 63.58% 70.78%, 63.61% 71.41%, 63.67% 72.07%, 63.74% 72.74%, 63.82% 73.42%, 63.92% 74.12%, 64.03% 74.83%, 64.15% 75.55%, 64.28% 76.28%, 64.42% 77.02%, 64.56% 77.76%, 64.70% 78.50%, 64.85% 79.25%, 65.00% 80.00%, 65.15% 80.75%, 65.30% 81.50%, 65.44% 82.24%, 65.58% 82.98%, 65.72% 83.72%, 65.85% 84.45%, 65.97% 85.17%, 66.08% 85.88%, 66.18% 86.58%, 66.26% 87.26%, 66.33% 87.93%, 66.39% 88.59%, 66.42% 89.22%, 66.44% 89.84%, 66.44% 90.44%, 66.42% 91.02%, 66.37% 91.57%, 66.30% 92.10%, 66.20% 92.60%, 66.08% 93.08%, 65.93% 93.53%, 65.74% 93.94%, 65.53% 94.33%, 65.28% 94.68%, 65.00% 95.00%, 64.68% 95.29%, 64.33% 95.58%, 63.94% 95.85%, 63.53% 96.10%, 63.08% 96.35%, 62.60% 96.58%, 62.10% 96.81%, 61.57% 97.02%, 61.02% 97.21%, 60.44% 97.40%, 59.84% 97.57%, 59.22% 97.74%, 58.59% 97.89%, 57.93% 98.02%, 57.26% 98.15%, 56.58% 98.26%, 55.88% 98.37%, 55.17% 98.46%, 54.45% 98.53%, 53.72% 98.60%, 52.98% 98.65%, 52.24% 98.70%, 51.50% 98.73%, 50.75% 98.74%, 50.00% 98.75%, 49.25% 98.74%, 48.50% 98.73%, 47.76% 98.70%, 47.02% 98.65%, 46.28% 98.60%, 45.55% 98.53%, 44.83% 98.46%, 44.12% 98.37%, 43.42% 98.26%, 42.74% 98.15%, 42.07% 98.02%, 41.41% 97.89%, 40.78% 97.74%, 40.16% 97.57%, 39.56% 97.40%, 38.98% 97.21%, 38.43% 97.02%, 37.90% 96.81%, 37.40% 96.58%, 36.92% 96.35%, 36.47% 96.10%, 36.06% 95.85%, 35.67% 95.58%, 35.32% 95.29%, 35.00% 95.00%, 34.72% 94.68%, 34.47% 94.33%, 34.26% 93.94%, 34.07% 93.53%, 33.92% 93.08%, 33.80% 92.60%, 33.70% 92.10%, 33.63% 91.57%, 33.58% 91.02%, 33.56% 90.44%, 33.56% 89.84%, 33.58% 89.22%, 33.61% 88.59%, 33.67% 87.93%, 33.74% 87.26%, 33.82% 86.58%, 33.92% 85.88%, 34.03% 85.17%, 34.15% 84.45%, 34.28% 83.72%, 34.42% 82.98%, 34.56% 82.24%, 34.70% 81.50%, 34.85% 80.75%, 35.00% 80.00%, 35.15% 79.25%, 35.30% 78.50%, 35.44% 77.76%, 35.58% 77.02%, 35.72% 76.28%, 35.85% 75.55%, 35.97% 74.83%, 36.08% 74.12%, 36.18% 73.42%, 36.26% 72.74%, 36.33% 72.07%, 36.39% 71.41%, 36.42% 70.78%, 36.44% 70.16%, 36.44% 69.56%, 36.42% 68.98%, 36.37% 68.43%, 36.30% 67.90%, 36.20% 67.40%, 36.08% 66.92%, 35.93% 66.47%, 35.74% 66.06%, 35.53% 65.67%, 35.28% 65.32%, 35.00% 65.00%, 34.68% 64.72%, 34.33% 64.47%, 33.94% 64.26%, 33.53% 64.07%, 33.08% 63.92%, 32.60% 63.80%, 32.10% 63.70%, 31.57% 63.63%, 31.02% 63.58%, 30.44% 63.56%, 29.84% 63.56%, 29.22% 63.58%, 28.59% 63.61%, 27.93% 63.67%, 27.26% 63.74%, 26.58% 63.82%, 25.88% 63.92%, 25.17% 64.03%, 24.45% 64.15%, 23.72% 64.28%, 22.98% 64.42%, 22.24% 64.56%, 21.50% 64.70%, 20.75% 64.85%, 20.00% 65.00%, 19.25% 65.15%, 18.50% 65.30%, 17.76% 65.44%, 17.02% 65.58%, 16.28% 65.72%, 15.55% 65.85%, 14.83% 65.97%, 14.12% 66.08%, 13.42% 66.18%, 12.74% 66.26%, 12.07% 66.33%, 11.41% 66.39%, 10.78% 66.42%, 10.16% 66.44%, 9.56% 66.44%, 8.98% 66.42%, 8.43% 66.37%, 7.90% 66.30%, 7.40% 66.20%, 6.92% 66.08%, 6.47% 65.93%, 6.06% 65.74%, 5.67% 65.53%, 5.32% 65.28%, 5.00% 65.00%, 4.71% 64.68%, 4.42% 64.33%, 4.15% 63.94%, 3.90% 63.53%, 3.65% 63.08%, 3.42% 62.60%, 3.19% 62.10%, 2.98% 61.57%, 2.79% 61.02%, 2.60% 60.44%, 2.43% 59.84%, 2.26% 59.22%, 2.11% 58.59%, 1.98% 57.93%, 1.85% 57.26%, 1.74% 56.58%, 1.63% 55.88%, 1.54% 55.17%, 1.47% 54.45%, 1.40% 53.72%, 1.35% 52.98%, 1.30% 52.24%, 1.27% 51.50%, 1.26% 50.75%, 1.25% 50.00%, 1.26% 49.25%, 1.27% 48.50%, 1.30% 47.76%, 1.35% 47.02%, 1.40% 46.28%, 1.47% 45.55%, 1.54% 44.83%, 1.63% 44.12%, 1.74% 43.42%, 1.85% 42.74%, 1.98% 42.07%, 2.11% 41.41%, 2.26% 40.78%, 2.43% 40.16%, 2.60% 39.56%, 2.79% 38.98%, 2.98% 38.43%, 3.19% 37.90%, 3.42% 37.40%, 3.65% 36.92%, 3.90% 36.47%, 4.15% 36.06%, 4.42% 35.67%, 4.71% 35.32%, 5.00% 35.00%, 5.32% 34.72%, 5.67% 34.47%, 6.06% 34.26%, 6.47% 34.07%, 6.92% 33.92%, 7.40% 33.80%, 7.90% 33.70%, 8.43% 33.63%, 8.98% 33.58%, 9.56% 33.56%, 10.16% 33.56%, 10.78% 33.58%, 11.41% 33.61%, 12.07% 33.67%, 12.74% 33.74%, 13.42% 33.82%, 14.12% 33.92%, 14.83% 34.03%, 15.55% 34.15%, 16.28% 34.28%, 17.02% 34.42%, 17.76% 34.56%, 18.50% 34.70%, 19.25% 34.85%, 20.00% 35.00%, 20.75% 35.15%, 21.50% 35.30%, 22.24% 35.44%, 22.98% 35.58%, 23.72% 35.72%, 24.45% 35.85%, 25.17% 35.97%, 25.88% 36.08%, 26.58% 36.18%, 27.26% 36.26%, 27.93% 36.33%, 28.59% 36.39%, 29.22% 36.42%, 29.84% 36.44%, 30.44% 36.44%, 31.02% 36.42%, 31.57% 36.37%, 32.10% 36.30%, 32.60% 36.20%, 33.08% 36.08%, 33.53% 35.93%, 33.94% 35.74%, 34.33% 35.53%, 34.68% 35.28%, 35.00% 35.00%, 35.28% 34.68%, 35.53% 34.33%, 35.74% 33.94%, 35.93% 33.53%, 36.08% 33.08%, 36.20% 32.60%, 36.30% 32.10%, 36.37% 31.57%, 36.42% 31.02%, 36.44% 30.44%, 36.44% 29.84%, 36.42% 29.22%, 36.39% 28.59%, 36.33% 27.93%, 36.26% 27.26%, 36.18% 26.58%, 36.08% 25.88%, 35.97% 25.17%, 35.85% 24.45%, 35.72% 23.72%, 35.58% 22.98%, 35.44% 22.24%, 35.30% 21.50%, 35.15% 20.75%, 35.00% 20.00%, 34.85% 19.25%, 34.70% 18.50%, 34.56% 17.76%, 34.42% 17.02%, 34.28% 16.28%, 34.15% 15.55%, 34.03% 14.83%, 33.92% 14.12%, 33.82% 13.42%, 33.74% 12.74%, 33.67% 12.07%, 33.61% 11.41%, 33.58% 10.78%, 33.56% 10.16%, 33.56% 9.56%, 33.58% 8.98%, 33.63% 8.43%, 33.70% 7.90%, 33.80% 7.40%, 33.92% 6.92%, 34.07% 6.47%, 34.26% 6.06%, 34.47% 5.67%, 34.72% 5.32%);
+                            transition: clip-path 1.5s ease-in-out"
+                            hover="clip-path: polygon(35.00% 5.00%, 65.00% 5.00%, 65.00% 35.00%, 95.00% 35.00%, 95.00% 65.00%, 65.00% 65.00%, 65.00% 95.00%, 35.00% 95.00%, 35.00% 65.00%, 5.00% 65.00%, 5.00% 35.00%, 35.00% 35.00%);">
+
+                            <div
+                                class="text-center transform group-hover:scale-110 transition-transform duration-500 ease-out">
+                                <i class="fa-solid fa-layer-group text-2xl text-black drop-shadow-md mb-2"></i>
+                                <div class="font-black text-black text-sm drop-shadow-md leading-none">DEPTH</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -779,7 +970,7 @@
     <!-- Section 8: Experiments -->
     <!-- Section 8: Experiments -->
     <!-- Section 8: Experiments -->
-    <section class="py-24 relative overflow-hidden">
+    <section class="py-16 md:py-24 relative overflow-hidden">
         <!-- Background Decor -->
         <div class="absolute inset-0 opacity-5"
             style="background-image: radial-gradient(#000 2px, transparent 2px); background-size: 30px 30px;"></div>
@@ -788,7 +979,7 @@
             <!-- Header -->
             <div class="text-center mb-16">
                 <div
-                    class="inline-block bg-neo-green text-black font-bold px-3 py-1 mb-6 text-sm uppercase border-2 border-black shadow-neo">
+                    class="inline-block bg-neo-yellow text-black font-bold px-3 py-1 mb-6 text-sm uppercase border-2 border-black shadow-neo">
                     Beta Features</div>
                 <h2 class="font-display text-5xl md:text-7xl font-black mb-6">THE LAB</h2>
                 <p class="text-xl md:text-2xl font-medium max-w-3xl mx-auto opacity-80">We are always cooking. Try
@@ -874,13 +1065,16 @@
 
     <!-- Section 9: Animation -->
     <!-- Section 9: Animation -->
-    <section class="py-24">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+    <section class="py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-8 md:gap-16">
             <div class="md:w-1/2">
-                <div class="inline-block bg-neo-blue text-black font-bold px-3 py-1 mb-4 text-sm uppercase">Make it Move
+                <div
+                    class="inline-block bg-neo-blue text-black font-bold px-3 py-1 mb-4 text-sm uppercase border-2 border-black shadow-neo">
+                    Make it Move
                 </div>
-                <h2 class="font-display text-5xl font-black mb-6">ANIMATION</h2>
-                <p class="text-xl font-medium mb-8">Static shapes are fine, but moving shapes are better. We provide the
+                <h2 class="font-display text-3xl md:text-5xl font-black mb-6">ANIMATION</h2>
+                <p class="text-lg md:text-xl font-medium mb-8">Static shapes are fine, but moving shapes are better. We
+                    provide the
                     keyframes. You copy the code. Create breathing effects, spinning stars, or morphing blobs with
                     standard CSS transitions.</p>
             </div>
@@ -943,12 +1137,14 @@
     </section>
 
     <!-- Section 10: Code View -->
-    <section class="py-24">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row-reverse items-center gap-16">
+    <section class="py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row-reverse items-center gap-8 md:gap-16">
             <div class="md:w-1/2">
-                <div class="inline-block bg-neo-green text-black font-bold px-3 py-1 mb-4 text-sm uppercase">No Black
+                <div
+                    class="inline-block bg-neo-green text-black font-bold px-3 py-1 mb-4 text-sm uppercase border-2 border-black shadow-neo">
+                    No Black
                     Magic</div>
-                <h2 class="font-display text-5xl font-black mb-6 text-black">THE CODE</h2>
+                <h2 class="font-display text-3xl md:text-5xl font-black mb-6 text-black">THE CODE</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-8">
                     <!-- Card 1: Frameworks -->
                     <div class="relative group">
@@ -1036,7 +1232,7 @@
             </div>
             <div class="md:w-1/2 w-full">
                 <!-- Code Editor Card -->
-                <div class="relative group">
+                <div class="relative group translate-y-3">
                     <!-- Heavy Shadow -->
                     <div class="absolute inset-0 bg-neo-black translate-x-4 translate-y-4 border-2 border-black"></div>
 
@@ -1044,34 +1240,39 @@
                     <div class="relative bg-white border-4 border-black">
                         <!-- Editor Bar -->
                         <div
-                            class="bg-neo-black text-white p-3 flex justify-between items-center border-b-4 border-black">
-                            <div
-                                class="font-mono font-bold text-sm bg-neo-blue px-2 py-1 border-2 border-white text-black shadow-[2px_2px_0_0_#fff]">
-                                style.css</div>
+                            class="bg-neo-yellow text-black p-3 flex justify-between items-center border-b-4 border-black">
                             <div class="flex gap-2">
-                                <span class="w-4 h-4 bg-neo-pink border-2 border-white"></span>
-                                <span class="w-4 h-4 bg-neo-yellow border-2 border-white"></span>
+                                <span class="w-4 h-4 bg-neo-pink border-2 border-black"></span>
+                                <span class="w-4 h-4 bg-neo-yellow border-2 border-black"></span>
+                                <span class="w-4 h-4 bg-neo-green border-2 border-black"></span>
                             </div>
+                            <div
+                                class="font-mono font-bold text-sm bg-neo-blue px-2 py-1 border-2 border-black text-black shadow-neo">
+                                style.css</div>
                         </div>
 
                         <!-- Code Content -->
-                        <div class="bg-gray-900 p-8 overflow-hidden relative">
+                        <div class="bg-gray-800 p-8 overflow-hidden relative">
                             <!-- Line Numbers Background -->
                             <div class="absolute left-0 top-0 bottom-0 w-12 bg-black/20 border-r-2 border-white/10">
                             </div>
 
-                            <pre class="relative z-10 text-sm md:text-base font-mono leading-relaxed">
-<span class="text-neo-pink">.custom-shape</span> <span class="text-white">{</span>
-  <span class="text-neo-blue">width</span><span class="text-white">:</span> <span class="text-neo-yellow">300px</span><span class="text-white">;</span>
-  <span class="text-neo-blue">height</span><span class="text-white">:</span> <span class="text-neo-yellow">300px</span><span class="text-white">;</span>
-  <span class="text-neo-blue">background-color</span><span class="text-white">:</span> <span class="text-neo-pink">#FF66C4</span><span class="text-white">;</span>
-  <span class="text-neo-blue">clip-path</span><span class="text-white">:</span> <span class="text-neo-green">polygon(
-    <span class="text-white">50% 0%</span>, 
-    <span class="text-white">100% 50%</span>, 
-    <span class="text-white">50% 100%</span>, 
-    <span class="text-white">0% 50%</span>
-  )</span><span class="text-white">;</span>
-<span class="text-white">}</span></pre>
+                            <pre class="relative -translate-x-6 z-10 text-sm md:text-base font-mono leading-relaxed">
+<span class="text-white opacity-10">98</span>
+<span class="text-white opacity-20">99</span>
+<span class="text-gray-500">100</span>  <span class="text-neo-pink">.custom-shape</span> <span class="text-white">{</span>
+<span class="text-gray-500">101</span>    <span class="text-neo-blue">width</span><span class="text-white">:</span> <span class="text-neo-yellow">300px</span><span class="text-white">;</span>
+<span class="text-gray-500">102</span>    <span class="text-neo-blue">height</span><span class="text-white">:</span> <span class="text-neo-yellow">300px</span><span class="text-white">;</span>
+<span class="text-gray-500">103</span>    <span class="text-neo-blue">background-color</span><span class="text-white">:</span> <span class="text-neo-pink">#FF66C4</span><span class="text-white">;</span>
+<span class="text-gray-500">104</span>    <span class="text-neo-blue">clip-path</span><span class="text-white">:</span> <span class="text-neo-green">polygon(
+<span class="text-gray-500">105</span>       <span class="text-white">50% 0%</span>, 
+<span class="text-gray-500">106</span>       <span class="text-white">100% 50%</span>, 
+<span class="text-gray-500">107</span>       <span class="text-white">50% 100%</span>, 
+<span class="text-gray-500">108</span>       <span class="text-white">0% 50%</span>
+<span class="text-gray-500">109</span>    )</span><span class="text-white">;</span>
+<span class="text-gray-500">110</span>  <span class="text-white">}</span>
+<span class="text-white opacity-20">111</span>
+<span class="text-white opacity-10">112</span></pre>
                         </div>
                     </div>
                 </div>
@@ -1081,13 +1282,15 @@
 
     <!-- Section 11: Export Options -->
     <!-- Section 11: Export Options -->
-    <section class="py-24">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+    <section class="py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-8 md:gap-16">
             <div class="md:w-1/2">
-                <div class="inline-block bg-neo-yellow text-black font-bold px-3 py-1 mb-4 text-sm uppercase">Take it
+                <div
+                    class="inline-block bg-neo-yellow text-black font-bold px-3 py-1 mb-4 text-sm uppercase border-2 border-black shadow-neo">
+                    Take it
                     Home</div>
-                <h2 class="font-display text-5xl font-black mb-6">EXPORT READY</h2>
-                <p class="text-xl font-medium mb-8">Your shape deserves to live on the web. Export as:</p>
+                <h2 class="font-display text-3xl md:text-5xl font-black mb-6">EXPORT READY</h2>
+                <p class="text-lg md:text-xl font-medium mb-8">Your shape deserves to live on the web. Export as:</p>
                 <div class="grid grid-cols-2 gap-4">
                     <div
                         class="border-4 border-black p-4 font-bold flex items-center gap-2 bg-white hover:bg-black hover:text-white transition-colors cursor-default">
@@ -1118,9 +1321,9 @@
     <!-- Playground Link / CTA -->
 
     <!-- Inspiration Gallery -->
-    <section class="max-w-7xl mx-auto px-6 py-20" id="community">
-        <h2 class="font-display text-5xl md:text-7xl font-black mb-16 text-center">MAKE <span
-                class="text-neo-pink">ANYTHING</span></h2>
+    <section class="max-w-7xl mx-auto px-6 py-12 md:py-20" id="community">
+        <h2 class="font-display text-4xl md:text-7xl font-black mb-12 md:mb-16 text-center">MAKE <span
+                class="text-neo-pink text-outline">ANYTHING</span></h2>
 
         <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
             <!-- Item 1 -->
@@ -1168,11 +1371,9 @@
     </section>
 
     <!-- FAQ Section -->
-    <section 
-        id="faq"
-        class="max-w-4xl mx-auto px-6 py-20">
-        <h2 class="font-display text-5xl font-black mb-12 text-center text-black">NO BRAINER <span
-                class="text-neo-pink">FAQ</span></h2>
+    <section id="faq" class="max-w-4xl mx-auto px-6 py-12 md:py-20">
+        <h2 class="font-display text-3xl md:text-5xl font-black mb-8 md:mb-12 text-center text-black">NO BRAINER <span
+                class="text-neo-pink text-outline">FAQ</span></h2>
 
         <div class="space-y-6">
             <details class="group">
@@ -1228,12 +1429,13 @@
             </details>
         </div>
     </section>
-    <section class="bg-neo-black text-neo-white py-32 text-center px-6 border-t-4 border-neo-white">
-        <h2 class="font-display text-6xl md:text-8xl font-black mb-12 text-outline-white"
+
+    <section class="bg-neo-black text-neo-white py-20 md:py-32 text-center px-6 border-t-4 border-neo-white">
+        <h2 class="font-display text-4xl md:text-8xl font-black mb-12 text-outline-white"
             style="-webkit-text-stroke: 2px white; color: black;">
             STOP READING.
         </h2>
-        <h2 class="font-display text-6xl md:text-8xl font-black mb-12 text-neo-yellow">
+        <h2 class="font-display text-4xl md:text-8xl font-black mb-12 text-neo-yellow">
             START SHAPING.
         </h2>
 
@@ -1242,17 +1444,13 @@
                 class="absolute inset-0 bg-neo-pink translate-y-3 translate-x-3 border-4 border-white transition-transform group-hover:translate-x-0 group-hover:translate-y-0">
             </div>
             <a href="/editor"
-                class="relative block bg-neo-blue text-black font-black text-3xl px-12 py-6 border-4 border-white hover:-translate-y-1 transition-transform">
+                class="relative block bg-neo-blue text-black font-display tracking-tighter font-black text-3xl px-12 py-6 border-4 border-white hover:-translate-y-1 transition-transform">
                 OPEN THE TOOL
             </a>
         </div>
     </section>
 
     <footer class="bg-neo-yellow border-t-4 border-neo-black pt-16 pb-8 px-6 relative overflow-hidden">
-        <!-- Grid Pattern Overlay -->
-        <div class="absolute inset-0 opacity-5 pointer-events-none"
-            style="background-image: linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px); background-size: 40px 40px;">
-        </div>
 
         <div class="max-w-7xl mx-auto relative z-10">
             <div class="grid md:grid-cols-4 gap-12 mb-16">
@@ -1269,7 +1467,7 @@
                                 <span
                                     class="font-display font-black text-xl tracking-tighter text-neo-pink">GENERATOR</span>
                                 <span
-                                    class="bg-black text-white px-2 py-0.5 text-xs font-bold border-2 border-white shadow-[2px_2px_0_0_#000] -rotate-2">PRO</span>
+                                    class="bg-neo-blue text-black px-2 py-0.5 text-xs font-bold border border-black shadow-[3px_3px_0px_0px_black] rotate-[-6deg]">PRO</span>
                             </div>
                         </div>
                     </div>
@@ -1278,9 +1476,11 @@
                         The web's most aggressive shape editor.
                     </p>
                     <div class="inline-flex gap-2">
-                        <span class="bg-black text-white px-2 py-1 text-xs font-bold font-mono">V0.1 Beta</span>
                         <span
-                            class="bg-white text-black border-2 border-black px-2 py-1 text-xs font-bold font-mono">OPEN
+                            class="bg-black text-white px-2 py-1 text-xs font-bold font-mono shadow-[3px_3px_0px_0px_black]">V0.1
+                            Beta</span>
+                        <span
+                            class="bg-white text-black border-2 border-black px-2 py-1 text-xs font-bold font-mono shadow-[3px_3px_0px_0px_black]">OPEN
                             SOURCE</span>
                     </div>
                 </div>
@@ -1335,6 +1535,60 @@
         </div>
     </footer>
 
+    <script>
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenu.classList.toggle('flex');
+            const icon = mobileMenuBtn.querySelector('i');
+            if (mobileMenu.classList.contains('hidden')) {
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            } else {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            }
+        }
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        }
+
+        // Generator Cards Shuffle Logic
+        const genCards = [
+            document.getElementById('gen-card-0'),
+            document.getElementById('gen-card-1'),
+            document.getElementById('gen-card-2')
+        ];
+
+        // Configurations for 3 positions: [Back, Middle, Front]
+        const cardStates = [
+            { z: 'z-10', transform: 'rotate(-12deg) scale(0.9)', opacity: '1' },   // Back
+            { z: 'z-20', transform: 'rotate(6deg) scale(0.95)', opacity: '1' },    // Middle
+            { z: 'z-30', transform: 'rotate(-3deg) scale(1)', opacity: '1' }       // Front
+        ];
+
+        let offset = 0;
+
+        function updateCards() {
+            if (!genCards[0]) return;
+
+            genCards.forEach((card, index) => {
+                const stateIndex = (index + offset) % 3;
+                const state = cardStates[stateIndex];
+                card.classList.remove('z-10', 'z-20', 'z-30');
+                card.classList.add(state.z);
+                card.style.transform = state.transform;
+            });
+            offset = (offset + 1) % 3;
+        }
+
+        setTimeout(() => {
+            setInterval(updateCards, 2500);
+        });
+    </script>
 </body>
 
 </html>
