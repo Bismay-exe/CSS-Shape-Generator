@@ -487,7 +487,7 @@
                         <div class="flex gap-2 pt-2 border-t-2 border-black">
                             <button onclick="addPoint()" id="btnAddPoint"
                                 class="flex-1 py-1.5 bg-white border-2 border-black text-xs font-bold shadow-neo-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] hover:bg-neo-green transition-all text-black">Add
-                                Next</button>
+                                Point</button>
                             <button onclick="deletePoint()" id="btnDelPoint"
                                 class="flex-1 py-1.5 bg-white border-2 border-black text-xs font-bold shadow-neo-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] hover:bg-neo-pink transition-all text-black">Delete</button>
                         </div>
@@ -754,6 +754,7 @@
         let dragStartPan = { x: 50, y: 50 };
         let activeCodeMode = 'css';
         let symmetry = { x: false, y: false };
+        let mirrorIndex = -1;
 
         // --- INIT ---
         function init() {
@@ -1063,6 +1064,25 @@
                 dragStartPan = { x: parseFloat(l.style.imgPanX), y: parseFloat(l.style.imgPanY) };
             }
 
+            // Identify Mirror Point
+            mirrorIndex = -1;
+            if ((symmetry.x || symmetry.y) && target === 'point') {
+                const pts = getActivePoints();
+                const p = pts[index];
+                let bestDist = 1000;
+                pts.forEach((pt, i) => {
+                    if (i === index) return;
+                    let tx = p.x, ty = p.y;
+                    if (symmetry.x) tx = 100 - tx;
+                    if (symmetry.y) ty = 100 - ty;
+                    const d = Math.hypot(pt.x - tx, pt.y - ty);
+                    if (d < 10 && d < bestDist) { // 10% tolerance
+                        bestDist = d;
+                        mirrorIndex = i;
+                    }
+                });
+            }
+
             syncUI(); render();
             document.addEventListener('mousemove', onDrag); document.addEventListener('mouseup', endDrag);
         }
@@ -1118,6 +1138,24 @@
                 p.x = raw.x; p.y = raw.y;
                 if (p.cp1) { p.cp1.x += dx; p.cp1.y += dy; }
                 if (p.cp2) { p.cp2.x += dx; p.cp2.y += dy; }
+
+                // Apply Symmetry
+                if (mirrorIndex !== -1) {
+                    const mp = pts[mirrorIndex];
+                    if (mp) {
+                        const oldMx = mp.x, oldMy = mp.y;
+                        let nx = p.x, ny = p.y;
+                        if (symmetry.x) nx = 100 - nx;
+                        if (symmetry.y) ny = 100 - ny;
+
+                        const mdx = nx - oldMx;
+                        const mdy = ny - oldMy;
+
+                        mp.x = nx; mp.y = ny;
+                        if (mp.cp1) { mp.cp1.x += mdx; mp.cp1.y += mdy; }
+                        if (mp.cp2) { mp.cp2.x += mdx; mp.cp2.y += mdy; }
+                    }
+                }
             } else if (dragTarget === 'cp1') {
                 p.cp1 = raw;
             } else if (dragTarget === 'cp2') {
@@ -1417,7 +1455,14 @@
         function addPoint() { const pts = getActivePoints(); const next = (selectedPointIndex + 1) % pts.length; const p1 = pts[selectedPointIndex], p2 = pts[next]; pts.splice(selectedPointIndex + 1, 0, { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2, type: 'corner', r: 0 }); const l = getActiveLayer(); if (!isHoverEditing && l.hoverPoints && l.hoverPoints.length === pts.length - 1) l.hoverPoints = JSON.parse(JSON.stringify(l.points)); saveHistory(); render(); }
         function deletePoint() { const pts = getActivePoints(); if (pts.length > 3) { pts.splice(selectedPointIndex, 1); selectedPointIndex = Math.max(0, selectedPointIndex - 1); const l = getActiveLayer(); if (!isHoverEditing && l.hoverPoints) l.hoverPoints = JSON.parse(JSON.stringify(l.points)); saveHistory(); render(); } }
         function centerGeometry() { const pts = getActivePoints(); let mnX = 100, mxX = 0, mnY = 100, mxY = 0; pts.forEach(p => { if (p.x < mnX) mnX = p.x; if (p.x > mxX) mxX = p.x; if (p.y < mnY) mnY = p.y; if (p.y > mxY) mxY = p.y }); const dx = 50 - (mnX + mxX) / 2, dy = 50 - (mnY + mxY) / 2; pts.forEach(p => { p.x += dx; p.y += dy }); saveHistory(); render(); }
-        function toggleSymmetry(axis) { symmetry[axis] = !symmetry[axis]; document.getElementById(`sym${axis.toUpperCase()}`).classList.toggle('bg-indigo-600', symmetry[axis]); document.getElementById(`sym${axis.toUpperCase()}`).classList.toggle('text-white', symmetry[axis]); }
+        function toggleSymmetry(axis) {
+            symmetry[axis] = !symmetry[axis];
+            const btn = document.getElementById(`sym${axis.toUpperCase()}`);
+            btn.classList.toggle('bg-black', symmetry[axis]);
+            btn.classList.toggle('text-white', symmetry[axis]);
+            btn.classList.toggle('bg-white', !symmetry[axis]);
+            btn.classList.toggle('text-black', !symmetry[axis]);
+        }
         function flipGeometry(a) { const pts = getActivePoints(); pts.forEach(p => a === 'h' ? p.x = 100 - p.x : p.y = 100 - p.y); saveHistory(); render(); }
         function setAspectRatio(r) { const w = 400; const h = r === 16 / 9 ? w / r : (r === 4 / 3 ? w / r : w); document.getElementById('aspectContainer').style.width = w + 'px'; document.getElementById('aspectContainer').style.height = h + 'px'; }
         function shareState() { const json = JSON.stringify(layers); const b64 = btoa(json); window.location.hash = b64; alert("URL updated!"); }
