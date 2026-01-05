@@ -137,7 +137,7 @@
                 <a href="#community" class="hover:text-neo-green hover:underline decoration-4 underline-offset-4">Cool
                     Stuff</a>
             </div>
-            <a href="/Editor"
+            <a href="index.html"
                 class="bg-neo-black text-neo-white px-6 py-2 font-bold uppercase hover:bg-neo-yellow hover:text-neo-black transition-colors border-2 border-transparent hover:border-neo-black">
                 Start Now
             </a>
@@ -183,7 +183,7 @@
             </p>
 
             <div class="flex flex-col md:flex-row justify-center gap-6 items-center">
-                <a href="/Editor"
+                <a href="index.html"
                     class="bg-neo-black text-neo-white text-2xl font-bold px-10 py-5 border-4 border-neo-black shadow-neo-lg hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all group overflow-hidden relative">
                     <span class="relative z-10 group-hover:text-neo-yellow">LAUNCH EDITOR</span>
                     <div
@@ -207,7 +207,7 @@
 
     <!-- Editor Preview (Demo) -->
     <section id="demo" class="max-w-7xl mx-auto px-6 mb-32 scroll-mt-32">
-        <div class="relative group cursor-pointer" onclick="window.location.href='/Editor'">
+        <div class="relative group cursor-pointer" onclick="window.location.href='index.html'">
             <!-- Decorative Layers behind -->
             <div
                 class="absolute inset-0 bg-neo-black translate-x-4 translate-y-4 rounded-xl border-4 border-neo-black transition-transform group-hover:translate-x-6 group-hover:translate-y-6">
@@ -246,7 +246,8 @@
                         <div class="w-full h-0.5 bg-black my-1"></div>
                         <div
                             class="w-8 h-8 bg-white border-2 border-black hover:bg-gray-100 transition-colors flex items-center justify-center">
-                            <i class="fa-solid fa-plus text-xs"></i></div>
+                            <i class="fa-solid fa-plus text-xs"></i>
+                        </div>
                     </div>
 
                     <!-- Center Canvas Area -->
@@ -429,6 +430,174 @@
     </section>
 
     <!-- Playground Link / CTA -->
+
+    <!-- How It Works Section -->
+    <section class="max-w-7xl mx-auto px-6 py-20 border-t-4 border-neo-black" id="about">
+        <h2 class="font-display text-5xl md:text-7xl font-black mb-16 text-center">HOW IT <span
+                class="text-neo-purple">WORKS</span></h2>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Step 1 -->
+            <div class="relative group">
+                <div class="absolute inset-0 bg-neo-black translate-x-3 translate-y-3 border-2 border-black"></div>
+                <div
+                    class="relative bg-white border-4 border-neo-black p-8 h-full hover:translate-x-1 hover:translate-y-1 transition-transform">
+                    <div class="text-8xl font-black text-gray-100 absolute -top-6 -right-4 -z-10 select-none">01</div>
+                    <div
+                        class="w-16 h-16 bg-neo-yellow border-4 border-neo-black mb-6 flex items-center justify-center text-3xl font-bold shadow-neo">
+                        <i class="fa-solid fa-arrow-pointer"></i>
+                    </div>
+                    <h3 class="font-display text-3xl font-bold mb-4">DRAG POINTS</h3>
+                    <p class="font-medium">Click and drag any point to reshape. Double click to add new points. It's
+                        intuitive, fast, and kinda addictive.</p>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="relative group">
+                <div class="absolute inset-0 bg-neo-black translate-x-3 translate-y-3 border-2 border-black"></div>
+                <div
+                    class="relative bg-white border-4 border-neo-black p-8 h-full hover:translate-x-1 hover:translate-y-1 transition-transform">
+                    <div class="text-8xl font-black text-gray-100 absolute -top-6 -right-4 -z-10 select-none">02</div>
+                    <div
+                        class="w-16 h-16 bg-neo-green border-4 border-neo-black mb-6 flex items-center justify-center text-3xl font-bold shadow-neo">
+                        <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <h3 class="font-display text-3xl font-bold mb-4">CUSTOMIZE</h3>
+                    <p class="font-medium">Tweak border radius, smooth curves with handles, or apply predefined shapes
+                        like stars and blobs.</p>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="relative group">
+                <div class="absolute inset-0 bg-neo-black translate-x-3 translate-y-3 border-2 border-black"></div>
+                <div
+                    class="relative bg-white border-4 border-neo-black p-8 h-full hover:translate-x-1 hover:translate-y-1 transition-transform">
+                    <div class="text-8xl font-black text-gray-100 absolute -top-6 -right-4 -z-10 select-none">03</div>
+                    <div
+                        class="w-16 h-16 bg-neo-pink border-4 border-neo-black mb-6 flex items-center justify-center text-3xl font-bold shadow-neo">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <h3 class="font-display text-3xl font-bold mb-4">EXPORT CSS</h3>
+                    <p class="font-medium">Grab the code. We generate standard CSS `clip-path` or SVG code. Ready to
+                        paste into your project.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Playground Link / CTA -->
+
+    <!-- Inspiration Gallery -->
+    <section class="max-w-7xl mx-auto px-6 py-20 border-t-4 border-neo-black bg-neo-yellow" id="community">
+        <h2 class="font-display text-5xl md:text-7xl font-black mb-16 text-center">MAKE <span
+                class="text-white text-outline">ANYTHING</span></h2>
+
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
+            <!-- Item 1 -->
+            <div
+                class="aspect-square bg-neo-white border-4 border-neo-black shadow-neo flex items-center justify-center p-4 hover:scale-105 transition-transform">
+                <div class="w-full h-full bg-neo-black"
+                    style="clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 75% 75%, 75% 100%, 50% 75%, 0% 75%);"></div>
+            </div>
+            <!-- Item 2 -->
+            <div
+                class="aspect-square bg-neo-white border-4 border-neo-black shadow-neo flex items-center justify-center p-4 hover:scale-105 transition-transform">
+                <div class="w-full h-full bg-neo-pink" style="clip-path: circle(50% at 50% 50%);"></div>
+            </div>
+            <!-- Item 3 -->
+            <div
+                class="aspect-square bg-neo-white border-4 border-neo-black shadow-neo flex items-center justify-center p-4 hover:scale-105 transition-transform">
+                <div class="w-full h-full bg-neo-blue"
+                    style="clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);">
+                </div>
+            </div>
+            <!-- Item 4 -->
+            <div
+                class="aspect-square bg-neo-white border-4 border-neo-black shadow-neo flex items-center justify-center p-4 hover:scale-105 transition-transform">
+                <div class="w-full h-full bg-neo-green"
+                    style="clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);">
+                </div>
+            </div>
+            <!-- Item 5 -->
+            <div
+                class="aspect-square bg-neo-white border-4 border-neo-black shadow-neo flex items-center justify-center p-4 hover:scale-105 transition-transform">
+                <div class="w-full h-full bg-neo-purple"
+                    style="clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);"></div>
+            </div>
+            <!-- Item 6 -->
+            <div
+                class="aspect-square bg-neo-white border-4 border-neo-black shadow-neo flex items-center justify-center p-4 hover:scale-105 transition-transform">
+                <div class="w-full h-full bg-red-500"
+                    style="clip-path: polygon(10% 25%, 35% 25%, 35% 0%, 65% 0%, 65% 25%, 90% 25%, 90% 50%, 65% 50%, 65% 100%, 35% 100%, 35% 50%, 10% 50%);">
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-12">
+            <p class="font-bold text-xl mb-4">...and millions more.</p>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="max-w-4xl mx-auto px-6 py-20 border-t-4 border-neo-black">
+        <h2 class="font-display text-5xl font-black mb-12 text-center text-black">NO BRAINER <span
+                class="text-neo-pink">FAQ</span></h2>
+
+        <div class="space-y-6">
+            <details class="group">
+                <summary
+                    class="flex justify-between items-center font-bold text-xl cursor-pointer list-none bg-white border-4 border-neo-black p-6 shadow-neo hover:bg-neo-yellow transition-colors">
+                    <span>Is this really free?</span>
+                    <span class="transition-transform group-open:rotate-180"><i
+                            class="fa-solid fa-chevron-down"></i></span>
+                </summary>
+                <div class="border-x-4 border-b-4 border-neo-black bg-gray-50 p-6 font-medium mt-[-4px]">
+                    Yes. 100%. No hidden pro plans, no sign-ups. I made this because I was tired of manually calculating
+                    polygon points.
+                </div>
+            </details>
+
+            <details class="group">
+                <summary
+                    class="flex justify-between items-center font-bold text-xl cursor-pointer list-none bg-white border-4 border-neo-black p-6 shadow-neo hover:bg-neo-blue transition-colors">
+                    <span>Does it support images?</span>
+                    <span class="transition-transform group-open:rotate-180"><i
+                            class="fa-solid fa-chevron-down"></i></span>
+                </summary>
+                <div class="border-x-4 border-b-4 border-neo-black bg-gray-50 p-6 font-medium mt-[-4px]">
+                    Absolutely. There's an upload button. You can crop your own photos into weird shapes and export them
+                    as `mask-image`.
+                </div>
+            </details>
+
+            <details class="group">
+                <summary
+                    class="flex justify-between items-center font-bold text-xl cursor-pointer list-none bg-white border-4 border-neo-black p-6 shadow-neo hover:bg-neo-green transition-colors">
+                    <span>Can I animate the shapes?</span>
+                    <span class="transition-transform group-open:rotate-180"><i
+                            class="fa-solid fa-chevron-down"></i></span>
+                </summary>
+                <div class="border-x-4 border-b-4 border-neo-black bg-gray-50 p-6 font-medium mt-[-4px]">
+                    Yes! Since it exports standard CSS `clip-path`, you can animate the polygon values in your own CSS
+                    using keyframes or transitions.
+                </div>
+            </details>
+
+            <details class="group">
+                <summary
+                    class="flex justify-between items-center font-bold text-xl cursor-pointer list-none bg-white border-4 border-neo-black p-6 shadow-neo hover:bg-neo-purple transition-colors">
+                    <span>Why Neo-Brutalism?</span>
+                    <span class="transition-transform group-open:rotate-180"><i
+                            class="fa-solid fa-chevron-down"></i></span>
+                </summary>
+                <div class="border-x-4 border-b-4 border-neo-black bg-gray-50 p-6 font-medium mt-[-4px]">
+                    Because soft shadows are boring and hard edges mimic the precision of vector points. Also, it looks
+                    cool.
+                </div>
+            </details>
+        </div>
+    </section>
     <section class="bg-neo-black text-neo-white py-32 text-center px-6 border-t-4 border-neo-white">
         <h2 class="font-display text-6xl md:text-8xl font-black mb-12 text-outline-white"
             style="-webkit-text-stroke: 2px white; color: black;">
@@ -442,7 +611,7 @@
             <div
                 class="absolute inset-0 bg-neo-pink translate-y-3 translate-x-3 border-4 border-white transition-transform group-hover:translate-x-0 group-hover:translate-y-0">
             </div>
-            <a href="/Editor"
+            <a href="index.html"
                 class="relative block bg-neo-blue text-black font-black text-3xl px-12 py-6 border-4 border-white hover:-translate-y-1 transition-transform">
                 OPEN THE TOOL
             </a>
@@ -453,7 +622,7 @@
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end">
             <div>
                 <div class="font-display font-black text-4xl mb-2">CSS SHAPE GEN</div>
-                <div class="font-bold">Made with <span class="text-neo-pink">♥</span> by Bismay</div>
+                <div class="font-bold">Made with <span class="text-neo-pink">♥</span> by Bisma</div>
             </div>
             <div class="flex gap-4 mt-8 md:mt-0 font-bold text-xl underline decoration-4">
                 <a href="#" class="hover:text-white">Github</a>
