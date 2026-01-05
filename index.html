@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="overflow-x-hidden">
 
 <head>
     <meta charset="UTF-8">
@@ -127,7 +127,20 @@
     <nav class="fixed top-0 w-full z-50 px-6 py-4 pointer-events-none">
         <div
             class="max-w-7xl mx-auto flex justify-between items-center bg-neo-white border-4 border-neo-black shadow-neo rounded-xl px-6 py-3 pointer-events-auto transform hover:-translate-y-1 transition-transform">
-            <div class="font-display font-bold text-2xl tracking-tighter">SHAPE<span class="text-neo-pink">GEN</span>
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 bg-neo-yellow border-2 border-black flex items-center justify-center text-black font-bold shadow-neo-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all cursor-pointer shrink-0">
+                    <i class="fa-solid fa-shapes"></i>
+                </div>
+                <div class="flex flex-col">
+                    <h1 class="font-display font-black text-lg tracking-tighter leading-none">CSS SHAPE</h1>
+                    <div class="flex items-center gap-1 leading-none">
+                        <span
+                            class="font-display font-black text-lg tracking-wider text-neo-pink">GEN.</span>
+                        <span
+                            class="bg-black text-white px-1 text-[10px] font-bold border-2 border-neo-black transform -rotate-3 shadow-[2px_2px_0_0_#ccc]">PRO</span>
+                    </div>
+                </div>
             </div>
             <div class="hidden md:flex gap-6 font-bold text-sm uppercase tracking-wide">
                 <a href="#about" class="hover:text-neo-purple hover:underline decoration-4 underline-offset-4">How it
@@ -152,7 +165,7 @@
             class="absolute top-20 left-10 w-24 h-24 bg-neo-yellow border-4 border-neo-black shadow-neo rounded-full animate-bounce delay-700">
         </div>
         <div class="absolute bottom-20 right-10 w-32 h-32 bg-neo-blue border-4 border-neo-black shadow-neo rotate-12 animate-pulse"
-            style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+            style="clip-path: polygon(50.00% 0.00%, 61.00% 35.00%, 98.00% 35.00%, 68.00% 57.00%, 79.00% 91.00%, 50.00% 70.00%, 21.00% 91.00%, 32.00% 57.00%, 2.00% 35.00%, 39.00% 35.00%);"></div>
         <div class="absolute top-40 right-20 w-16 h-16 bg-neo-pink border-4 border-neo-black shadow-neo animate-spin-slow"
             style="clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%); animation-duration: 10s;"></div>
 
@@ -322,44 +335,46 @@
 
     <!-- Marquee -->
     <!-- Marquee -->
-    <div
-        class="bg-neo-yellow border-y-4 border-neo-black py-4 rotate-[-2deg] scale-105 mb-20 shadow-neo overflow-hidden">
-        <!-- Line 1 -->
-        <div class="marquee-container mb-2">
-            <div class="marquee-content font-display font-bold text-4xl uppercase gap-8">
-                <span class="mx-8">★ CLIP-PATH</span>
-                <span class="mx-8 text-outline text-neo-white">★ POLYGONS</span>
-                <span class="mx-8">★ BLOBS</span>
-                <span class="mx-8 text-outline text-neo-white">★ SVG EXPORT</span>
-                <span class="mx-8">★ TAILWIND READY</span>
-                <span class="mx-8 text-outline text-neo-white">★ NO LOGIN REQUIRED</span>
-                <span class="mx-8">★ CLIP-PATH</span>
-                <span class="mx-8 text-outline text-neo-white">★ POLYGONS</span>
-                <span class="mx-8">★ BLOBS</span>
-                <span class="mx-8 text-outline text-neo-white">★ SVG EXPORT</span>
-                <span class="mx-8">★ TAILWIND READY</span>
-                <span class="mx-8 text-outline text-neo-white">★ NO LOGIN REQUIRED</span>
+    <!-- Marquee -->
+    <section class="max-w-full overflow-hidden py-12 mb-20">
+        <div class="bg-neo-yellow border-y-4 border-neo-black py-4 rotate-[-2deg] scale-105 shadow-neo overflow-hidden">
+            <!-- Line 1 -->
+            <div class="marquee-container mb-2">
+                <div class="marquee-content font-display font-bold text-4xl uppercase gap-8">
+                    <span class="mx-8">★ CLIP-PATH</span>
+                    <span class="mx-8 text-outline text-neo-white">★ POLYGONS</span>
+                    <span class="mx-8">★ BLOBS</span>
+                    <span class="mx-8 text-outline text-neo-white">★ SVG EXPORT</span>
+                    <span class="mx-8">★ TAILWIND READY</span>
+                    <span class="mx-8 text-outline text-neo-white">★ NO LOGIN REQUIRED</span>
+                    <span class="mx-8">★ CLIP-PATH</span>
+                    <span class="mx-8 text-outline text-neo-white">★ POLYGONS</span>
+                    <span class="mx-8">★ BLOBS</span>
+                    <span class="mx-8 text-outline text-neo-white">★ SVG EXPORT</span>
+                    <span class="mx-8">★ TAILWIND READY</span>
+                    <span class="mx-8 text-outline text-neo-white">★ NO LOGIN REQUIRED</span>
+                </div>
+            </div>
+            <!-- Line 2 (Reverse) -->
+            <div class="marquee-container">
+                <div class="marquee-content font-display font-bold text-4xl uppercase gap-8"
+                    style="animation-name: marquee-rev;">
+                    <span class="mx-8 text-outline text-neo-white">★ FREE FOREVER</span>
+                    <span class="mx-8">★ OPEN SOURCE</span>
+                    <span class="mx-8 text-outline text-neo-white">★ RESPONSIVE</span>
+                    <span class="mx-8">★ ULTRA FAST</span>
+                    <span class="mx-8 text-outline text-neo-white">★ CSS WIZARDRY</span>
+                    <span class="mx-8">★ DRAG IT</span>
+                    <span class="mx-8 text-outline text-neo-white">★ FREE FOREVER</span>
+                    <span class="mx-8">★ OPEN SOURCE</span>
+                    <span class="mx-8 text-outline text-neo-white">★ RESPONSIVE</span>
+                    <span class="mx-8">★ ULTRA FAST</span>
+                    <span class="mx-8 text-outline text-neo-white">★ CSS WIZARDRY</span>
+                    <span class="mx-8">★ DRAG IT</span>
+                </div>
             </div>
         </div>
-        <!-- Line 2 (Reverse) -->
-        <div class="marquee-container">
-            <div class="marquee-content font-display font-bold text-4xl uppercase gap-8"
-                style="animation-name: marquee-rev;">
-                <span class="mx-8 text-outline text-neo-white">★ FREE FOREVER</span>
-                <span class="mx-8">★ OPEN SOURCE</span>
-                <span class="mx-8 text-outline text-neo-white">★ RESPONSIVE</span>
-                <span class="mx-8">★ ULTRA FAST</span>
-                <span class="mx-8 text-outline text-neo-white">★ CSS WIZARDRY</span>
-                <span class="mx-8">★ DRAG IT</span>
-                <span class="mx-8 text-outline text-neo-white">★ FREE FOREVER</span>
-                <span class="mx-8">★ OPEN SOURCE</span>
-                <span class="mx-8 text-outline text-neo-white">★ RESPONSIVE</span>
-                <span class="mx-8">★ ULTRA FAST</span>
-                <span class="mx-8 text-outline text-neo-white">★ CSS WIZARDRY</span>
-                <span class="mx-8">★ DRAG IT</span>
-            </div>
-        </div>
-    </div>
+    </section>
 
     <!-- Feature Grid -->
     <section class="max-w-7xl mx-auto px-6 pb-32" id="features">
@@ -432,7 +447,7 @@
     <!-- Playground Link / CTA -->
 
     <!-- How It Works Section -->
-    <section class="max-w-7xl mx-auto px-6 py-20 border-t-4 border-neo-black" id="about">
+    <section class="max-w-7xl mx-auto px-6 py-20" id="about">
         <h2 class="font-display text-5xl md:text-7xl font-black mb-16 text-center">HOW IT <span
                 class="text-neo-purple">WORKS</span></h2>
 
@@ -442,7 +457,7 @@
                 <div class="absolute inset-0 bg-neo-black translate-x-3 translate-y-3 border-2 border-black"></div>
                 <div
                     class="relative bg-white border-4 border-neo-black p-8 h-full hover:translate-x-1 hover:translate-y-1 transition-transform">
-                    <div class="text-8xl font-black text-gray-100 absolute -top-6 -right-4 -z-10 select-none">01</div>
+                    <div class="text-8xl font-black text-neo-yellow absolute -top-6 -right-4 -z-10 select-none">01</div>
                     <div
                         class="w-16 h-16 bg-neo-yellow border-4 border-neo-black mb-6 flex items-center justify-center text-3xl font-bold shadow-neo">
                         <i class="fa-solid fa-arrow-pointer"></i>
@@ -458,7 +473,7 @@
                 <div class="absolute inset-0 bg-neo-black translate-x-3 translate-y-3 border-2 border-black"></div>
                 <div
                     class="relative bg-white border-4 border-neo-black p-8 h-full hover:translate-x-1 hover:translate-y-1 transition-transform">
-                    <div class="text-8xl font-black text-gray-100 absolute -top-6 -right-4 -z-10 select-none">02</div>
+                    <div class="text-8xl font-black text-neo-green absolute -top-6 -right-4 -z-10 select-none">02</div>
                     <div
                         class="w-16 h-16 bg-neo-green border-4 border-neo-black mb-6 flex items-center justify-center text-3xl font-bold shadow-neo">
                         <i class="fa-solid fa-sliders"></i>
@@ -474,7 +489,7 @@
                 <div class="absolute inset-0 bg-neo-black translate-x-3 translate-y-3 border-2 border-black"></div>
                 <div
                     class="relative bg-white border-4 border-neo-black p-8 h-full hover:translate-x-1 hover:translate-y-1 transition-transform">
-                    <div class="text-8xl font-black text-gray-100 absolute -top-6 -right-4 -z-10 select-none">03</div>
+                    <div class="text-8xl font-black text-neo-pink absolute -top-6 -right-4 -z-10 select-none">03</div>
                     <div
                         class="w-16 h-16 bg-neo-pink border-4 border-neo-black mb-6 flex items-center justify-center text-3xl font-bold shadow-neo">
                         <i class="fa-solid fa-code"></i>
@@ -487,12 +502,625 @@
         </div>
     </section>
 
+    <!-- === FEATURE TOUR START === -->
+
+    <!-- Section 1: Layers -->
+    <!-- Section 1: Layers -->
+    <section class="py-24">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+            <div class="md:w-1/2">
+                <div class="inline-block bg-neo-black text-white font-bold px-3 py-1 mb-4 text-sm uppercase">Multi-Shape
+                    Control</div>
+                <h2 class="font-display text-5xl font-black mb-6">UNLIMITED LAYERS</h2>
+                <p class="text-xl font-medium mb-8">Why stop at one shape? Stack 'em up. Create complex compositions by
+                    adding multiple layers. Each layer has its own unique path, color, and settings.</p>
+                <ul class="space-y-3 font-bold">
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neo-green"></i> Independent
+                        Control</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neo-green"></i> Drag up/down to
+                        reorder</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neo-green"></i> Toggle
+                        visibility</li>
+                </ul>
+            </div>
+            <div class="md:w-1/2">
+                <div class="bg-neo-pink border-4 border-black p-12 shadow-neo-xl">
+                    <div
+                        class="relative bg-white border-4 border-black rounded-xl p-6 shadow-neo w-full flex flex-col gap-4">
+                        <!-- Fake Layer List -->
+                        <div
+                            class="bg-neo-yellow border-2 border-neo-black p-3 flex justify-between items-center font-bold shadow-sm">
+                            <span><span>#3</span> Starburst_Main</span>
+                            <div class="flex gap-2"><i class="fa-solid fa-eye"></i> <i class="fa-solid fa-trash"></i>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white border-2 border-neo-black p-3 flex justify-between items-center font-bold text-gray-500">
+                            <span><span>#2</span> Circle_Bg</span>
+                            <div class="flex gap-2"><i class="fa-solid fa-eye"></i> <i class="fa-solid fa-trash"></i>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white border-2 border-neo-black p-3 flex justify-between items-center font-bold text-gray-500">
+                            <span><span>#1</span> Base_Rect</span>
+                            <div class="flex gap-2"><i class="fa-solid fa-eye"></i> <i class="fa-solid fa-trash"></i>
+                            </div>
+                        </div>
+                        <div class="mt-2 flex justify-center">
+                            <div class="bg-neo-black text-white px-4 py-2 font-bold rounded-full text-xs shadow-md">+
+                                ADD LAYER</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Generators -->
+    <!-- Section 2: Generators -->
+    <section class="py-24">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row-reverse items-center gap-16">
+            <div class="md:w-1/2">
+                <div class="inline-block bg-neo-purple text-white font-bold px-3 py-1 mb-4 text-sm uppercase">Instant
+                    Geometry</div>
+                <h2 class="font-display text-5xl font-black mb-6">GENERATORS</h2>
+                <p class="text-xl font-medium mb-8">Don't want to draw? Let math do it. Generate perfect polygons, stars
+                    with specific counts, or random organic blobs instantly.</p>
+                <div class="flex flex-wrap gap-3">
+                    <span
+                        class="bg-neo-white border-2 border-black px-3 py-1 font-bold shadow-sm hover:translate-y-1 transition-transform cursor-default">Polygons</span>
+                    <span
+                        class="bg-neo-white border-2 border-black px-3 py-1 font-bold shadow-sm hover:translate-y-1 transition-transform cursor-default">Stars</span>
+                    <span
+                        class="bg-neo-white border-2 border-black px-3 py-1 font-bold shadow-sm hover:translate-y-1 transition-transform cursor-default">Blobs</span>
+                    <span
+                        class="bg-neo-white border-2 border-black px-3 py-1 font-bold shadow-sm hover:translate-y-1 transition-transform cursor-default">Bursts</span>
+                </div>
+            </div>
+            <div class="md:w-1/2">
+                <div class="bg-gray-100 border-4 border-black p-12 shadow-neo-xl">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div
+                            class="aspect-square bg-neo-white border-4 border-black shadow-neo flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-neo-green"
+                                style="clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);">
+                            </div>
+                        </div>
+                        <div
+                            class="aspect-square bg-neo-white border-4 border-black shadow-neo flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-neo-purple"
+                                style="clip-path: polygon(0% 20%, 60% 20%, 60% 0%, 100% 50%, 60% 100%, 60% 80%, 0% 80%);">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Primitives -->
+    <!-- Section 3: Primitives -->
+    <section class="py-24">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+            <div class="md:w-1/2">
+                <div class="inline-block bg-neo-blue text-black font-bold px-3 py-1 mb-4 text-sm uppercase">The Basics
+                </div>
+                <h2 class="font-display text-5xl font-black mb-6">PRIMITIVES</h2>
+                <p class="text-xl font-medium mb-8">Start with a solid foundation. Choose from a library of classic
+                    shapes: Triangles, Pentagons, Hexagons, and Rhombuses. They are essentially starting points for your
+                    chaos.</p>
+            </div>
+            <div class="md:w-1/2">
+                <div class="bg-neo-yellow border-4 border-black p-12 shadow-neo-xl">
+                    <div class="bg-white border-4 border-black p-6 shadow-neo-lg rotate-2">
+                        <div class="grid grid-cols-3 gap-3">
+                            <div
+                                class="w-16 h-16 bg-gray-50 border-2 border-black flex items-center justify-center font-bold text-xs hover:bg-black hover:text-white transition-colors">
+                                TRI</div>
+                            <div
+                                class="w-16 h-16 bg-gray-50 border-2 border-black flex items-center justify-center font-bold text-xs hover:bg-black hover:text-white transition-colors">
+                                RECT</div>
+                            <div
+                                class="w-16 h-16 bg-gray-50 border-2 border-black flex items-center justify-center font-bold text-xs hover:bg-black hover:text-white transition-colors">
+                                PENT</div>
+                            <div
+                                class="w-16 h-16 bg-gray-50 border-2 border-black flex items-center justify-center font-bold text-xs hover:bg-black hover:text-white transition-colors">
+                                HEX</div>
+                            <div
+                                class="w-16 h-16 bg-gray-50 border-2 border-black flex items-center justify-center font-bold text-xs hover:bg-black hover:text-white transition-colors">
+                                OCT</div>
+                            <div
+                                class="w-16 h-16 bg-gray-50 border-2 border-black flex items-center justify-center font-bold text-xs hover:bg-black hover:text-white transition-colors">
+                                STAR</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Canvas Functions -->
+    <div class="max-w-7xl mx-auto px-6 my-24">
+        <div class="border-4 border-neo-black bg-neo-black text-white shadow-neo-xl p-12">
+            <h2 class="font-display text-5xl font-black mb-16 text-center text-neo-yellow">CANVAS MASTERY</h2>
+            <div class="grid md:grid-cols-4 gap-6">
+                <div
+                    class="bg-gray-900 border-4 border-white p-6 hover:bg-white hover:text-black transition-colors group">
+                    <i class="fa-solid fa-arrows-to-circle text-4xl mb-4 text-neo-pink"></i>
+                    <h3 class="font-bold text-2xl mb-2">CENTER</h3>
+                    <p class="text-sm opacity-80">Instantly align your mess to the dead center.</p>
+                </div>
+                <div
+                    class="bg-gray-900 border-4 border-white p-6 hover:bg-white hover:text-black transition-colors group">
+                    <i class="fa-solid fa-repeat text-4xl mb-4 text-neo-blue"></i>
+                    <h3 class="font-bold text-2xl mb-2">FLIP</h3>
+                    <p class="text-sm opacity-80">Mirror horizontally or vertically. Find new perspectives.</p>
+                </div>
+                <div
+                    class="bg-gray-900 border-4 border-white p-6 hover:bg-white hover:text-black transition-colors group">
+                    <i class="fa-solid fa-magnifying-glass text-4xl mb-4 text-neo-green"></i>
+                    <h3 class="font-bold text-2xl mb-2">ZOOM</h3>
+                    <p class="text-sm opacity-80">Get in tight for pixel-perfect precision.</p>
+                </div>
+                <div
+                    class="bg-gray-900 border-4 border-white p-6 hover:bg-white hover:text-black transition-colors group">
+                    <i class="fa-solid fa-rotate text-4xl mb-4 text-neo-yellow"></i>
+                    <h3 class="font-bold text-2xl mb-2">ROTATE</h3>
+                    <p class="text-sm opacity-80">Spin it right round. Works on individual layers.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 5: Shape Control -->
+    <!-- Section 5: Shape Control -->
+    <section class="py-24">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+            <div class="md:w-1/2">
+                <div class="inline-block bg-neo-pink text-white font-bold px-3 py-1 mb-4 text-sm uppercase">Total
+                    Precision</div>
+                <h2 class="font-display text-5xl font-black mb-6">SHAPE CONTROL</h2>
+                <p class="text-xl font-medium mb-8">It's not just about dragging dots. Fine tune everything. Adjust
+                    corner roundness globally or individually. Switch point types from sharp corners to smooth bezier
+                    curves for organic flows.</p>
+                <div class="bg-gray-100 border-2 border-black p-4 font-mono text-sm shadow-sm">
+                    <div class="flex justify-between border-b-2 border-black pb-2 mb-2"><span>Points:</span>
+                        <span>12</span>
+                    </div>
+                    <div class="flex justify-between border-b-2 border-black pb-2 mb-2"><span>Type:</span>
+                        <span>Bezier</span>
+                    </div>
+                    <div class="flex justify-between"><span>Radius:</span> <span>25px</span></div>
+                </div>
+            </div>
+            <div class="md:w-1/2">
+                <div class="bg-neo-blue border-4 border-black p-12 shadow-neo-xl">
+                    <div class="grid grid-cols-2 gap-4 w-full max-w-sm">
+                        <div
+                            class="bg-white border-4 border-black p-6 shadow-neo text-center hover:-translate-y-1 transition-transform">
+                            <i class="fa-solid fa-circle-nodes text-4xl mb-4 text-neo-blue"></i>
+                            <h4 class="font-bold">NODES</h4>
+                        </div>
+                        <div
+                            class="bg-white border-4 border-black p-6 shadow-neo text-center hover:-translate-y-1 transition-transform">
+                            <i class="fa-solid fa-bezier-curve text-4xl mb-4 text-neo-pink"></i>
+                            <h4 class="font-bold">CURVES</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6: Image Support -->
+    <section class="py-24">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row-reverse items-center gap-16">
+            <div class="md:w-1/2">
+                <div class="inline-block bg-neo-black text-white font-bold px-3 py-1 mb-4 text-sm uppercase">Masking
+                    Engine</div>
+                <h2 class="font-display text-5xl font-black mb-6">IMAGE MASKS</h2>
+                <p class="text-xl font-medium mb-8">Turn any image into a shape. Upload your file, and we wrap the
+                    clip-path around it. Move the image inside the shape, scale it, fit it, or fill it.</p>
+                <button
+                    class="bg-neo-yellow border-2 border-black px-6 py-2 font-bold hover:shadow-neo transition-all">UPLOAD
+                    IMAGE</button>
+            </div>
+            <div class="md:w-1/2">
+                <div class="bg-neo-white border-4 border-black p-12 shadow-neo-xl">
+                    <div
+                        class="w-full aspect-video bg-white border-4 border-black shadow-neo overflow-hidden relative group">
+                        <img src="https://images.unsplash.com/photo-1541701494587-cb58502866ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                            class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                            style="clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);">
+                        <div
+                            class="absolute inset-0 border-4 border-transparent hover:border-neo-pink pointer-events-none transition-colors">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 7: Effects -->
+    <!-- Section 7: Effects -->
+    <section class="py-24">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+            <div class="md:w-1/2">
+                <div class="inline-block bg-neo-purple text-white font-bold px-3 py-1 mb-4 text-sm uppercase">Style It
+                    Up</div>
+                <h2 class="font-display text-5xl font-black mb-6">EFFECTS</h2>
+                <p class="text-xl font-medium mb-8">Shapes are boring if they are flat. Add depth.</p>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-neo-white border-2 border-black shadow-[4px_4px_0_0_#000]"></div>
+                        <div class="font-bold text-lg">Hard Shadows (Drop)</div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-neo-white border-2 border-black shadow-[inset_4px_4px_0_0_#000]"></div>
+                        <div class="font-bold text-lg">Inner Shadows</div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-neo-white border-4 border-black"></div>
+                        <div class="font-bold text-lg">Border Support</div>
+                    </div>
+                </div>
+            </div>
+            <div class="md:w-1/2">
+                <div class="bg-neo-green border-4 border-black p-12 shadow-neo-xl">
+                    <div
+                        class="w-64 h-64 bg-neo-pink border-4 border-black shadow-neo mx-auto rotate-6 hover:rotate-12 transition-transform">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 8: Experiments -->
+    <!-- Section 8: Experiments -->
+    <!-- Section 8: Experiments -->
+    <!-- Section 8: Experiments -->
+    <section class="py-24 relative overflow-hidden">
+        <!-- Background Decor -->
+        <div class="absolute inset-0 opacity-5"
+            style="background-image: radial-gradient(#000 2px, transparent 2px); background-size: 30px 30px;"></div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <!-- Header -->
+            <div class="text-center mb-16">
+                <div
+                    class="inline-block bg-neo-green text-black font-bold px-3 py-1 mb-6 text-sm uppercase border-2 border-black shadow-neo">
+                    Beta Features</div>
+                <h2 class="font-display text-5xl md:text-7xl font-black mb-6">THE LAB</h2>
+                <p class="text-xl md:text-2xl font-medium max-w-3xl mx-auto opacity-80">We are always cooking. Try
+                    experimental features before anyone else.</p>
+            </div>
+
+            <!-- Experiment Cards -->
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Card 1: SVG Filters -->
+                <div class="relative group">
+                    <div class="absolute inset-0 bg-neo-black translate-x-3 translate-y-3 border-2 border-black"></div>
+                    <div
+                        class="relative bg-white border-4 border-neo-black p-8 h-full hover:translate-x-1 hover:translate-y-1 transition-transform">
+                        <!-- Hazard Strip -->
+                        <div
+                            class="absolute top-0 left-0 right-0 h-4 bg-[repeating-linear-gradient(45deg,#000,#000_10px,#facc15_10px,#facc15_20px)] border-b-4 border-black">
+                        </div>
+
+                        <div
+                            class="text-8xl font-black text-neo-green opacity-20 group-hover:opacity-100 transition-opacity absolute bottom-4 right-4 select-none">
+                            01</div>
+
+                        <div
+                            class="w-16 h-16 bg-white border-4 border-neo-black mb-6 flex items-center justify-center text-3xl font-bold shadow-neo mt-4">
+                            <i class="fa-solid fa-wand-magic-sparkles text-neo-green"></i>
+                        </div>
+                        <h3 class="font-display text-2xl font-bold mb-4">SVG FILTERS</h3>
+                        <p class="font-medium">Apply localized turbulence, displacement maps, and gooey effects directly
+                            to your shapes.</p>
+                    </div>
+                </div>
+
+                <!-- Card 2: Blend Modes -->
+                <div class="relative group">
+                    <div class="absolute inset-0 bg-neo-black translate-x-3 translate-y-3 border-2 border-black"></div>
+                    <div
+                        class="relative bg-white border-4 border-neo-black p-8 h-full hover:translate-x-1 hover:translate-y-1 transition-transform">
+                        <!-- Hazard Strip -->
+                        <div
+                            class="absolute top-0 left-0 right-0 h-4 bg-[repeating-linear-gradient(45deg,#000,#000_10px,#facc15_10px,#facc15_20px)] border-b-4 border-black">
+                        </div>
+
+                        <div
+                            class="text-8xl font-black text-neo-green opacity-20 group-hover:opacity-100 transition-opacity absolute bottom-4 right-4 select-none">
+                            02</div>
+
+                        <div
+                            class="w-16 h-16 bg-white border-4 border-neo-black mb-6 flex items-center justify-center text-3xl font-bold shadow-neo mt-4">
+                            <i class="fa-solid fa-layer-group text-neo-green"></i>
+                        </div>
+                        <h3 class="font-display text-2xl font-bold mb-4">BLEND MODES</h3>
+                        <p class="font-medium">Compositing made easy. Use Difference, Exclusion, and Hard Light to
+                            create complex visual layers.</p>
+                    </div>
+                </div>
+
+                <!-- Card 3: Noise Textures -->
+                <div class="relative group">
+                    <div class="absolute inset-0 bg-neo-black translate-x-3 translate-y-3 border-2 border-black"></div>
+                    <div
+                        class="relative bg-white border-4 border-neo-black p-8 h-full hover:translate-x-1 hover:translate-y-1 transition-transform">
+                        <!-- Hazard Strip -->
+                        <div
+                            class="absolute top-0 left-0 right-0 h-4 bg-[repeating-linear-gradient(45deg,#000,#000_10px,#facc15_10px,#facc15_20px)] border-b-4 border-black">
+                        </div>
+
+                        <div
+                            class="text-8xl font-black text-neo-green opacity-20 group-hover:opacity-100 transition-opacity absolute bottom-4 right-4 select-none">
+                            03</div>
+
+                        <div
+                            class="w-16 h-16 bg-white border-4 border-neo-black mb-6 flex items-center justify-center text-3xl font-bold shadow-neo mt-4">
+                            <i class="fa-solid fa-tv text-neo-green"></i>
+                        </div>
+                        <h3 class="font-display text-2xl font-bold mb-4">NOISE TEX</h3>
+                        <p class="font-medium">Procedural grain generation for retro aesthetics. Add grit and texture
+                            without external images.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 9: Animation -->
+    <!-- Section 9: Animation -->
+    <section class="py-24">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+            <div class="md:w-1/2">
+                <div class="inline-block bg-neo-blue text-black font-bold px-3 py-1 mb-4 text-sm uppercase">Make it Move
+                </div>
+                <h2 class="font-display text-5xl font-black mb-6">ANIMATION</h2>
+                <p class="text-xl font-medium mb-8">Static shapes are fine, but moving shapes are better. We provide the
+                    keyframes. You copy the code. Create breathing effects, spinning stars, or morphing blobs with
+                    standard CSS transitions.</p>
+            </div>
+            <div class="md:w-1/2">
+                <!-- Media Player Card -->
+                <div class="bg-white border-4 border-black shadow-neo-xl relative">
+                    <!-- Top Bar -->
+                    <div class="bg-black text-white p-2 flex justify-between items-center border-b-4 border-black">
+                        <div class="font-mono text-xs spacing-widest">REC ● 00:04:12</div>
+                        <div class="flex gap-1">
+                            <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                        </div>
+                    </div>
+
+                    <!-- Viewport -->
+                    <div class="bg-neo-purple/20 p-12 flex items-center justify-center h-64 overflow-hidden relative">
+                        <!-- Grid Background -->
+                        <div class="absolute inset-0 opacity-20"
+                            style="background-image: linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px); background-size: 20px 20px;">
+                        </div>
+
+                        <!-- Animated Shape -->
+                        <div class="w-32 h-32 bg-neo-blue border-4 border-black shadow-neo animate-[spin_5s_linear_infinite] relative z-10"
+                            style="clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);">
+                        </div>
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="border-t-4 border-black p-4 bg-gray-50">
+                        <!-- Timeline -->
+                        <div class="relative w-full h-4 bg-gray-300 border-2 border-black mb-6">
+                            <div class="absolute top-0 left-0 h-full w-1/3 bg-neo-pink border-r-2 border-black"></div>
+                            <div class="absolute top-[-6px] left-1/3 w-3 h-6 bg-black"></div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="flex justify-between items-center">
+                            <div class="flex gap-2">
+                                <button
+                                    class="w-10 h-10 border-2 border-black bg-white shadow-neo hover:translate-y-0.5 hover:shadow-none transition-all flex items-center justify-center"><i
+                                        class="fa-solid fa-backward-step"></i></button>
+                                <button
+                                    class="w-10 h-10 border-2 border-black bg-neo-green shadow-neo hover:translate-y-0.5 hover:shadow-none transition-all flex items-center justify-center"><i
+                                        class="fa-solid fa-play"></i></button>
+                                <button
+                                    class="w-10 h-10 border-2 border-black bg-white shadow-neo hover:translate-y-0.5 hover:shadow-none transition-all flex items-center justify-center"><i
+                                        class="fa-solid fa-stop"></i></button>
+                                <button
+                                    class="w-10 h-10 border-2 border-black bg-white shadow-neo hover:translate-y-0.5 hover:shadow-none transition-all flex items-center justify-center"><i
+                                        class="fa-solid fa-forward-step"></i></button>
+                            </div>
+                            <div class="font-mono text-xs font-bold bg-black text-white px-2 py-1">KEYFRAMES_ON</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 10: Code View -->
+    <section class="py-24">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row-reverse items-center gap-16">
+            <div class="md:w-1/2">
+                <div class="inline-block bg-neo-green text-black font-bold px-3 py-1 mb-4 text-sm uppercase">No Black
+                    Magic</div>
+                <h2 class="font-display text-5xl font-black mb-6 text-black">THE CODE</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-8">
+                    <!-- Card 1: Frameworks -->
+                    <div class="relative group">
+                        <div class="absolute inset-0 bg-neo-black translate-x-2 translate-y-2 border-2 border-black">
+                        </div>
+                        <div
+                            class="relative bg-white border-4 border-neo-black p-6 h-full hover:translate-x-1 hover:translate-y-1 transition-transform">
+                            <div
+                                class="text-6xl font-black text-neo-blue opacity-0 group-hover:opacity-100 absolute -top-5 -right-4 -z-10 select-none">
+                                01
+                            </div>
+                            <div
+                                class="w-12 h-12 bg-neo-blue text-white border-4 border-neo-black mb-4 flex items-center justify-center text-xl font-bold shadow-neo">
+                                <i class="fa-brands fa-css3"></i>
+                            </div>
+                            <h3 class="font-display text-xl font-bold mb-2">FRAMEWORKS</h3>
+                            <p class="font-medium text-sm leading-tight">Export to <span class="font-bold">Standard
+                                    CSS</span>, <span class="font-bold">Tailwind</span> classes, or <span
+                                    class="font-bold">React JSX</span> components.</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Smart Code -->
+                    <div class="relative group">
+                        <div class="absolute inset-0 bg-neo-black translate-x-2 translate-y-2 border-2 border-black">
+                        </div>
+                        <div
+                            class="relative bg-white border-4 border-neo-black p-6 h-full hover:translate-x-1 hover:translate-y-1 transition-transform">
+                            <div
+                                class="text-6xl font-black text-neo-pink opacity-0 group-hover:opacity-100 absolute -top-5 -right-4 -z-10 select-none">
+                                02
+                            </div>
+                            <div
+                                class="w-12 h-12 bg-neo-pink text-white border-4 border-neo-black mb-4 flex items-center justify-center text-xl font-bold shadow-neo">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            </div>
+                            <h3 class="font-display text-xl font-bold mb-2">SMART CODE</h3>
+                            <p class="font-medium text-sm leading-tight">Auto-minified output with <span
+                                    class="font-bold">CSS Variables</span> for easy theming.</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Modern CSS -->
+                    <div class="relative group">
+                        <div class="absolute inset-0 bg-neo-black translate-x-2 translate-y-2 border-2 border-black">
+                        </div>
+                        <div
+                            class="relative bg-white border-4 border-neo-black p-6 h-full hover:translate-x-1 hover:translate-y-1 transition-transform">
+                            <div
+                                class="text-6xl font-black text-neo-green opacity-0 group-hover:opacity-100 absolute -top-5 -right-4 -z-10 select-none">
+                                03
+                            </div>
+                            <div
+                                class="w-12 h-12 bg-neo-green text-black border-4 border-neo-black mb-4 flex items-center justify-center text-xl font-bold shadow-neo">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+                            <h3 class="font-display text-xl font-bold mb-2">MODERN CSS</h3>
+                            <p class="font-medium text-sm leading-tight">Leverages <span
+                                    class="font-bold bg-gray-200 px-1">clip-path</span> & <span
+                                    class="font-bold bg-gray-200 px-1">mask-image</span> for complex shaping.</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Fallbacks -->
+                    <div class="relative group">
+                        <div class="absolute inset-0 bg-neo-black translate-x-2 translate-y-2 border-2 border-black">
+                        </div>
+                        <div
+                            class="relative bg-white border-4 border-neo-black p-6 h-full hover:translate-x-1 hover:translate-y-1 transition-transform">
+                            <div
+                                class="text-6xl font-black text-neo-yellow opacity-0 group-hover:opacity-100 absolute -top-5 -right-4 -z-10 select-none">
+                                04
+                            </div>
+                            <div
+                                class="w-12 h-12 bg-neo-yellow text-black border-4 border-neo-black mb-4 flex items-center justify-center text-xl font-bold shadow-neo">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <h3 class="font-display text-xl font-bold mb-2">FALLBACKS</h3>
+                            <p class="font-medium text-sm leading-tight">Includes <span
+                                    class="font-bold text-gray-500">@supports</span> queries to ensure safety on older
+                                browsers.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="md:w-1/2 w-full">
+                <!-- Code Editor Card -->
+                <div class="relative group">
+                    <!-- Heavy Shadow -->
+                    <div class="absolute inset-0 bg-neo-black translate-x-4 translate-y-4 border-2 border-black"></div>
+
+                    <!-- Main Container -->
+                    <div class="relative bg-white border-4 border-black">
+                        <!-- Editor Bar -->
+                        <div
+                            class="bg-neo-black text-white p-3 flex justify-between items-center border-b-4 border-black">
+                            <div
+                                class="font-mono font-bold text-sm bg-neo-blue px-2 py-1 border-2 border-white text-black shadow-[2px_2px_0_0_#fff]">
+                                style.css</div>
+                            <div class="flex gap-2">
+                                <span class="w-4 h-4 bg-neo-pink border-2 border-white"></span>
+                                <span class="w-4 h-4 bg-neo-yellow border-2 border-white"></span>
+                            </div>
+                        </div>
+
+                        <!-- Code Content -->
+                        <div class="bg-gray-900 p-8 overflow-hidden relative">
+                            <!-- Line Numbers Background -->
+                            <div class="absolute left-0 top-0 bottom-0 w-12 bg-black/20 border-r-2 border-white/10">
+                            </div>
+
+                            <pre class="relative z-10 text-sm md:text-base font-mono leading-relaxed">
+<span class="text-neo-pink">.custom-shape</span> <span class="text-white">{</span>
+  <span class="text-neo-blue">width</span><span class="text-white">:</span> <span class="text-neo-yellow">300px</span><span class="text-white">;</span>
+  <span class="text-neo-blue">height</span><span class="text-white">:</span> <span class="text-neo-yellow">300px</span><span class="text-white">;</span>
+  <span class="text-neo-blue">background-color</span><span class="text-white">:</span> <span class="text-neo-pink">#FF66C4</span><span class="text-white">;</span>
+  <span class="text-neo-blue">clip-path</span><span class="text-white">:</span> <span class="text-neo-green">polygon(
+    <span class="text-white">50% 0%</span>, 
+    <span class="text-white">100% 50%</span>, 
+    <span class="text-white">50% 100%</span>, 
+    <span class="text-white">0% 50%</span>
+  )</span><span class="text-white">;</span>
+<span class="text-white">}</span></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 11: Export Options -->
+    <!-- Section 11: Export Options -->
+    <section class="py-24">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+            <div class="md:w-1/2">
+                <div class="inline-block bg-neo-yellow text-black font-bold px-3 py-1 mb-4 text-sm uppercase">Take it
+                    Home</div>
+                <h2 class="font-display text-5xl font-black mb-6">EXPORT READY</h2>
+                <p class="text-xl font-medium mb-8">Your shape deserves to live on the web. Export as:</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div
+                        class="border-4 border-black p-4 font-bold flex items-center gap-2 bg-white hover:bg-black hover:text-white transition-colors cursor-default">
+                        <i class="fa-brands fa-css3"></i> Pure CSS
+                    </div>
+                    <div
+                        class="border-4 border-black p-4 font-bold flex items-center gap-2 bg-white hover:bg-black hover:text-white transition-colors cursor-default">
+                        <i class="fa-solid fa-code"></i> SVG Code
+                    </div>
+                    <div
+                        class="border-4 border-black p-4 font-bold flex items-center gap-2 bg-white hover:bg-black hover:text-white transition-colors cursor-default">
+                        <i class="fa-solid fa-file-invoice"></i> Svg File
+                    </div>
+                    <div
+                        class="border-4 border-black p-4 font-bold flex items-center gap-2 bg-white hover:bg-black hover:text-white transition-colors cursor-default">
+                        <i class="fa-solid fa-image"></i> PNG
+                    </div>
+                </div>
+            </div>
+            <div class="md:w-1/2">
+                <div class="bg-neo-yellow border-4 border-black p-12 shadow-neo-xl flex items-center justify-center">
+                    <i class="fa-solid fa-file-export text-[12rem] text-neo-black drop-shadow-neo"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Playground Link / CTA -->
 
     <!-- Inspiration Gallery -->
-    <section class="max-w-7xl mx-auto px-6 py-20 border-t-4 border-neo-black bg-neo-yellow" id="community">
+    <section class="max-w-7xl mx-auto px-6 py-20" id="community">
         <h2 class="font-display text-5xl md:text-7xl font-black mb-16 text-center">MAKE <span
-                class="text-white text-outline">ANYTHING</span></h2>
+                class="text-neo-pink">ANYTHING</span></h2>
 
         <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
             <!-- Item 1 -->
@@ -540,7 +1168,7 @@
     </section>
 
     <!-- FAQ Section -->
-    <section class="max-w-4xl mx-auto px-6 py-20 border-t-4 border-neo-black">
+    <section class="max-w-4xl mx-auto px-6 py-20">
         <h2 class="font-display text-5xl font-black mb-12 text-center text-black">NO BRAINER <span
                 class="text-neo-pink">FAQ</span></h2>
 
