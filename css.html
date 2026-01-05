@@ -4,13 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSS Shape Generator Pro</title>
+    <title>CSS Shape Gen // PRO</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Space Grotesk', 'sans-serif'],
+                        display: ['Syne', 'sans-serif'],
+                    },
                     colors: {
                         'neo-black': '#000000',
                         'neo-white': '#ffffff',
@@ -21,1507 +33,313 @@
                         'neo-purple': '#8C52FF',
                     },
                     boxShadow: {
-                        'neo': '4px 4px 0px 0px #000000',
-                        'neo-sm': '2px 2px 0px 0px #000000',
+                        'neo': '5px 5px 0px 0px #000000',
+                        'neo-lg': '8px 8px 0px 0px #000000',
+                        'neo-xl': '12px 12px 0px 0px #000000',
                     }
                 }
             }
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-
         body {
-            font-family: 'Space Grotesk', sans-serif;
             background-color: #f0f0f0;
-            user-select: none;
             background-image: radial-gradient(#000 1px, transparent 1px);
             background-size: 20px 20px;
         }
 
-        /* Custom Scrollbar */
-        .custom-scroll::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
+        /* Smooth scrolling with a bit of 'snap' feel if desired, but standard is fine for brutalism */
+        html {
+            scroll-behavior: smooth;
         }
 
-        .custom-scroll::-webkit-scrollbar-track {
-            background: transparent;
+        .text-outline {
+            -webkit-text-stroke: 2px black;
+            color: transparent;
         }
 
-        .custom-scroll::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1;
-            border-radius: 3px;
+        .hover-wiggle:hover {
+            animation: wiggle 0.5s ease-in-out infinite;
         }
 
-        /* UI Elements */
-        input[type=range] {
-            -webkit-appearance: none;
-            width: 100%;
-            background: transparent;
-            cursor: pointer;
-        }
-
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 16px;
-            width: 16px;
-            border-radius: 0;
-            background: #FFDE59;
-            margin-top: -6px;
-            box-shadow: 2px 2px 0px 0px #000;
-            border: 2px solid black;
-        }
-
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 4px;
-            background: #000;
-            border-radius: 0;
-        }
-
-        input[type=number]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        /* Canvas Background */
-        .checkerboard {
-            background-image: linear-gradient(45deg, #e2e8f0 25%, transparent 25%), linear-gradient(-45deg, #e2e8f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e2e8f0 75%), linear-gradient(-45deg, transparent 75%, #e2e8f0 75%);
-            background-size: 20px 20px;
-            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-        }
-
-        /* Handles */
-        #handleLayer {
-            pointer-events: none;
-        }
-
-        .handle {
-            width: 12px;
-            height: 12px;
-            border: 1px solid white;
-            border-radius: 50%;
-            position: absolute;
-            transform: translate(-50%, -50%);
-            cursor: grab;
-            z-index: 50;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-            transition: transform 0.1s, background-color 0.1s;
-            pointer-events: auto;
-        }
-
-        .handle:active {
-            cursor: grabbing;
-            transform: translate(-50%, -50%) scale(1.2);
-        }
-
-        .handle.selected {
-            background-color: #FF66C4;
-            z-index: 60;
-            transform: translate(-50%, -50%) scale(1.3);
-            border: 2px solid black;
-            box-shadow: 2px 2px 0px rgba(0, 0, 0, 1);
-        }
-
-        .handle:not(.selected) {
-            background-color: #FFDE59;
-            border: 1px solid black;
-        }
-
-        .bezier-handle {
-            width: 10px;
-            height: 10px;
-            border: 2px solid #EC4899;
-            background: white;
-            border-radius: 50%;
-            position: absolute;
-            transform: translate(-50%, -50%);
-            cursor: grab;
-            z-index: 65;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-            pointer-events: auto;
-        }
-
-        .bezier-handle:hover {
-            transform: translate(-50%, -50%) scale(1.2);
-            background: #EC4899;
-        }
-
-        /* Animation */
-        @keyframes morphPreview {
+        @keyframes wiggle {
             0% {
-                clip-path: var(--clip-start);
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(-2deg);
+            }
+
+            75% {
+                transform: rotate(2deg);
             }
 
             100% {
-                clip-path: var(--clip-end);
+                transform: rotate(0deg);
             }
         }
 
-        .animating {
-            animation: morphPreview 1s infinite alternate ease-in-out;
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
         }
 
-        /* Tab States */
-        .tab-btn {
-            position: relative;
-            color: #64748b;
-            transition: color 0.2s;
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
         }
 
-        .tab-btn.active {
-            color: black;
-            font-weight: 900;
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
         }
 
-        .tab-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: #FF66C4;
+        @keyframes marquee-rev {
+            0% {
+                transform: translateX(-50%);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
         }
 
-        .layer-item.active {
-            background-color: #FFDE59;
-            border-left: 4px solid black;
-            font-weight: bold;
+        /* Interactive Blob */
+        .blob-shape {
+            transition: border-radius 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .drop-active {
-            border: 2px dashed #4F46E5;
-            background-color: rgba(79, 70, 229, 0.05);
-        }
-
-        .code-tab.active {
-            background-color: #f1f5f9;
-            color: #4f46e5;
-            border-color: #e2e8f0;
-        }
-
-        /* Box Border */
-        .canvas-boundary {
-            border: 2px dashed #cbd5e1;
-        }
-
-        /* Cursors */
-        .cursor-pan-image {
-            cursor: grab;
-        }
-
-        .cursor-pan-image:active {
-            cursor: grabbing;
+        .blob-shape:hover {
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
         }
     </style>
 </head>
 
-<body class="h-screen flex flex-col overflow-hidden text-slate-800" onkeydown="handleKeyDown(event)"
-    onclick="closeMenus(event)">
+<body class="overflow-x-hidden text-neo-black">
 
-    <!-- SVG Filters -->
-    <svg width="0" height="0" class="absolute pointer-events-none">
-        <defs>
-            <filter id="noise">
-                <feTurbulence id="noiseVal" type="fractalNoise" baseFrequency="0.8" numOctaves="3"
-                    stitchTiles="stitch" />
-                <feColorMatrix type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 19 -9" result="noise" />
-                <feComposite in="SourceGraphic" in2="noise" operator="in" />
-            </filter>
-            <filter id="sketchy">
-                <feTurbulence id="sketchyVal" type="turbulence" baseFrequency="0.05" numOctaves="2"
-                    result="turbulence" />
-                <feDisplacementMap in2="turbulence" in="SourceGraphic" scale="5" xChannelSelector="R"
-                    yChannelSelector="G" />
-            </filter>
-        </defs>
-    </svg>
-
-    <!-- Top Bar -->
-    <nav class="bg-neo-yellow border-b-4 border-black px-4 h-16 flex items-center justify-between shrink-0 z-30">
-        <div class="flex items-center gap-3">
-            <div
-                class="w-10 h-10 bg-neo-white border-2 border-black rounded-none flex items-center justify-center text-black font-bold shadow-neo-sm">
-                <i class="fa-solid fa-shapes"></i>
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-4 pointer-events-none">
+        <div
+            class="max-w-7xl mx-auto flex justify-between items-center bg-neo-white border-4 border-neo-black shadow-neo rounded-xl px-6 py-3 pointer-events-auto transform hover:-translate-y-1 transition-transform">
+            <div class="font-display font-bold text-2xl tracking-tighter">SHAPE<span class="text-neo-pink">GEN</span>
             </div>
-            <div>
-                <h1 class="text-lg font-black tracking-tighter text-black leading-none uppercase">Shape<span
-                        class="text-neo-pink">Gen</span></h1><span
-                    class="text-[10px] font-bold text-black uppercase tracking-widest bg-neo-white border border-black px-1">PRO</span>
+            <div class="hidden md:flex gap-6 font-bold text-sm uppercase tracking-wide">
+                <a href="#about" class="hover:text-neo-purple hover:underline decoration-4 underline-offset-4">How it
+                    works</a>
+                <a href="#features"
+                    class="hover:text-neo-blue hover:underline decoration-4 underline-offset-4">Features</a>
+                <a href="#community" class="hover:text-neo-green hover:underline decoration-4 underline-offset-4">Cool
+                    Stuff</a>
             </div>
-        </div>
-
-
-        <div class="relative">
-            <button onclick="toggleMenu('exportMenu', event)"
-                class="bg-neo-black hover:bg-neo-pink hover:text-black hover:shadow-none shadow-neo-sm text-white text-xs font-bold px-4 py-2 border-2 border-black transition-all flex items-center gap-2">Export
-                <i class="fa-solid fa-chevron-down text-[10px]"></i></button>
-            <div id="exportMenu"
-                class="hidden absolute right-0 top-full mt-2 w-48 bg-white border-2 border-black shadow-neo p-1 z-50">
-                <div class="px-3 py-2 text-[10px] font-black text-black uppercase">Code</div>
-                <button onclick="exportFile('css')"
-                    class="w-full text-left px-3 py-2 text-xs font-bold text-black hover:bg-neo-yellow border-b-2 border-transparent hover:border-black transition-colors rounded-none">Copy
-                    CSS</button>
-                <button onclick="exportFile('svg_code')"
-                    class="w-full text-left px-3 py-2 text-xs font-bold text-black hover:bg-neo-yellow border-b-2 border-transparent hover:border-black transition-colors rounded-none">Copy
-                    SVG Code</button>
-                <div class="border-t-2 border-black my-1"></div>
-                <div class="px-3 py-2 text-[10px] font-black text-black uppercase">Download</div>
-                <button onclick="exportFile('svg')"
-                    class="w-full text-left px-3 py-2 text-xs font-bold text-black hover:bg-neo-yellow border-b-2 border-transparent hover:border-black transition-colors rounded-none">As
-                    SVG File</button>
-                <button onclick="exportFile('png')"
-                    class="w-full text-left px-3 py-2 text-xs font-bold text-black hover:bg-neo-yellow border-b-2 border-transparent hover:border-black transition-colors rounded-none">As
-                    PNG (Raster)</button>
-            </div>
-        </div>
+            <a href="index.html"
+                class="bg-neo-black text-neo-white px-6 py-2 font-bold uppercase hover:bg-neo-yellow hover:text-neo-black transition-colors border-2 border-transparent hover:border-neo-black">
+                Start Now
+            </a>
         </div>
     </nav>
 
-    <div class="flex-1 flex overflow-hidden">
+    <!-- Hero Section -->
+    <header class="min-h-screen flex items-center justify-center pt-24 pb-12 relative overflow-hidden">
 
-        <!-- Sidebar: Layers & Primitives -->
-        <aside class="w-64 bg-neo-white border-r-4 border-black flex flex-col shrink-0 z-20">
-            <div class="p-3 border-b-4 border-black flex justify-between items-center bg-neo-blue">
-                <span class="text-xs font-black text-black uppercase tracking-wider">Layers</span>
-                <div class="flex gap-1">
-                    <button onclick="addLayer()"
-                        class="text-xs bg-white border-2 border-black hover:bg-neo-green hover:text-black px-2 py-1 rounded-none shadow-neo-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all font-bold"
-                        title="Add Layer"><i class="fa-solid fa-plus"></i></button>
-                </div>
-            </div>
-            <div id="layerList" class="flex-1 overflow-y-auto custom-scroll p-2 space-y-1"></div>
+        <!-- Floating Shapes Decoration -->
+        <div
+            class="absolute top-20 left-10 w-24 h-24 bg-neo-yellow border-4 border-neo-black shadow-neo rounded-full animate-bounce">
+        </div>
+        <div class="absolute bottom-20 right-10 w-32 h-32 bg-neo-blue border-4 border-neo-black shadow-neo rotate-12"
+            style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+        <div class="absolute top-40 right-20 w-16 h-16 bg-neo-pink border-4 border-neo-black shadow-neo"
+            style="clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);"></div>
 
-            <div class="p-4 border-t-4 border-black bg-neo-white space-y-4">
-                <div>
-                    <span
-                        class="text-xs font-black text-black uppercase tracking-wider block mb-2 border-b-2 border-black inline-block">Generators</span>
-                    <div class="space-y-2">
-                        <div class="flex gap-1">
-                            <select id="genType"
-                                class="flex-1 text-xs border-2 border-black bg-white focus:bg-neo-yellow rounded-none p-1 font-black outline-none h-8">
-                                <option value="poly">Polygon</option>
-                                <option value="star">Star</option>
-                                <option value="blob">Blob</option>
-                            </select>
-                            <input type="number" id="genPoints" value="5"
-                                class="w-12 text-xs border-2 border-black bg-white rounded-none p-1 text-center font-bold"
-                                min="3" max="20">
-                        </div>
-                        <div id="starParams" class="hidden flex gap-1 items-center">
-                            <span class="text-[10px] font-bold">Inset:</span>
-                            <input type="range" id="genInset" min="10" max="90" value="50" class="flex-1">
-                        </div>
-                        <button onclick="runGenerator()"
-                            class="w-full py-2 bg-neo-green border-2 border-black text-xs font-bold text-black shadow-neo-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none hover:bg-green-400 transition-all">Generate
-                            Shape</button>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span
-                            class="text-xs font-black text-black uppercase tracking-wider border-b-2 border-black">Primitives</span>
-                        <div class="relative">
-                            <button onclick="toggleMenu('presetMenu', event)"
-                                class="text-[10px] bg-black text-white px-2 py-0.5 font-bold hover:bg-neo-purple">MORE</button>
-                            <div id="presetMenu"
-                                class="hidden absolute bottom-full left-0 mb-1 w-32 bg-white border-2 border-black shadow-neo p-1 z-50">
-                                <button onclick="applyPreset('message')"
-                                    class="w-full text-left px-2 py-1 text-xs font-bold hover:bg-neo-yellow text-black border-b-2 border-black rounded-none">Message</button>
-                                <button onclick="applyPreset('shield')"
-                                    class="w-full text-left px-2 py-1 text-xs font-bold hover:bg-neo-yellow text-black border-b-2 border-black rounded-none">Shield</button>
-                                <button onclick="applyPreset('cross')"
-                                    class="w-full text-left px-2 py-1 text-xs font-bold hover:bg-neo-yellow text-black border-b-2 border-black rounded-none">Cross</button>
-                                <button onclick="applyPreset('frame')"
-                                    class="w-full text-left px-2 py-1 text-xs font-bold hover:bg-neo-yellow text-black rounded-none">Frame</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-4 gap-2">
-                        <button onclick="applyPreset('pentagon')"
-                            class="aspect-square border-2 border-black bg-white hover:bg-neo-pink shadow-neo-sm hover:shadow-none flex items-center justify-center text-black font-bold transition-all"><i
-                                class="fa-solid fa-play fa-rotate-270 text-[10px]"></i></button>
-                        <button onclick="applyPreset('circle')"
-                            class="aspect-square border-2 border-black bg-white hover:bg-neo-pink shadow-neo-sm hover:shadow-none flex items-center justify-center text-black font-bold transition-all"><i
-                                class="fa-regular fa-circle text-[10px]"></i></button>
-                        <button onclick="applyPreset('star')"
-                            class="aspect-square border-2 border-black bg-white hover:bg-neo-pink shadow-neo-sm hover:shadow-none flex items-center justify-center text-black font-bold transition-all"><i
-                                class="fa-solid fa-star text-[10px]"></i></button>
-                        <button onclick="applyPreset('arrow')"
-                            class="aspect-square border-2 border-black bg-white hover:bg-neo-pink shadow-neo-sm hover:shadow-none flex items-center justify-center text-black font-bold transition-all"><i
-                                class="fa-solid fa-arrow-right text-[10px]"></i></button>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Canvas Area -->
-        <main class="flex-1 flex flex-col relative bg-[#f0f0f0]">
-            <!-- Toolbar -->
-            <div class="h-14 bg-neo-white border-b-4 border-black flex items-center justify-center gap-6 px-4">
-                <div class="flex items-center gap-2">
-                    <button onclick="historyUndo()" id="btnUndo" disabled
-                        class="w-9 h-9 flex items-center justify-center border-2 border-black bg-white shadow-neo-sm hover:shadow-none hover:translate-y-[2px] hover:bg-neo-yellow text-black disabled:opacity-30 disabled:shadow-none disabled:translate-y-0 transition-all"><i
-                            class="fa-solid fa-rotate-left text-sm"></i></button>
-                    <button onclick="historyRedo()" id="btnRedo" disabled
-                        class="w-9 h-9 flex items-center justify-center border-2 border-black bg-white shadow-neo-sm hover:shadow-none hover:translate-y-[2px] hover:bg-neo-yellow text-black disabled:opacity-30 disabled:shadow-none disabled:translate-y-0 transition-all"><i
-                            class="fa-solid fa-rotate-right text-sm"></i></button>
-                </div>
-                <div class="w-1 h-8 bg-black skew-x-12"></div>
-                <div class="flex items-center gap-2">
-                    <button onclick="flipGeometry('h')"
-                        class="w-9 h-9 flex items-center justify-center border-2 border-black bg-white shadow-neo-sm hover:shadow-none hover:translate-y-[2px] hover:bg-neo-blue text-black transition-all"><i
-                            class="fa-solid fa-arrows-left-right text-sm"></i></button>
-                    <button onclick="flipGeometry('v')"
-                        class="w-9 h-9 flex items-center justify-center border-2 border-black bg-white shadow-neo-sm hover:shadow-none hover:translate-y-[2px] hover:bg-neo-blue text-black transition-all"><i
-                            class="fa-solid fa-arrows-up-down text-sm"></i></button>
-                    <button onclick="centerGeometry()"
-                        class="w-9 h-9 flex items-center justify-center border-2 border-black bg-white shadow-neo-sm hover:shadow-none hover:translate-y-[2px] hover:bg-neo-blue text-black transition-all"><i
-                            class="fa-solid fa-compress text-sm"></i></button>
-                </div>
-                <div class="w-1 h-8 bg-black skew-x-12"></div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs font-black text-black uppercase">Sym</span>
-                    <button onclick="toggleSymmetry('x')" id="symX"
-                        class="px-2 py-1 rounded-none text-xs border-2 border-black bg-white text-black font-bold hover:bg-neo-pink transition-colors">X</button>
-                    <button onclick="toggleSymmetry('y')" id="symY"
-                        class="px-2 py-1 rounded-none text-xs border-2 border-black bg-white text-black font-bold hover:bg-neo-pink transition-colors">Y</button>
-                </div>
-            </div>
-
-            <div id="canvasZone"
-                class="flex-1 flex items-center justify-center overflow-visible checkerboard relative p-10">
-                <div id="aspectContainer" class="relative transition-all duration-300 canvas-boundary"
-                    style="width: 400px; height: 400px;">
-                    <!-- Removed onmousedown to prevent shape moving as requested -->
-                    <div id="layersContainer" class="absolute inset-0 w-full h-full"></div>
-
-                    <div id="ghostOverlay"
-                        class="absolute inset-0 w-full h-full pointer-events-none opacity-30 hidden border-2 border-dashed border-indigo-300">
-                    </div>
-
-                    <svg id="uiOverlay"
-                        class="absolute inset-0 w-full h-full z-50 pointer-events-none overflow-visible"></svg>
-                    <div id="handleLayer" class="absolute inset-0 w-full h-full z-50 pointer-events-none"></div>
-                </div>
-                <div id="hoverIndicator"
-                    class="hidden absolute top-4 left-4 bg-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg pointer-events-none flex items-center gap-2 animate-pulse">
-                    <span class="w-2 h-2 rounded-full bg-white"></span> EDITING HOVER STATE
-                </div>
-            </div>
-
+        <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
             <div
-                class="h-6 bg-white border-t border-slate-200 flex items-center justify-between px-3 text-[10px] text-slate-400">
-                <span id="coordDisplay">x: 0% y: 0%</span>
-                <span class="flex items-center gap-2"><i class="fa-regular fa-keyboard"></i> <span>Arrow: Nudge</span>
-                    <span>Shift+Arrow: 10%</span></span>
-            </div>
-        </main>
-
-        <!-- Right Sidebar: Properties -->
-        <aside class="w-80 bg-neo-white border-l-4 border-black flex flex-col shrink-0 z-20">
-            <div class="flex border-b border-slate-100">
-                <button onclick="setTab('shape')" id="tab-shape"
-                    class="tab-btn active flex-1 py-3 text-xs font-black uppercase border-b-4 border-transparent hover:bg-neo-yellow transition-colors">Shape</button>
-                <button onclick="setTab('fill')" id="tab-fill"
-                    class="tab-btn flex-1 py-3 text-xs font-black uppercase border-b-4 border-transparent hover:bg-neo-yellow transition-colors">Fill</button>
-                <button onclick="setTab('effects')" id="tab-effects"
-                    class="tab-btn flex-1 py-3 text-xs font-black uppercase border-b-4 border-transparent hover:bg-neo-yellow transition-colors">Effects</button>
-                <button onclick="setTab('anim')" id="tab-anim"
-                    class="tab-btn flex-1 py-3 text-xs font-black uppercase border-b-4 border-transparent hover:bg-neo-yellow transition-colors">Anim</button>
-                <button onclick="setTab('code')" id="tab-code"
-                    class="tab-btn flex-1 py-3 text-xs font-black uppercase border-b-4 border-transparent hover:bg-neo-yellow transition-colors">Code</button>
+                class="inline-block bg-neo-green border-4 border-neo-black shadow-neo px-4 py-2 font-bold mb-6 rotate-[-2deg] hover:rotate-2 transition-transform cursor-default">
+                ★ The Ultimate CSS Toy ★
             </div>
 
-            <div class="flex-1 overflow-y-auto custom-scroll p-4 space-y-6">
+            <h1 class="font-display text-7xl md:text-[10rem] leading-[0.85] font-black mb-8">
+                MAKE <span
+                    class="text-neo-pink text-outline hover:text-neo-pink transition-colors cursor-pointer">CRAZY</span><br>
+                SHAPES <span class="text-neo-blue">FAST</span>
+            </h1>
 
-                <!-- TAB: SHAPE (Geometry) -->
-                <div id="panel-shape" class="space-y-5">
-                    <!-- Point Controls -->
-                    <div class="bg-neo-white border-2 border-black shadow-neo-sm p-4 space-y-3">
-                        <div class="flex justify-between items-center mb-1">
-                            <span class="text-xs font-bold text-slate-500 uppercase">Selected Point</span>
-                            <span id="pointIndex"
-                                class="text-[10px] bg-neo-yellow text-black px-1.5 py-0.5 border-2 border-black font-bold font-mono shadow-neo-sm">#1</span>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div class="relative"><span
-                                    class="absolute left-2 top-1.5 text-[10px] text-black font-black">X</span><input
-                                    type="number" id="inpX"
-                                    class="w-full pl-6 pr-1 py-1 text-xs border-2 border-black bg-white focus:bg-neo-yellow font-bold outline-none"
-                                    oninput="updatePointFromInput()"></div>
-                            <div class="relative"><span
-                                    class="absolute left-2 top-1.5 text-[10px] text-black font-black">Y</span><input
-                                    type="number" id="inpY"
-                                    class="w-full pl-6 pr-1 py-1 text-xs border-2 border-black bg-white focus:bg-neo-yellow font-bold outline-none"
-                                    oninput="updatePointFromInput()"></div>
-                        </div>
+            <p
+                class="text-xl md:text-2xl font-medium max-w-2xl mx-auto mb-12 bg-neo-white border-2 border-neo-black p-4 shadow-neo -rotate-1">
+                Forget boring rectangles. Bend the web to your will with our drag-and-drop vector editor.
+                <span class="bg-neo-yellow px-1">100% Free.</span>
+            </p>
 
-                        <!-- Point Type Selector -->
-                        <div>
-                            <label class="text-[10px] font-black text-black uppercase block mb-1">Point Type</label>
-                            <div class="grid grid-cols-4 bg-white border-2 border-black p-1 gap-1">
-                                <button onclick="setPointType('corner')" id="type-corner"
-                                    class="py-1 text-[9px] border border-black font-bold transition-colors w-full uppercase bg-black text-white hover:bg-black shadow-neo-sm">Corner</button>
-                                <button onclick="setPointType('smooth')" id="type-smooth"
-                                    class="py-1 text-[9px] border border-black font-bold transition-colors w-full uppercase bg-white text-black hover:bg-neo-yellow shadow-sm hover:shadow-neo-sm hover:-translate-y-[1px]">Smooth</button>
-                                <button onclick="setPointType('rounded')" id="type-rounded"
-                                    class="py-1 text-[9px] border border-black font-bold transition-colors w-full uppercase bg-white text-black hover:bg-neo-yellow shadow-sm hover:shadow-neo-sm hover:-translate-y-[1px]">Round</button>
-                                <button onclick="setPointType('bezier')" id="type-bezier"
-                                    class="py-1 text-[9px] border border-black font-bold transition-colors w-full uppercase bg-white text-black hover:bg-neo-yellow shadow-sm hover:shadow-neo-sm hover:-translate-y-[1px]">Manual</button>
-                            </div>
-                        </div>
-
-                        <div id="roundnessControl" class="hidden">
-                            <label
-                                class="flex justify-between text-xs font-bold text-slate-500 uppercase mb-1"><span>Radius</span>
-                                <span id="ptRoundVal" class="text-indigo-600">0%</span></label>
-                            <input type="range" id="ptRoundness" min="0" max="50" value="0"
-                                oninput="updateProp('roundness', this.value)">
-                        </div>
-
-                        <!-- Actions -->
-                        <div class="flex gap-2 pt-2 border-t-2 border-black">
-                            <button onclick="addPoint()" id="btnAddPoint"
-                                class="flex-1 py-1.5 bg-white border-2 border-black text-xs font-bold shadow-neo-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] hover:bg-neo-green transition-all text-black">Add
-                                Next</button>
-                            <button onclick="deletePoint()" id="btnDelPoint"
-                                class="flex-1 py-1.5 bg-white border-2 border-black text-xs font-bold shadow-neo-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] hover:bg-neo-pink transition-all text-black">Delete</button>
-                        </div>
-
-                        <label class="flex items-center gap-2 cursor-pointer pt-1"><input type="checkbox" id="snapGrid"
-                                class="appearance-none w-4 h-4 border-2 border-black bg-white rounded-none cursor-pointer relative checked:bg-neo-pink checked:mt-[-6px] checked:shadow-[2px_2px_0px_0px_#000] focus:outline-none transition-all after:content-[''] after:hidden checked:after:block after:absolute after:left-[4px] after:top-[1px] after:w-[6px] after:h-[10px] after:border-r-2 after:border-b-2 after:border-white after:rotate-45"><span
-                                class="text-xs font-bold text-black">Snap Grid</span></label>
+            <div class="flex flex-col md:flex-row justify-center gap-6 items-center">
+                <a href="index.html"
+                    class="bg-neo-black text-neo-white text-2xl font-bold px-10 py-5 border-4 border-neo-black shadow-neo-lg hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all group overflow-hidden relative">
+                    <span class="relative z-10 group-hover:text-neo-yellow">LAUNCH EDITOR</span>
+                    <div
+                        class="absolute inset-0 bg-white transform -translate-x-full group-hover:translate-x-0 transition-transform mix-blend-difference">
                     </div>
+                </a>
 
-                    <!-- Global Geo -->
-                    <div class="space-y-4">
-                        <div>
-                            <label
-                                class="flex justify-between text-xs font-bold text-slate-500 uppercase mb-1"><span>Rotation</span>
-                                <span id="rotVal" class="text-indigo-600">0°</span></label>
-                            <input type="range" id="rotSlider" min="0" max="360" value="0"
-                                oninput="rotateGeometry(this.value)">
-                        </div>
-                        <div>
-                            <label class="flex justify-between text-xs font-bold text-slate-500 uppercase mb-1"><span>Shape
-                                    Scale</span> <span id="scaleVal" class="text-indigo-600">100%</span></label>
-                            <input type="range" id="shapeScale" min="10" max="150" value="100"
-                                oninput="scaleGeometry(this.value)">
+                <a href="#demo"
+                    class="bg-neo-white text-neo-black text-xl font-bold px-8 py-5 border-4 border-neo-black shadow-neo-lg hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center gap-3">
+                    <div
+                        class="w-8 h-8 bg-neo-pink rounded-full border-2 border-neo-black flex items-center justify-center">
+                        <div
+                            class="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-black border-b-[6px] border-b-transparent ml-1">
                         </div>
                     </div>
-
-                    <div>
-                        <label class="text-xs font-black text-black uppercase mb-1 block">Import SVG Path</label>
-                        <div class="flex gap-1"><input type="text" id="svgInput" placeholder="d='M10...'"
-                                class="flex-1 text-xs border-2 border-black rounded-none px-2 py-1 outline-none font-medium"><button
-                                onclick="importSVG()"
-                                class="px-3 py-1 bg-black border-2 border-black text-white hover:bg-neo-purple hover:text-black hover:border-black font-bold shadow-neo-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all"><i
-                                    class="fa-solid fa-arrow-right"></i></button></div>
-                    </div>
-                </div>
-
-                <!-- TAB: FILL -->
-                <div id="panel-fill" class="hidden space-y-5">
-                    <div>
-                        <label class="text-xs font-bold text-slate-500 uppercase mb-2 block">Background</label>
-
-                        <!-- Color Section -->
-                        <div class="mb-4">
-                            <label class="text-[10px] font-black text-black block mb-1">Color</label>
-                            <div class="flex gap-2">
-                                <input type="color" id="fillColor"
-                                    class="flex-1 h-8 border-2 border-black rounded-none cursor-pointer p-0.5 bg-white"
-                                    value="#6366f1" oninput="setFillType('color'); updateStyle('value', this.value)">
-                                <button onclick="setRandomGradient()"
-                                    class="px-3 py-1 bg-gradient-to-r from-pink-500 to-violet-500 text-white text-xs font-bold border-2 border-black shadow-neo-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all">Colorful</button>
-                            </div>
-                        </div>
-
-                        <!-- Image Section -->
-                        <div class="mb-4">
-                            <label class="text-[10px] font-black text-black block mb-1">Image</label>
-                            <div class="flex gap-2">
-                                <button onclick="triggerUpload()"
-                                    class="flex-1 py-2 text-xs bg-white border-2 border-black shadow-neo-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] font-bold hover:bg-neo-blue transition-all flex items-center justify-center gap-2 text-black">
-                                    <i class="fa-solid fa-image"></i> Upload Image
-                                </button>
-                                <input type="file" id="imgUpload" hidden accept="image/*"
-                                    onchange="handleImageUpload(this)">
-                                <button id="removeImgBtn" onclick="removeImage()"
-                                    class="hidden w-10 flex items-center justify-center bg-white border-2 border-black shadow-neo-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] text-black hover:bg-red-400 disabled:opacity-50 transition-all"
-                                    title="Remove Image">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Image Positioning (Hidden by default) -->
-                        <div id="imageControls"
-                            class="hidden space-y-3 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                            <label class="text-xs font-bold text-slate-500 uppercase block">Image Position</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div><span class="text-[10px] text-slate-400 block">Pan X</span><input type="range"
-                                        id="imgPanX" min="0" max="100" value="50" oninput="updateImagePos()"></div>
-                                <div><span class="text-[10px] text-slate-400 block">Pan Y</span><input type="range"
-                                        id="imgPanY" min="0" max="100" value="50" oninput="updateImagePos()"></div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div><span class="text-[10px] text-slate-400 block">Zoom</span><input type="range"
-                                        id="imgZoom" min="10" max="300" value="100" oninput="updateImagePos()"></div>
-                                <div><span class="text-[10px] text-slate-400 block">Rotate</span><input type="range"
-                                        id="imgRot" min="0" max="360" value="0" oninput="updateImagePos()"></div>
-                            </div>
-                            <div><span class="text-[10px] text-slate-400 block">Blur</span><input type="range"
-                                    id="imgBlur" min="0" max="20" value="0" oninput="updateImagePos()"></div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-2 pt-2 border-t-2 border-black">
-                        <div class="flex items-center justify-between"><label
-                                class="text-xs font-black text-black uppercase">Border (Wrapper)</label><input
-                                type="checkbox" id="hasBorder"
-                                class="appearance-none w-4 h-4 border-2 border-black bg-white rounded-none cursor-pointer relative checked:bg-neo-pink checked:mt-[-6px] checked:shadow-[2px_2px_0px_0px_#000] focus:outline-none transition-all after:content-[''] after:hidden checked:after:block after:absolute after:left-[4px] after:top-[1px] after:w-[6px] after:h-[10px] after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
-                                onchange="updateStyle('borderActive', this.checked)"></div>
-                        <div id="borderSettings" class="space-y-2 opacity-50 pointer-events-none">
-                            <div class="flex justify-between text-[10px] text-black font-bold"><span>Width</span><span
-                                    id="bwVal">5px</span></div>
-                            <input type="range" id="borderWidth" min="0" max="50" value="5"
-                                oninput="updateStyle('borderWidth', this.value)">
-                            <input type="color" id="borderColor"
-                                class="w-full h-8 border-2 border-black rounded-none cursor-pointer p-0.5 bg-white"
-                                value="#000000" oninput="updateStyle('borderColor', this.value)">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TAB: EFFECTS -->
-                <div id="panel-effects" class="hidden space-y-5">
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between"><label
-                                class="text-xs font-bold text-slate-500 uppercase">Drop Shadow</label><input
-                                type="checkbox" id="hasDropShadow"
-                                class="appearance-none w-4 h-4 border-2 border-black bg-white rounded-none cursor-pointer relative checked:bg-neo-pink checked:mt-[-6px] checked:shadow-[2px_2px_0px_0px_#000] focus:outline-none transition-all after:content-[''] after:hidden checked:after:block after:absolute after:left-[4px] after:top-[1px] after:w-[6px] after:h-[10px] after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
-                                onchange="updateStyle('dropShadow', this.checked)"></div>
-                        <input type="range" id="dropShadowBlur" min="0" max="50" value="10"
-                            oninput="updateStyle('dropShadowBlur', this.value)" disabled>
-
-                        <div class="flex items-center justify-between pt-2"><label
-                                class="text-xs font-bold text-slate-500 uppercase">Inner Shadow</label><input
-                                type="checkbox" id="hasInnerShadow"
-                                class="appearance-none w-4 h-4 border-2 border-black bg-white rounded-none cursor-pointer relative checked:bg-neo-pink checked:mt-[-6px] checked:shadow-[2px_2px_0px_0px_#000] focus:outline-none transition-all after:content-[''] after:hidden checked:after:block after:absolute after:left-[4px] after:top-[1px] after:w-[6px] after:h-[10px] after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
-                                onchange="updateStyle('innerShadow', this.checked)"></div>
-                        <input type="range" id="innerShadowBlur" min="0" max="50" value="10"
-                            oninput="updateStyle('innerShadowBlur', this.value)" disabled>
-                    </div>
-
-                    <div class="pt-4 border-t-2 border-black">
-                        <button onclick="document.getElementById('advEffects').classList.toggle('hidden')"
-                            class="flex items-center gap-2 text-xs font-black text-black uppercase border-2 border-black px-3 py-2 bg-white shadow-neo-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none hover:bg-neo-purple transition-all w-full justify-center">
-                            <i class="fa-solid fa-flask"></i> Experimental <i
-                                class="fa-solid fa-chevron-down text-[10px]"></i>
-                        </button>
-                        <div id="advEffects" class="hidden mt-3 space-y-4 bg-neo-white p-3 border-2 border-black">
-                            <div>
-                                <label class="text-[10px] font-black text-black block mb-1">SVG Filter</label>
-                                <select id="filterSelect"
-                                    class="w-full text-xs border-2 border-black bg-white focus:bg-neo-yellow rounded-none p-1 font-black outline-none"
-                                    onchange="updateStyle('filter', this.value)">
-                                    <option value="none">None</option>
-                                    <option value="blur">Blur</option>
-                                    <option value="noise">Noise</option>
-                                    <option value="sketchy">Sketchy</option>
-                                </select>
-                                <div class="mt-2">
-                                    <span class="text-[10px] font-bold text-black">Intensity</span>
-                                    <input type="range" id="filterIntensity" min="0" max="100" value="50"
-                                        oninput="updateFilterIntensity(this.value)">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-black text-black block mb-1">Mix Blend Mode</label>
-                                <select id="blendSelect"
-                                    class="w-full text-xs border-2 border-black bg-white focus:bg-neo-yellow rounded-none p-1 font-black outline-none"
-                                    onchange="updateStyle('blend', this.value)">
-                                    <option value="normal">Normal</option>
-                                    <option value="multiply">Multiply</option>
-                                    <option value="screen">Screen</option>
-                                    <option value="overlay">Overlay</option>
-                                </select>
-                                <div class="mt-2">
-                                    <span class="text-[10px] font-bold text-black">Opacity</span>
-                                    <input type="range" id="blendOpacity" min="0" max="100" value="100"
-                                        oninput="updateStyle('opacity', this.value)">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TAB: ANIMATE -->
-                <div id="panel-anim" class="hidden space-y-5">
-                    <div class="bg-neo-white border-2 border-black shadow-neo-sm p-4 text-center">
-                        <h3 class="text-black font-black text-sm mb-2 uppercase">Hover Transition</h3>
-                        <p class="text-xs text-black font-bold mb-4">Morph between base shape and hover state.</p>
-                        <button id="btnHoverEdit" onclick="toggleHoverEdit()"
-                            class="w-full py-2 bg-neo-blue border-2 border-black text-black font-bold shadow-neo-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] mb-2 transition-all">Edit
-                            Hover State</button>
-                        <button onclick="previewAnim()"
-                            class="w-full py-2 bg-white border-2 border-black text-black font-bold shadow-neo-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] hover:bg-neo-yellow transition-all"><i
-                                class="fa-solid fa-play mr-2"></i> Preview Loop</button>
-                    </div>
-                    <div>
-                        <label class="text-xs font-black text-black uppercase mb-2 block">Duration</label>
-                        <select id="animSpeed"
-                            class="w-full text-xs border-2 border-black bg-white focus:bg-neo-yellow rounded-none p-2 font-black outline-none"
-                            onchange="generateCode()">
-                            <option value="0.2s">Fast (0.2s)</option>
-                            <option value="0.5s" selected>Normal (0.5s)</option>
-                            <option value="1s">Slow (1s)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- TAB: CODE -->
-                <div id="panel-code" class="hidden h-full flex flex-col">
-                    <div class="flex flex-wrap gap-2 mb-3">
-                        <button onclick="setCodeMode('css')"
-                            class="code-tab active px-2 py-1 text-[10px] font-bold border-2 border-black bg-white hover:bg-neo-yellow transition-colors shadow-neo-sm">CSS</button>
-                        <button onclick="setCodeMode('tailwind')"
-                            class="code-tab px-2 py-1 text-[10px] font-bold border-2 border-black bg-white hover:bg-neo-yellow transition-colors shadow-neo-sm">Tailwind</button>
-                        <button onclick="setCodeMode('react')"
-                            class="code-tab px-2 py-1 text-[10px] font-bold border-2 border-black bg-white hover:bg-neo-yellow transition-colors shadow-neo-sm">React</button>
-                    </div>
-
-                    <div class="flex justify-between items-center mb-2 px-1">
-                        <div class="flex gap-4">
-                            <label class="flex items-center gap-1 text-[10px] text-slate-500 cursor-pointer"><input
-                                    type="checkbox" id="codeMinify"
-                                    class="appearance-none w-4 h-4 border-2 border-black bg-white rounded-none cursor-pointer relative checked:bg-neo-pink checked:mt-[-6px] checked:shadow-[2px_2px_0px_0px_#000] focus:outline-none transition-all after:content-[''] after:hidden checked:after:block after:absolute after:left-[4px] after:top-[1px] after:w-[6px] after:h-[10px] after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
-                                    onchange="generateCode()"> Minify</label>
-                            <label class="flex items-center gap-1 text-[10px] text-slate-500 cursor-pointer"><input
-                                    type="checkbox" id="codeVars"
-                                    class="appearance-none w-4 h-4 border-2 border-black bg-white rounded-none cursor-pointer relative checked:bg-neo-pink checked:mt-[-6px] checked:shadow-[2px_2px_0px_0px_#000] focus:outline-none transition-all after:content-[''] after:hidden checked:after:block after:absolute after:left-[4px] after:top-[1px] after:w-[6px] after:h-[10px] after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
-                                    onchange="generateCode()"> Vars</label>
-                            <label class="flex items-center gap-1 text-[10px] text-slate-500 cursor-pointer"><input
-                                    type="checkbox" id="codeSupports"
-                                    class="appearance-none w-4 h-4 border-2 border-black bg-white rounded-none cursor-pointer relative checked:bg-neo-pink checked:mt-[-6px] checked:shadow-[2px_2px_0px_0px_#000] focus:outline-none transition-all after:content-[''] after:hidden checked:after:block after:absolute after:left-[4px] after:top-[1px] after:w-[6px] after:h-[10px] after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
-                                    onchange="generateCode()"> @supports</label>
-                        </div>
-                        <button onclick="copyCode()"
-                            class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
-                            <i class="fa-regular fa-copy"></i> Copy
-                        </button>
-                    </div>
-
-                    <textarea id="cssOutput"
-                        class="flex-1 w-full bg-black text-neo-green border-2 border-black shadow-neo text-xs font-mono p-3 resize-none focus:outline-none"
-                        readonly></textarea>
-
-                    <div class="mt-2 text-center">
-                        <label
-                            class="flex items-center justify-center gap-2 text-[10px] text-slate-500 cursor-pointer"><input
-                                type="checkbox" id="useMask"
-                                class="appearance-none w-3 h-3 border-2 border-black bg-white rounded-none checked:bg-black focus:outline-none focus:bg-neo-yellow cursor-pointer relative after:content-[''] after:hidden checked:after:block after:absolute after:left-[2px] after:top-[0px] after:w-[4px] after:h-[8px] after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
-                                onchange="generateCode()"> Export as mask-image
-                            (Advanced)</label>
-                    </div>
-                </div>
+                    See Demo
+                </a>
             </div>
-        </aside>
+        </div>
+    </header>
+
+    <!-- Marquee -->
+    <!-- Marquee -->
+    <div
+        class="bg-neo-yellow border-y-4 border-neo-black py-4 rotate-[-2deg] scale-105 mb-20 shadow-neo overflow-hidden">
+        <!-- Line 1 -->
+        <div class="marquee-container mb-2">
+            <div class="marquee-content font-display font-bold text-4xl uppercase gap-8">
+                <span class="mx-8">★ CLIP-PATH</span>
+                <span class="mx-8 text-outline text-neo-white">★ POLYGONS</span>
+                <span class="mx-8">★ BLOBS</span>
+                <span class="mx-8 text-outline text-neo-white">★ SVG EXPORT</span>
+                <span class="mx-8">★ TAILWIND READY</span>
+                <span class="mx-8 text-outline text-neo-white">★ NO LOGIN REQUIRED</span>
+                <span class="mx-8">★ CLIP-PATH</span>
+                <span class="mx-8 text-outline text-neo-white">★ POLYGONS</span>
+                <span class="mx-8">★ BLOBS</span>
+                <span class="mx-8 text-outline text-neo-white">★ SVG EXPORT</span>
+                <span class="mx-8">★ TAILWIND READY</span>
+                <span class="mx-8 text-outline text-neo-white">★ NO LOGIN REQUIRED</span>
+            </div>
+        </div>
+        <!-- Line 2 (Reverse) -->
+        <div class="marquee-container">
+            <div class="marquee-content font-display font-bold text-4xl uppercase gap-8"
+                style="animation-name: marquee-rev;">
+                <span class="mx-8 text-outline text-neo-white">★ FREE FOREVER</span>
+                <span class="mx-8">★ OPEN SOURCE</span>
+                <span class="mx-8 text-outline text-neo-white">★ RESPONSIVE</span>
+                <span class="mx-8">★ ULTRA FAST</span>
+                <span class="mx-8 text-outline text-neo-white">★ CSS WIZARDRY</span>
+                <span class="mx-8">★ DRAG IT</span>
+                <span class="mx-8 text-outline text-neo-white">★ FREE FOREVER</span>
+                <span class="mx-8">★ OPEN SOURCE</span>
+                <span class="mx-8 text-outline text-neo-white">★ RESPONSIVE</span>
+                <span class="mx-8">★ ULTRA FAST</span>
+                <span class="mx-8 text-outline text-neo-white">★ CSS WIZARDRY</span>
+                <span class="mx-8">★ DRAG IT</span>
+            </div>
+        </div>
     </div>
 
-    <script>
-        // --- STATE ---
-        let layers = [{
-            id: 'l1', name: 'Shape 1', visible: true,
-            points: [], hoverPoints: [],
-            style: { type: 'color', value: '#6366f1', rotation: 0, scale: 100, dropShadow: false, dropShadowBlur: 10, innerShadow: false, innerShadowBlur: 10, blend: 'normal', opacity: 100, filter: 'none', filterVal: 50, borderActive: false, borderWidth: 5, borderColor: '#000000', imgPanX: 50, imgPanY: 50, imgZoom: 100, imgRot: 0, imgBlur: 0 }
-        }];
-        let activeLayerId = 'l1';
-        let selectedPointIndex = 0;
-        let history = [];
-        let historyIndex = -1;
+    <!-- Feature Grid -->
+    <section class="max-w-7xl mx-auto px-6 pb-32" id="features">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <!-- Box 1 -->
+            <div
+                class="bg-neo-white border-4 border-neo-black shadow-neo-lg p-8 hover:-translate-y-2 transition-transform duration-300">
+                <div
+                    class="w-16 h-16 bg-neo-purple border-4 border-neo-black mb-6 flex items-center justify-center text-2xl font-bold text-white shadow-neo">
+                    <i class="fa-solid fa-arrows-up-down-left-right"></i>
+                </div>
+                <h3 class="font-display text-3xl font-bold mb-4">DRAG & DROP</h3>
+                <p class="font-medium">Move points around like it's 1999 but smoother. Add bezier curves with a click.
+                </p>
+            </div>
+
+            <!-- Box 2 -->
+            <div
+                class="bg-neo-blue border-4 border-neo-black shadow-neo-lg p-8 hover:-translate-y-2 transition-transform duration-300">
+                <div
+                    class="w-16 h-16 bg-neo-white border-4 border-neo-black mb-6 flex items-center justify-center text-2xl font-bold shadow-neo">
+                    <i class="fa-brands fa-css3-alt"></i>
+                </div>
+                <h3 class="font-display text-3xl font-bold mb-4">CSS & SVG</h3>
+                <p class="font-medium">Get raw code. No bloat. Copy paste into your React, Vue or HTML project
+                    instantly.</p>
+            </div>
+
+            <!-- Box 3 -->
+            <div
+                class="bg-neo-pink border-4 border-neo-black shadow-neo-lg p-8 hover:-translate-y-2 transition-transform duration-300">
+                <div
+                    class="w-16 h-16 bg-neo-yellow border-4 border-neo-black mb-6 flex items-center justify-center text-2xl font-bold shadow-neo">
+                    <i class="fa-solid fa-image"></i>
+                </div>
+                <h3 class="font-display text-3xl font-bold mb-4">IMAGE MASK</h3>
+                <p class="font-medium">Upload your cat photos. Crop them into stars. Be a legend.</p>
+            </div>
+
+        </div>
+
+        <!-- Big Feature Block -->
+        <div
+            class="mt-20 border-4 border-neo-black bg-neo-white shadow-neo-xl flex flex-col md:flex-row overflow-hidden">
+            <div class="p-12 md:w-1/2 flex flex-col justify-center">
+                <div class="text-sm font-bold bg-neo-black text-neo-white inline-block px-3 py-1 mb-4 self-start">NEW
+                    FEATURE</div>
+                <h2 class="font-display text-5xl font-black mb-6 uppercase">Tailwind <br>Support</h2>
+                <p class="text-xl font-medium mb-8">We generate the weird arbitrary values so you don't have to guess.
+                    Just copy the class.</p>
+                <div class="bg-gray-100 p-4 border-2 border-black font-mono text-sm shadow-neo">
+                    <span class="text-blue-600">class</span>="<span class="text-purple-600">bg-red-500</span> <span
+                        class="text-orange-600">clip-[polygon(0_0,100%_0,100%_100%)]</span>"
+                </div>
+            </div>
+            <div
+                class="md:w-1/2 bg-neo-green border-l-4 border-neo-black flex items-center justify-center p-12 relative overflow-hidden group">
+                <div
+                    class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagonal-stripes.png')] opacity-20">
+                </div>
+                <div
+                    class="w-64 h-64 bg-neo-white border-4 border-neo-black shadow-neo flex items-center justify-center text-4xl font-black group-hover:rotate-12 transition-transform duration-300 relative z-10">
+                    HOVER ME
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Playground Link / CTA -->
+    <section class="bg-neo-black text-neo-white py-32 text-center px-6 border-t-4 border-neo-white">
+        <h2 class="font-display text-6xl md:text-8xl font-black mb-12 text-outline-white"
+            style="-webkit-text-stroke: 2px white; color: black;">
+            STOP READING.
+        </h2>
+        <h2 class="font-display text-6xl md:text-8xl font-black mb-12 text-neo-yellow">
+            START SHAPING.
+        </h2>
+
+        <div class="relative inline-block group">
+            <div
+                class="absolute inset-0 bg-neo-pink translate-y-3 translate-x-3 border-4 border-white transition-transform group-hover:translate-x-0 group-hover:translate-y-0">
+            </div>
+            <a href="index.html"
+                class="relative block bg-neo-blue text-black font-black text-3xl px-12 py-6 border-4 border-white hover:-translate-y-1 transition-transform">
+                OPEN THE TOOL
+            </a>
+        </div>
+    </section>
+
+    <footer class="bg-neo-yellow border-t-4 border-neo-black py-12 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end">
+            <div>
+                <div class="font-display font-black text-4xl mb-2">CSS SHAPE GEN</div>
+                <div class="font-bold">Made with <span class="text-neo-pink">♥</span> by Bisma</div>
+            </div>
+            <div class="flex gap-4 mt-8 md:mt-0 font-bold text-xl underline decoration-4">
+                <a href="#" class="hover:text-white">Github</a>
+                <a href="#" class="hover:text-white">Twitter</a>
+            </div>
+        </div>
+    </footer>
 
-        // Mode flags
-        let isDragging = false;
-        let isHoverEditing = false;
-        let dragTarget = null; // 'point', 'cp1', 'cp2', 'background'
-        let dragStartPos = { x: 0, y: 0 };
-        let dragStartPan = { x: 50, y: 50 };
-        let activeCodeMode = 'css';
-        let symmetry = { x: false, y: false };
-
-        // --- INIT ---
-        function init() {
-            const hash = window.location.hash.slice(1);
-            if (hash) { try { layers = JSON.parse(atob(hash)); activeLayerId = layers[0].id; } catch (e) { initDefault(); } } else { initDefault(); }
-            document.getElementById('genType').addEventListener('change', (e) => { document.getElementById('starParams').classList.toggle('hidden', e.target.value !== 'star'); });
-            setupDragDrop();
-            saveHistory();
-            render();
-        }
-
-        function initDefault() {
-            const pts = []; const r = 40; const c = 50;
-            for (let i = 0; i < 5; i++) {
-                const a = (i * 2 * Math.PI / 5) - Math.PI / 2;
-                pts.push({ x: c + r * Math.cos(a), y: c + r * Math.sin(a), type: 'corner', r: 0, cp1: { x: 0, y: 0 }, cp2: { x: 0, y: 0 } });
-            }
-            layers[0].points = pts;
-            layers[0].hoverPoints = JSON.parse(JSON.stringify(pts));
-        }
-
-        // --- HELPERS ---
-        function getActiveLayer() { return layers.find(l => l.id === activeLayerId) || layers[0]; }
-        function getActivePoints() { const l = getActiveLayer(); return isHoverEditing ? l.hoverPoints : l.points; }
-
-        function saveHistory() {
-            if (historyIndex < history.length - 1) history = history.slice(0, historyIndex + 1);
-            history.push(JSON.stringify(layers));
-            if (history.length > 30) history.shift(); else historyIndex++;
-            updateHistoryBtns();
-        }
-
-        function updateHistoryBtns() {
-            const btnUndo = document.getElementById('btnUndo');
-            const btnRedo = document.getElementById('btnRedo');
-            if (btnUndo) btnUndo.disabled = historyIndex <= 0;
-            if (btnRedo) btnRedo.disabled = historyIndex >= history.length - 1;
-        }
-
-        // --- RENDER PIPELINE ---
-        function render() {
-            const container = document.getElementById('layersContainer');
-            const handleLayer = document.getElementById('handleLayer');
-            const svgOverlay = document.getElementById('uiOverlay');
-            const layerList = document.getElementById('layerList');
-            const ghost = document.getElementById('ghostOverlay');
-
-            container.innerHTML = ''; handleLayer.innerHTML = ''; svgOverlay.innerHTML = ''; layerList.innerHTML = '';
-
-            // Render Layers
-            layers.forEach((layer, idx) => {
-                const isSelected = layer.id === activeLayerId;
-                const ptsToRender = (isSelected && isHoverEditing) ? layer.hoverPoints : layer.points;
-
-                if (isSelected && isHoverEditing) {
-                    ghost.classList.remove('hidden');
-                    const basePoly = getPolygonCSS(getTransformedPoints(layer.points, layer));
-                    ghost.style.clipPath = basePoly;
-                } else if (isSelected) {
-                    ghost.classList.add('hidden');
-                }
-
-                const transformed = getTransformedPoints(ptsToRender, layer);
-                const polyCSS = getPolygonCSS(transformed);
-
-                // Wrapper for Shadow/Border
-                const wrapper = document.createElement('div');
-                wrapper.className = `absolute inset-0 w-full h-full transition-all duration-200 ${layer.style.type === 'image' ? 'cursor-pan-image' : ''}`;
-                wrapper.style.zIndex = idx;
-                wrapper.style.opacity = layer.style.opacity / 100;
-
-                if (isSelected) {
-                    if (layer.style.type === 'image') {
-                        wrapper.onmousedown = (e) => startDrag(e, -1, 'background');
-                    }
-                }
-
-                let filterStr = '';
-                if (layer.style.dropShadow) filterStr += `drop-shadow(0 10px ${layer.style.dropShadowBlur}px rgba(0,0,0,0.5)) `;
-                if (layer.style.filter !== 'none') {
-                    if (layer.style.filter === 'blur') filterStr += `blur(${layer.style.filterVal / 5}px) `;
-                    else filterStr += `url(#${layer.style.filter}) `;
-                }
-                wrapper.style.filter = filterStr;
-                wrapper.style.mixBlendMode = layer.style.blend;
-
-                // Inner content
-                let content;
-
-                if (layer.style.type === 'color') {
-                    content = document.createElement('div');
-                    content.className = 'w-full h-full';
-                    content.style.background = layer.style.value; // Use 'background' to support gradients
-                } else {
-                    // Image mode with <img> tag for rotation support
-                    content = document.createElement('img');
-                    content.src = layer.style.value;
-                    content.className = 'absolute top-1/2 left-1/2 min-w-full min-h-full object-cover';
-
-                    const panX = (layer.style.imgPanX - 50) * 5;
-                    const panY = (layer.style.imgPanY - 50) * 5;
-                    const zoom = layer.style.imgZoom / 100;
-                    const rot = layer.style.imgRot || 0;
-
-                    const blur = layer.style.imgBlur || 0;
-
-                    content.style.transform = `translate(-50%, -50%) translate(${panX}px, ${panY}px) scale(${zoom}) rotate(${rot}deg)`;
-                    content.style.filter = `blur(${blur}px)`;
-                }
-
-                // Apply clipping to a parent of content
-                const clipper = document.createElement('div');
-                clipper.className = 'w-full h-full';
-                clipper.style.clipPath = polyCSS;
-                clipper.appendChild(content);
-
-                // Border Trick
-                if (layer.style.borderActive) {
-                    const outerDiv = document.createElement('div');
-                    outerDiv.className = 'w-full h-full';
-                    outerDiv.style.backgroundColor = layer.style.borderColor;
-                    outerDiv.style.clipPath = polyCSS;
-
-                    // Scale down inner
-                    const s = 1 - (layer.style.borderWidth / 200);
-                    clipper.style.transform = `scale(${s})`;
-
-                    outerDiv.appendChild(clipper); // clipper is now inner
-                    wrapper.appendChild(outerDiv);
-                } else {
-                    wrapper.appendChild(clipper);
-                }
-
-                // Inner Shadow (needs to be on top of content but inside clip)
-                if (layer.style.innerShadow) {
-                    const sh = document.createElement('div');
-                    sh.className = 'absolute inset-0 pointer-events-none';
-                    sh.style.boxShadow = `inset 0 0 ${layer.style.innerShadowBlur}px rgba(0,0,0,0.8)`;
-                    // Append to the clipped element
-                    if (layer.style.borderActive) {
-                        clipper.appendChild(sh); // Inner is clipper
-                    } else {
-                        clipper.appendChild(sh);
-                    }
-                }
-
-                container.appendChild(wrapper);
-
-                const li = document.createElement('div');
-                li.className = `layer-item p-2 rounded-none border-b-2 border-black cursor-pointer flex items-center justify-between group ${isSelected ? 'active' : 'hover:bg-neo-yellow'}`;
-                li.onclick = () => selectLayer(layer.id);
-                li.innerHTML = `<div class="flex items-center gap-2"><div class="w-4 h-4 rounded-none border-2 border-black" style="background: ${layer.style.type === 'color' ? layer.style.value : '#ccc'}"></div><span class="text-xs font-bold ${isSelected ? 'text-black' : 'text-black'}">${layer.name}</span></div><button onclick="deleteLayer(event, '${layer.id}')" class="text-black hover:text-red-600 px-1 opacity-100 font-bold"><i class="fa-solid fa-times"></i></button>`;
-                layerList.appendChild(li);
-
-                if (isSelected) {
-                    drawHandles(transformed, handleLayer, svgOverlay);
-                }
-            });
-
-            generateCode();
-            syncUI();
-        }
-
-        // --- MATH ---
-        function getTransformedPoints(pts, layer) {
-            const rad = layer.style.rotation * (Math.PI / 180);
-            const s = layer.style.scale / 100;
-            const cx = 50; const cy = 50;
-
-            return pts.map(p => {
-                const tr = (x, y) => {
-                    let dx = x - cx; let dy = y - cy;
-                    dx *= s; dy *= s;
-                    return {
-                        x: (dx * Math.cos(rad) - y * Math.sin(rad)) + cx,
-                        y: (dx * Math.sin(rad) + dy * Math.cos(rad)) + cy
-                    };
-                };
-
-                const main = tr(p.x, p.y);
-                let cp1 = p.cp1 ? { x: p.cp1.x, y: p.cp1.y } : { x: p.x - 5, y: p.y };
-                let cp2 = p.cp2 ? { x: p.cp2.x, y: p.cp2.y } : { x: p.x + 5, y: p.y };
-
-                const t_cp1 = tr(cp1.x, cp1.y);
-                const t_cp2 = tr(cp2.x, cp2.y);
-
-                return { ...p, x: main.x, y: main.y, cp1: t_cp1, cp2: t_cp2 };
-            });
-        }
-
-        function getPolygonCSS(points) {
-            if (!points.length) return 'polygon(0 0)';
-            let tess = []; const len = points.length;
-            for (let i = 0; i < len; i++) {
-                const curr = points[i];
-                if (curr.type === 'corner') {
-                    tess.push(curr);
-                }
-                else if (curr.type === 'smooth') {
-                    // Catmull-Rom
-                    const p0 = points[(i - 1 + len) % len], next = points[(i + 1) % len], p3 = points[(i + 2) % len];
-                    for (let t = 0; t < 1; t += 0.02) {
-                        const tt = t * t, ttt = tt * t;
-                        const q1 = -ttt + 2 * tt - t, q2 = 3 * ttt - 5 * tt + 2, q3 = -3 * ttt + 4 * tt + t, q4 = ttt - tt;
-                        tess.push({ x: 0.5 * (p0.x * q1 + curr.x * q2 + next.x * q3 + p3.x * q4), y: 0.5 * (p0.y * q1 + curr.y * q2 + next.y * q3 + p3.y * q4) });
-                    }
-                } else if (curr.type === 'rounded') {
-                    // Quadratic Bezier Rounding
-                    const prev = points[(i - 1 + len) % len], next = points[(i + 1) % len];
-                    const v1 = { x: prev.x - curr.x, y: prev.y - curr.y }, v2 = { x: next.x - curr.x, y: next.y - curr.y };
-                    const l1 = Math.sqrt(v1.x * v1.x + v1.y * v1.y), l2 = Math.sqrt(v2.x * v2.x + v2.y * v2.y);
-                    const maxR = Math.min(l1, l2) * 0.5; const r = maxR * ((curr.r || 0) / 50);
-
-                    if (r < 0.5) { tess.push(curr); continue; }
-
-                    const sX = curr.x + (v1.x / l1) * r, sY = curr.y + (v1.y / l1) * r;
-                    const eX = curr.x + (v2.x / l2) * r, eY = curr.y + (v2.y / l2) * r;
-
-                    for (let s = 0; s <= 20; s++) {
-                        const t = s / 20, mt = 1 - t;
-                        tess.push({ x: (mt * mt * sX) + (2 * mt * t * curr.x) + (t * t * eX), y: (mt * mt * sY) + (2 * mt * t * curr.y) + (t * t * eY) });
-                    }
-                } else if (curr.type === 'bezier') {
-                    const next = points[(i + 1) % len];
-                    const cp1 = curr.cp2; // Out handle of current
-                    const cp2 = (next.type === 'bezier' && next.cp1) ? next.cp1 : { x: next.x, y: next.y };
-
-                    for (let t = 0; t < 1; t += 0.02) {
-                        const mt = 1 - t;
-                        const mt2 = mt * mt; const mt3 = mt * mt * mt;
-                        const t2 = t * t; const t3 = t * t * t;
-                        const bx = mt3 * curr.x + 3 * mt2 * t * cp1.x + 3 * mt * t2 * cp2.x + t3 * next.x;
-                        const by = mt3 * curr.y + 3 * mt2 * t * cp1.y + 3 * mt * t2 * cp2.y + t3 * next.y;
-                        tess.push({ x: bx, y: by });
-                    }
-                }
-            }
-            return `polygon(${tess.map(p => `${p.x.toFixed(2)}% ${p.y.toFixed(2)}%`).join(', ')})`;
-        }
-
-        function drawHandles(pts, htmlLayer, svgLayer) {
-            pts.forEach((p, i) => {
-                const next = pts[(i + 1) % pts.length];
-                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                line.setAttribute("x1", p.x + "%"); line.setAttribute("y1", p.y + "%");
-                line.setAttribute("x2", next.x + "%"); line.setAttribute("y2", next.y + "%");
-                line.setAttribute("stroke", "#6366f1"); line.setAttribute("stroke-opacity", "0.3");
-                line.setAttribute("stroke-width", "1");
-                svgLayer.appendChild(line);
-
-                const h = document.createElement('div');
-                h.className = `handle ${i === selectedPointIndex ? 'selected' : ''}`;
-                h.style.left = p.x + '%'; h.style.top = p.y + '%';
-                if (p.type !== 'corner') h.style.borderRadius = '50%'; else h.style.borderRadius = '0';
-
-                h.onmousedown = (e) => startDrag(e, i, 'point');
-                htmlLayer.appendChild(h);
-
-                if (i === selectedPointIndex && p.type === 'bezier') {
-                    [p.cp1, p.cp2].forEach((cp, idx) => {
-                        const l = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                        l.setAttribute("x1", p.x + "%"); l.setAttribute("y1", p.y + "%");
-                        l.setAttribute("x2", cp.x + "%"); l.setAttribute("y2", cp.y + "%");
-                        l.setAttribute("stroke", "#EC4899"); l.setAttribute("stroke-width", "1");
-                        svgLayer.appendChild(l);
-                        const bh = document.createElement('div');
-                        bh.className = 'bezier-handle';
-                        bh.style.left = cp.x + '%'; bh.style.top = cp.y + '%';
-                        bh.onmousedown = (e) => startDrag(e, i, idx === 0 ? 'cp1' : 'cp2');
-                        htmlLayer.appendChild(bh);
-                    });
-                }
-            });
-        }
-
-        // --- INTERACTION ---
-        function startDrag(e, index, target) {
-            e.stopPropagation(); e.preventDefault();
-            isDragging = true; selectedPointIndex = index; dragTarget = target;
-
-            dragStartPos = { x: e.clientX, y: e.clientY };
-            if (target === 'background') {
-                const l = getActiveLayer();
-                dragStartPan = { x: parseFloat(l.style.imgPanX), y: parseFloat(l.style.imgPanY) };
-            }
-
-            syncUI(); render();
-            document.addEventListener('mousemove', onDrag); document.addEventListener('mouseup', endDrag);
-        }
-
-        function onDrag(e) {
-            if (!isDragging) return;
-            const rect = document.getElementById('handleLayer').getBoundingClientRect();
-
-            // Handle Background Dragging
-            if (dragTarget === 'background') {
-                const l = getActiveLayer();
-                if (l.style.type === 'image') {
-                    const deltaX = e.clientX - dragStartPos.x;
-                    const deltaY = e.clientY - dragStartPos.y;
-                    const percentX = (deltaX / rect.width) * 100;
-                    const percentY = (deltaY / rect.height) * 100;
-
-                    l.style.imgPanX = Math.max(0, Math.min(100, dragStartPan.x + percentX));
-                    l.style.imgPanY = Math.max(0, Math.min(100, dragStartPan.y + percentY));
-
-                    syncUI(); render(); return;
-                }
-                return;
-            }
-
-            // Handle Point Dragging
-            let x = ((e.clientX - rect.left) / rect.width) * 100;
-            let y = ((e.clientY - rect.top) / rect.height) * 100;
-
-            // Constrain
-            x = Math.max(0, Math.min(100, x));
-            y = Math.max(0, Math.min(100, y));
-
-            // Inverse Transform
-            const l = getActiveLayer();
-            const rad = -l.style.rotation * (Math.PI / 180); const s = 100 / l.style.scale;
-            const cx = 50, cy = 50;
-            const tr = (vx, vy) => {
-                const dx = vx - cx, dy = vy - cy;
-                return { x: (dx * Math.cos(rad) - dy * Math.sin(rad)) * s + cx, y: (dx * Math.sin(rad) + dy * Math.cos(rad)) * s + cy };
-            };
-
-            const raw = tr(x, y);
-            const pts = getActivePoints();
-            const p = pts[selectedPointIndex];
-
-            if (!p.cp1) p.cp1 = { x: p.x - 5, y: p.y };
-            if (!p.cp2) p.cp2 = { x: p.x + 5, y: p.y };
-
-            if (dragTarget === 'point') {
-                const dx = raw.x - p.x;
-                const dy = raw.y - p.y;
-                p.x = raw.x; p.y = raw.y;
-                if (p.cp1) { p.cp1.x += dx; p.cp1.y += dy; }
-                if (p.cp2) { p.cp2.x += dx; p.cp2.y += dy; }
-            } else if (dragTarget === 'cp1') {
-                p.cp1 = raw;
-            } else if (dragTarget === 'cp2') {
-                p.cp2 = raw;
-            }
-
-            render(); document.getElementById('coordDisplay').innerText = `x: ${Math.round(x)}% y: ${Math.round(y)}%`;
-        }
-
-        function endDrag() { isDragging = false; saveHistory(); document.removeEventListener('mousemove', onDrag); document.removeEventListener('mouseup', endDrag); }
-
-        function handleKeyDown(e) {
-            const pts = getActivePoints(); if (!pts[selectedPointIndex]) return;
-            const p = pts[selectedPointIndex]; const step = e.shiftKey ? 10 : 1;
-
-            if (e.key === 'ArrowUp') p.y -= step;
-            else if (e.key === 'ArrowDown') p.y += step;
-            else if (e.key === 'ArrowLeft') p.x -= step;
-            else if (e.key === 'ArrowRight') p.x += step;
-            else if (e.key === 'Delete' || e.key === 'Backspace') { deletePoint(); return; }
-            else return;
-
-            render(); saveHistory();
-        }
-
-        // --- UPDATES ---
-        function updatePointFromInput() {
-            const pts = getActivePoints();
-            pts[selectedPointIndex].x = parseFloat(document.getElementById('inpX').value);
-            pts[selectedPointIndex].y = parseFloat(document.getElementById('inpY').value);
-            render(); saveHistory();
-        }
-        function rotateGeometry(v) { getActiveLayer().style.rotation = parseInt(v); document.getElementById('rotVal').innerText = v + '°'; render(); }
-        function scaleGeometry(v) { getActiveLayer().style.scale = parseInt(v); document.getElementById('scaleVal').innerText = v + '%'; render(); }
-        function updateStyle(k, v) {
-            const s = getActiveLayer().style;
-            if (k === 'borderActive') { s.borderActive = v; document.getElementById('borderSettings').classList.toggle('opacity-50', !v); }
-            else if (k === 'dropShadow') { s.dropShadow = v; document.getElementById('dropShadowBlur').disabled = !v; }
-            else if (k === 'innerShadow') { s.innerShadow = v; document.getElementById('innerShadowBlur').disabled = !v; }
-            else if (k === 'value') {
-                s.value = v;
-                // Auto-switch to color mode if picking color
-                if (s.type === 'image') {
-                    s.type = 'color';
-                    setFillType('color');
-                }
-            }
-            else s[k] = v;
-            render();
-        }
-        function updateFilterIntensity(v) {
-            const l = getActiveLayer(); l.style.filterVal = v;
-            document.getElementById('noiseVal').setAttribute('baseFrequency', v / 100);
-            document.getElementById('sketchyVal').setAttribute('baseFrequency', v / 1000);
-            render();
-        }
-        function updateImagePos() {
-            const s = getActiveLayer().style;
-            s.imgPanX = document.getElementById('imgPanX').value;
-            s.imgPanY = document.getElementById('imgPanY').value;
-            s.imgZoom = document.getElementById('imgZoom').value;
-            s.imgRot = document.getElementById('imgRot').value;
-            s.imgBlur = document.getElementById('imgBlur').value;
-            render();
-        }
-        function setFillType(t) { getActiveLayer().style.type = t; if (t === 'color') getActiveLayer().style.value = document.getElementById('fillColor').value; render(); syncUI(); }
-        function triggerUpload() { document.getElementById('imgUpload').click(); }
-        function handleImageUpload(i) { if (i.files[0]) { const r = new FileReader(); r.onload = (e) => { getActiveLayer().style.type = 'image'; getActiveLayer().style.value = e.target.result; syncUI(); render(); }; r.readAsDataURL(i.files[0]); } }
-        function removeImage() { const l = getActiveLayer(); l.style.type = 'color'; l.style.value = document.getElementById('fillColor').value || '#6366f1'; syncUI(); render(); }
-        function updatePointFromInput() { const pts = getActivePoints(); pts[selectedPointIndex].x = parseFloat(document.getElementById('inpX').value); pts[selectedPointIndex].y = parseFloat(document.getElementById('inpY').value); render(); saveHistory(); }
-        function updateProp(prop, val) { if (prop === 'roundness') { const pts = getActivePoints(); if (pts[selectedPointIndex]) { pts[selectedPointIndex].r = parseInt(val); document.getElementById('ptRoundVal').textContent = val + '%'; } } render(); saveHistory(); }
-
-        function setRandomGradient() {
-            const l = getActiveLayer();
-            l.style.type = 'color';
-            const c1 = '#' + Math.floor(Math.random() * 16777215).toString(16);
-            const c2 = '#' + Math.floor(Math.random() * 16777215).toString(16);
-            l.style.value = `linear-gradient(45deg, ${c1}, ${c2})`;
-            // Can't set input type=color to gradient, so handle UI
-            render(); syncUI();
-        }
-
-        function toggleHoverEdit() { isHoverEditing = !isHoverEditing; if (isHoverEditing && !getActiveLayer().hoverPoints.length) getActiveLayer().hoverPoints = JSON.parse(JSON.stringify(getActiveLayer().points)); document.getElementById('btnHoverEdit').innerText = isHoverEditing ? "Stop Editing" : "Edit Hover State"; document.getElementById('btnHoverEdit').classList.toggle('bg-red-600', isHoverEditing); document.getElementById('btnHoverEdit').classList.toggle('bg-indigo-600', !isHoverEditing); document.getElementById('hoverIndicator').classList.toggle('hidden', !isHoverEditing); render(); }
-        function previewAnim() {
-            const el = document.getElementById('layersContainer').children[layers.findIndex(l => l.id === activeLayerId)];
-            if (!el) return;
-            const start = getPolygonCSS(getTransformedPoints(getActiveLayer().points, getActiveLayer()));
-            const end = getPolygonCSS(getTransformedPoints(getActiveLayer().hoverPoints, getActiveLayer()));
-            const styleId = 'anim-style-' + activeLayerId; let s = document.getElementById(styleId); if (!s) { s = document.createElement('style'); s.id = styleId; document.head.appendChild(s); }
-            s.innerHTML = `@keyframes anim-${activeLayerId} { 0% { clip-path: ${start}; } 100% { clip-path: ${end}; } }`;
-            const children = el.querySelectorAll('div'); children.forEach(c => { c.style.animation = `anim-${activeLayerId} 1s infinite alternate ease-in-out`; });
-            setTimeout(() => { children.forEach(c => c.style.animation = ''); }, 3000);
-        }
-
-        // --- CODE GEN ---
-        function setCodeMode(m) {
-            activeCodeMode = m;
-            document.querySelectorAll('.code-tab').forEach(b => {
-                if (b.textContent.toLowerCase().includes(m)) b.classList.add('active', 'bg-slate-100', 'text-indigo-600');
-                else b.classList.remove('active', 'bg-slate-100', 'text-indigo-600');
-            });
-            generateCode();
-        }
-        function generateCode() {
-            const l = getActiveLayer();
-            const poly = getPolygonCSS(getTransformedPoints(l.points, l));
-            const minify = document.getElementById('codeMinify').checked;
-            const vars = document.getElementById('codeVars').checked;
-            const supports = document.getElementById('codeSupports').checked;
-            const isMask = document.getElementById('useMask').checked;
-            let out = '';
-
-            if (activeCodeMode === 'css') {
-                let rules = '';
-                if (vars) { rules += `--clip: ${poly};\n  clip-path: var(--clip);\n`; }
-                else { rules += isMask ? `mask-image: ${poly.replace('polygon', 'url(...)')}; -webkit-mask-image: ${poly};\n` : `clip-path: ${poly};\n`; }
-
-                if (l.style.type === 'color') rules += `  background: ${l.style.value};\n`;
-                else {
-                    rules += `  background: url(...);\n`;
-                    rules += `  background-position: ${l.style.imgPanX}% ${l.style.imgPanY}%;\n  background-size: ${l.style.imgZoom}%;\n`;
-                }
-                if (l.style.dropShadow) rules += `  filter: drop-shadow(0 10px ${l.style.dropShadowBlur}px rgba(0,0,0,0.5));\n`;
-                out = `.shape {\n${rules}}`;
-                if (supports) out = `@supports (clip-path: polygon(0 0)) {\n  ${out.replace(/\n/g, '\n  ')}\n}`;
-
-            } else if (activeCodeMode === 'tailwind') {
-                const arbitrary = poly.replace(/\s+/g, '').replace(/,/g, '_');
-                out = `<div class="w-[300px] h-[300px] bg-indigo-500 ${isMask ? 'mask' : 'clip'}-[${arbitrary}]"></div>`;
-            } else if (activeCodeMode === 'react') {
-                const bgProp = l.style.type === 'image' ? `url(...)` : l.style.value;
-                out = `const Shape = () => (\n  <div style={{\n    clipPath: '${poly}',\n    background: '${l.style.type === 'image' ? 'url(...)' : l.style.value}'${l.style.type === 'image' ? `,\n    backgroundPosition: '${l.style.imgPanX}% ${l.style.imgPanY}%',\n    backgroundSize: '${l.style.imgZoom}%',\n    backgroundRepeat: 'no-repeat'` : ''}\n  }} />\n);`;
-            }
-            if (minify) out = out.replace(/\s+/g, ' ').trim();
-            document.getElementById('cssOutput').value = out;
-        }
-
-        async function copyCode() {
-            const el = document.getElementById('cssOutput');
-            el.select();
-            try {
-                await navigator.clipboard.writeText(el.value);
-                // Visual feedback could be added here, but alert is consistent with existing UI
-                alert("Code copied to clipboard!");
-            } catch (e) {
-                document.execCommand('copy');
-                alert("Code copied to clipboard!");
-            }
-        }
-
-        async function exportFile(type) {
-            if (type === 'css' || type === 'svg_code') {
-                const el = document.getElementById('cssOutput'); el.select();
-                try { await navigator.clipboard.writeText(el.value); alert("Copied!"); } catch (e) { document.execCommand('copy'); alert("Copied!"); }
-            } else if (type === 'svg') {
-                const l = getActiveLayer(); const rot = getTransformedPoints(l.points, l); const polyStr = getPolygonCSS(rot);
-                const coords = polyStr.match(/[\d\.]+/g); let ptsStr = "";
-                if (coords) { for (let i = 0; i < coords.length; i += 2) ptsStr += `${coords[i]},${coords[i + 1]} `; }
-                const svgData = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><polygon points="${ptsStr}" fill="${l.style.type === 'color' ? l.style.value : '#000'}"/></svg>`;
-                const blob = new Blob([svgData], { type: "image/svg+xml" }); const url = URL.createObjectURL(blob);
-                const a = document.createElement("a"); a.href = url; a.download = 'shape.svg'; a.click();
-            } else { downloadRaster(type === 'png' ? 'image/png' : 'image/webp', type); }
-            document.getElementById('exportMenu').classList.add('hidden');
-        }
-
-        async function downloadRaster(mime, ext) {
-            const aspectDiv = document.getElementById('aspectContainer');
-            const w = 1200; const h = w * (aspectDiv.offsetHeight / aspectDiv.offsetWidth);
-            const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
-            const ctx = canvas.getContext('2d');
-            for (const l of layers) {
-                if (!l.visible) continue;
-                ctx.save(); ctx.globalAlpha = l.style.opacity / 100;
-                const rot = getTransformedPoints(l.points, l); const polyStr = getPolygonCSS(rot); const coords = polyStr.match(/[\d\.]+/g);
-                ctx.beginPath();
-                if (coords) { for (let i = 0; i < coords.length; i += 2) { const px = (parseFloat(coords[i]) / 100) * w; const py = (parseFloat(coords[i + 1]) / 100) * h; if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); } }
-                ctx.closePath();
-                if (l.style.dropShadow) { ctx.shadowColor = "rgba(0,0,0,0.5)"; ctx.shadowBlur = l.style.dropShadowBlur * 2; ctx.shadowOffsetY = 10; }
-                if (l.style.borderActive) { ctx.fillStyle = l.style.borderColor; ctx.fill(); ctx.shadowColor = "transparent"; ctx.clip(); const s = 1 - (l.style.borderWidth / 200); ctx.translate(w / 2, h / 2); ctx.scale(s, s); ctx.translate(-w / 2, -h / 2); } else { ctx.clip(); }
-                if (l.style.type === 'color') { ctx.fillStyle = l.style.value; ctx.fillRect(0, 0, w, h); }
-                else {
-                    try {
-                        const img = new Image(); img.crossOrigin = "Anonymous"; img.src = l.style.value;
-                        await new Promise((r) => { img.onload = r; img.onerror = r; });
-
-                        // Calculate Aspect Ratios
-                        const imgRatio = img.width / img.height;
-                        const canvasRatio = w / h;
-
-                        // Simulate object-cover
-                        let drawW, drawH;
-                        if (imgRatio > canvasRatio) {
-                            // Image is wider than canvas (relative to aspect), height is the constraint
-                            drawH = h;
-                            drawW = h * imgRatio;
-                        } else {
-                            // Image is taller, width is the constraint
-                            drawW = w;
-                            drawH = w / imgRatio;
-                        }
-
-                        // Transforms
-                        const zoom = l.style.imgZoom / 100;
-                        const rot = l.style.imgRot || 0;
-                        // Map 50 -> 0. +/- 50 units. UI uses * 5 for 400px width.
-                        // Scale factor is w / 400. default w=1200 => 3.
-                        // offset = (val - 50) * 5 * (w / 400)
-                        const scaleFactor = w / 400;
-                        const panX = (l.style.imgPanX - 50) * 5 * scaleFactor;
-                        const panY = (l.style.imgPanY - 50) * 5 * scaleFactor;
-
-                        ctx.translate(w / 2 + panX, h / 2 + panY);
-                        ctx.rotate(rot * Math.PI / 180);
-                        ctx.scale(zoom, zoom);
-
-                        if (l.style.imgBlur > 0) ctx.filter = `blur(${l.style.imgBlur * (w / 400)}px)`; // Scale blur relative to canvas width
-                        ctx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
-                        ctx.filter = 'none';
-
-                        // Reset transform for next layer (restore is called at end of loop, but good practice if more code added)
-                        // Actually ctx.save()/restore() handles this in the loop.
-
-                    } catch (e) { ctx.fillStyle = '#6366f1'; ctx.fillRect(0, 0, w, h); }
-                }
-                ctx.restore();
-            }
-            const a = document.createElement('a'); a.download = `shape.${ext}`; a.href = canvas.toDataURL(mime); a.click();
-        }
-
-        function setTab(t) {
-            ['shape', 'fill', 'effects', 'anim', 'code'].forEach(x => { document.getElementById(`panel-${x}`).classList.add('hidden'); document.getElementById(`tab-${x}`).classList.remove('active'); });
-            document.getElementById(`panel-${t}`).classList.remove('hidden'); document.getElementById(`tab-${t}`).classList.add('active');
-        }
-        function toggleMenu(id, e) { e.stopPropagation(); document.getElementById(id).classList.toggle('hidden'); }
-        function closeMenus(e) { if (!e.target.closest('nav')) document.getElementById('exportMenu').classList.add('hidden'); if (!e.target.closest('.relative')) document.getElementById('presetMenu').classList.add('hidden'); }
-        function setupDragDrop() { const z = document.getElementById('canvasZone'); z.addEventListener('dragover', (e) => { e.preventDefault(); z.classList.add('drop-active'); }); z.addEventListener('dragleave', (e) => { z.classList.remove('drop-active'); }); z.addEventListener('drop', (e) => { e.preventDefault(); z.classList.remove('drop-active'); if (e.dataTransfer.files[0]) handleImageUpload({ files: e.dataTransfer.files }); }); }
-
-        function selectLayer(id) { activeLayerId = id; selectedPointIndex = 0; syncUI(); render(); }
-        function runGenerator() { const type = document.getElementById('genType').value; const count = parseInt(document.getElementById('genPoints').value); const pts = []; const c = 50, r = 40; if (type === 'poly') { for (let i = 0; i < count; i++) { const a = (i * 2 * Math.PI / count) - Math.PI / 2; pts.push({ x: c + r * Math.cos(a), y: c + r * Math.sin(a), type: 'corner' }); } } else if (type === 'star') { const inset = parseInt(document.getElementById('genInset').value) / 100; for (let i = 0; i < count * 2; i++) { const a = (i * Math.PI / count) - Math.PI / 2; const rad = i % 2 === 0 ? r : r * inset; pts.push({ x: c + rad * Math.cos(a), y: c + rad * Math.sin(a), type: 'corner' }); } } else if (type === 'blob') { for (let i = 0; i < count; i++) { const a = (i * 2 * Math.PI / count); const rad = r * (0.6 + Math.random() * 0.4); pts.push({ x: c + rad * Math.cos(a), y: c + rad * Math.sin(a), type: 'smooth' }); } } getActiveLayer().points = pts; getActiveLayer().hoverPoints = JSON.parse(JSON.stringify(pts)); saveHistory(); render(); }
-        function importSVG() {
-            const s = document.getElementById('svgInput').value;
-            const m = s.match(/[-+]?[0-9]*\.?[0-9]+/g);
-            if (m && m.length >= 6) {
-                const pts = [];
-                for (let i = 0; i < m.length; i += 2) {
-                    if (pts.length > 30) break;
-                    let x = parseFloat(m[i]), y = parseFloat(m[i + 1]);
-                    if (x > 100) x = 100; if (y > 100) y = 100;
-                    pts.push({ x, y, type: 'corner', r: 0, cp1: { x: x - 5, y }, cp2: { x: x + 5, y } });
-                }
-                getActiveLayer().points = pts;
-                getActiveLayer().hoverPoints = JSON.parse(JSON.stringify(pts));
-                saveHistory();
-                render();
-            }
-        }
-
-        function addLayer() {
-            const newL = {
-                id: `layer-${Date.now()}`,
-                name: `Shape ${layers.length + 1}`,
-                visible: true,
-                points: [
-                    { x: 40, y: 40, type: 'corner', r: 0, cp1: { x: 40, y: 40 }, cp2: { x: 40, y: 40 } },
-                    { x: 60, y: 40, type: 'corner', r: 0, cp1: { x: 60, y: 40 }, cp2: { x: 60, y: 40 } },
-                    { x: 60, y: 60, type: 'corner', r: 0, cp1: { x: 60, y: 60 }, cp2: { x: 60, y: 60 } },
-                    { x: 40, y: 60, type: 'corner', r: 0, cp1: { x: 40, y: 60 }, cp2: { x: 40, y: 60 } }
-                ],
-                hoverPoints: [],
-                style: {
-                    type: 'color',
-                    value: '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0'),
-                    rotation: 0,
-                    scale: 100,
-                    dropShadow: false,
-                    dropShadowBlur: 10,
-                    innerShadow: false,
-                    innerShadowBlur: 10,
-                    blend: 'normal',
-                    opacity: 100,
-                    filter: 'none',
-                    filterVal: 50,
-                    borderActive: false,
-                    borderWidth: 5,
-                    borderColor: '#000000',
-                    imgPanX: 50,
-                    imgPanY: 50,
-                    imgZoom: 100,
-                    imgRot: 0,
-                    imgBlur: 0
-                }
-            };
-            newL.hoverPoints = JSON.parse(JSON.stringify(newL.points));
-            layers.push(newL); activeLayerId = newL.id; saveHistory(); render();
-        }
-        function deleteLayer(e, id) { e.stopPropagation(); if (layers.length <= 1) return alert("Keep at least one layer"); layers = layers.filter(l => l.id !== id); if (activeLayerId === id) activeLayerId = layers[0].id; saveHistory(); render(); }
-        function addPoint() { const pts = getActivePoints(); const next = (selectedPointIndex + 1) % pts.length; const p1 = pts[selectedPointIndex], p2 = pts[next]; pts.splice(selectedPointIndex + 1, 0, { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2, type: 'corner', r: 0 }); const l = getActiveLayer(); if (!isHoverEditing && l.hoverPoints && l.hoverPoints.length === pts.length - 1) l.hoverPoints = JSON.parse(JSON.stringify(l.points)); saveHistory(); render(); }
-        function deletePoint() { const pts = getActivePoints(); if (pts.length > 3) { pts.splice(selectedPointIndex, 1); selectedPointIndex = Math.max(0, selectedPointIndex - 1); const l = getActiveLayer(); if (!isHoverEditing && l.hoverPoints) l.hoverPoints = JSON.parse(JSON.stringify(l.points)); saveHistory(); render(); } }
-        function centerGeometry() { const pts = getActivePoints(); let mnX = 100, mxX = 0, mnY = 100, mxY = 0; pts.forEach(p => { if (p.x < mnX) mnX = p.x; if (p.x > mxX) mxX = p.x; if (p.y < mnY) mnY = p.y; if (p.y > mxY) mxY = p.y }); const dx = 50 - (mnX + mxX) / 2, dy = 50 - (mnY + mxY) / 2; pts.forEach(p => { p.x += dx; p.y += dy }); saveHistory(); render(); }
-        function toggleSymmetry(axis) { symmetry[axis] = !symmetry[axis]; document.getElementById(`sym${axis.toUpperCase()}`).classList.toggle('bg-indigo-600', symmetry[axis]); document.getElementById(`sym${axis.toUpperCase()}`).classList.toggle('text-white', symmetry[axis]); }
-        function flipGeometry(a) { const pts = getActivePoints(); pts.forEach(p => a === 'h' ? p.x = 100 - p.x : p.y = 100 - p.y); saveHistory(); render(); }
-        function setAspectRatio(r) { const w = 400; const h = r === 16 / 9 ? w / r : (r === 4 / 3 ? w / r : w); document.getElementById('aspectContainer').style.width = w + 'px'; document.getElementById('aspectContainer').style.height = h + 'px'; }
-        function shareState() { const json = JSON.stringify(layers); const b64 = btoa(json); window.location.hash = b64; alert("URL updated!"); }
-        function takeSnapshot() { alert("Snapshot saved!"); }
-        function setPointType(type) {
-            const pts = getActivePoints();
-            if (!pts || !pts[selectedPointIndex]) return;
-            pts[selectedPointIndex].type = type;
-            if (type === 'bezier') {
-                const p = pts[selectedPointIndex];
-                if (!p.cp1) { p.cp1 = { x: p.x - 5, y: p.y }; p.cp2 = { x: p.x + 5, y: p.y }; }
-            }
-            syncUI(); render(); saveHistory();
-        }
-
-        function initPolygon(sides) {
-            const pts = []; const r = 40; const c = 50;
-            for (let i = 0; i < sides; i++) {
-                const a = (i * 2 * Math.PI / sides) - Math.PI / 2;
-                pts.push({ x: c + r * Math.cos(a), y: c + r * Math.sin(a), type: 'corner', r: 0, cp1: { x: c + r * Math.cos(a) - 5, y: c + r * Math.sin(a) }, cp2: { x: c + r * Math.cos(a) + 5, y: c + r * Math.sin(a) } });
-            }
-            const l = getActiveLayer();
-            l.points = pts;
-            l.hoverPoints = JSON.parse(JSON.stringify(pts));
-            saveHistory();
-            render();
-        }
-
-        function applyPreset(name) {
-            let pts = []; const mk = (arr) => arr.map(p => ({ x: p.x, y: p.y, smooth: false, type: 'corner', r: 0, cp1: { x: p.x - 5, y: p.y }, cp2: { x: p.x + 5, y: p.y } }));
-            if (name === 'pentagon') { initPolygon(5); return; }
-            if (name === 'hexagon') { initPolygon(6); return; }
-            if (name === 'circle') { const sides = 8; const r = 45; for (let i = 0; i < sides; i++) { const a = (i * 2 * Math.PI / sides); pts.push({ x: 50 + r * Math.cos(a), y: 50 + r * Math.sin(a), type: 'smooth', r: 0, cp1: { x: 0, y: 0 }, cp2: { x: 0, y: 0 } }); } }
-            else if (name === 'star') pts = mk([{ x: 50, y: 0 }, { x: 61, y: 35 }, { x: 98, y: 35 }, { x: 68, y: 57 }, { x: 79, y: 91 }, { x: 50, y: 70 }, { x: 21, y: 91 }, { x: 32, y: 57 }, { x: 2, y: 35 }, { x: 39, y: 35 }]);
-            else if (name === 'shield') pts = mk([{ x: 50, y: 0 }, { x: 100, y: 20 }, { x: 100, y: 50 }, { x: 50, y: 100 }, { x: 0, y: 50 }, { x: 0, y: 20 }]);
-            else if (name === 'message') pts = mk([{ x: 5, y: 5 }, { x: 95, y: 5 }, { x: 95, y: 75 }, { x: 75, y: 75 }, { x: 75, y: 95 }, { x: 50, y: 75 }, { x: 5, y: 75 }]);
-            else if (name === 'cross') pts = mk([{ x: 35, y: 5 }, { x: 65, y: 5 }, { x: 65, y: 35 }, { x: 95, y: 35 }, { x: 95, y: 65 }, { x: 65, y: 65 }, { x: 65, y: 95 }, { x: 35, y: 95 }, { x: 35, y: 65 }, { x: 5, y: 65 }, { x: 5, y: 35 }, { x: 35, y: 35 }]);
-            else if (name === 'arrow') pts = mk([{ x: 0, y: 25 }, { x: 50, y: 25 }, { x: 50, y: 0 }, { x: 100, y: 50 }, { x: 50, y: 100 }, { x: 50, y: 75 }, { x: 0, y: 75 }]);
-            else if (name === 'frame') pts = mk([{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 100 }, { x: 0, y: 100 }, { x: 10, y: 10 }, { x: 90, y: 10 }, { x: 90, y: 90 }, { x: 10, y: 90 }, { x: 10, y: 10 }]);
-            getActiveLayer().points = pts; getActiveLayer().hoverPoints = JSON.parse(JSON.stringify(pts)); saveHistory(); render();
-        }
-
-        function syncUI() {
-            const l = getActiveLayer();
-            const p = getActivePoints()[selectedPointIndex];
-
-            // Point Controls
-            if (p) {
-                document.getElementById('pointIndex').innerText = `#${selectedPointIndex + 1}`;
-                document.getElementById('inpX').value = Math.round(p.x);
-                document.getElementById('inpY').value = Math.round(p.y);
-
-                const type = p.type || 'corner';
-                // Button styles
-                const baseClass = "py-1 text-[9px] border border-black font-bold transition-colors w-full uppercase";
-                const activeClass = "bg-black text-white hover:bg-black shadow-neo-sm";
-                const inactiveClass = "bg-white text-black hover:bg-neo-yellow shadow-sm hover:shadow-neo-sm hover:-translate-y-[1px]";
-
-                document.getElementById('type-corner').className = `${baseClass} ${type === 'corner' ? activeClass : inactiveClass}`;
-                document.getElementById('type-smooth').className = `${baseClass} ${type === 'smooth' ? activeClass : inactiveClass}`;
-                document.getElementById('type-rounded').className = `${baseClass} ${type === 'rounded' ? activeClass : inactiveClass}`;
-                document.getElementById('type-bezier').className = `${baseClass} ${type === 'bezier' ? activeClass : inactiveClass}`;
-
-                const roundnessControl = document.getElementById('roundnessControl');
-                if (type === 'rounded') {
-                    roundnessControl.classList.remove('hidden');
-                    const rVal = p.r || 0;
-                    document.getElementById('ptRoundness').value = rVal;
-                    document.getElementById('ptRoundVal').textContent = rVal + '%';
-                } else {
-                    roundnessControl.classList.add('hidden');
-                }
-            }
-
-            // Global Geo
-            document.getElementById('rotSlider').value = l.style.rotation;
-            document.getElementById('rotVal').textContent = l.style.rotation + '°';
-            document.getElementById('shapeScale').value = l.style.scale;
-            document.getElementById('scaleVal').textContent = l.style.scale + '%';
-
-            // Fill
-            document.getElementById('fillColor').value = l.style.type === 'color' ? l.style.value : '#6366f1';
-
-            // Image Controls
-            if (l.style.type === 'image') {
-                document.getElementById('imageControls').classList.remove('hidden');
-                document.getElementById('removeImgBtn').classList.remove('hidden');
-                document.getElementById('imgPanX').value = l.style.imgPanX;
-                document.getElementById('imgPanY').value = l.style.imgPanY;
-                document.getElementById('imgZoom').value = l.style.imgZoom;
-                document.getElementById('imgRot').value = l.style.imgRot || 0;
-                document.getElementById('imgBlur').value = l.style.imgBlur || 0;
-            } else {
-                document.getElementById('imageControls').classList.add('hidden');
-                document.getElementById('removeImgBtn').classList.add('hidden');
-            }
-
-            // Border
-            document.getElementById('hasBorder').checked = l.style.borderActive;
-            const borderSettings = document.getElementById('borderSettings');
-            if (l.style.borderActive) {
-                borderSettings.classList.remove('opacity-50', 'pointer-events-none');
-            } else {
-                borderSettings.classList.add('opacity-50', 'pointer-events-none');
-            }
-            document.getElementById('borderWidth').value = l.style.borderWidth;
-            document.getElementById('bwVal').textContent = l.style.borderWidth + 'px';
-            document.getElementById('borderColor').value = l.style.borderColor;
-
-            // Effects
-            document.getElementById('hasDropShadow').checked = l.style.dropShadow;
-            document.getElementById('dropShadowBlur').value = l.style.dropShadowBlur;
-            document.getElementById('dropShadowBlur').disabled = !l.style.dropShadow;
-
-            document.getElementById('hasInnerShadow').checked = l.style.innerShadow;
-            document.getElementById('innerShadowBlur').value = l.style.innerShadowBlur;
-            document.getElementById('innerShadowBlur').disabled = !l.style.innerShadow;
-
-            // Advanced / Experimental
-            document.getElementById('filterSelect').value = l.style.filter;
-            document.getElementById('filterIntensity').value = l.style.filterVal;
-            document.getElementById('blendSelect').value = l.style.blend;
-            document.getElementById('blendOpacity').value = l.style.opacity;
-        }
-
-        init();
-    </script>
 </body>
 
 </html>
