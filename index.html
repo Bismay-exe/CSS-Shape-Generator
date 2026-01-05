@@ -793,6 +793,29 @@
             if (btnRedo) btnRedo.disabled = historyIndex >= history.length - 1;
         }
 
+        function historyUndo() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                layers = JSON.parse(history[historyIndex]);
+                // Ensure active layer is valid
+                if (!layers.find(l => l.id === activeLayerId)) activeLayerId = layers[0].id;
+                render();
+                syncUI();
+                updateHistoryBtns();
+            }
+        }
+
+        function historyRedo() {
+            if (historyIndex < history.length - 1) {
+                historyIndex++;
+                layers = JSON.parse(history[historyIndex]);
+                if (!layers.find(l => l.id === activeLayerId)) activeLayerId = layers[0].id;
+                render();
+                syncUI();
+                updateHistoryBtns();
+            }
+        }
+
         // --- RENDER PIPELINE ---
         function render() {
             const container = document.getElementById('layersContainer');
