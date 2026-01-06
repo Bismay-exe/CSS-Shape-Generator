@@ -218,8 +218,8 @@
     </style>
 </head>
 
-<body class="h-screen flex flex-col overflow-hidden text-slate-800" onkeydown="handleKeyDown(event)"
-    onclick="closeMenus(event)">
+<body class="h-[100dvh] md:h-screen flex flex-col overflow-auto md:overflow-hidden text-slate-800"
+    onkeydown="handleKeyDown(event)" onclick="closeMenus(event)">
 
     <!-- SVG Filters -->
     <svg width="0" height="0" class="absolute pointer-events-none">
@@ -285,10 +285,11 @@
         </div>
     </nav>
 
-    <div class="flex-1 flex overflow-hidden">
+    <div class="flex-1 flex flex-col md:flex-row overflow-visible md:overflow-hidden">
 
         <!-- Sidebar: Layers & Primitives -->
-        <aside class="w-64 bg-neo-white border-r-4 border-black flex flex-col shrink-0 z-20">
+        <aside
+            class="w-full md:w-64 bg-neo-white border-b-4 md:border-b-0 md:border-r-4 border-black flex flex-col shrink-0 z-20 h-auto md:h-full">
             <div class="p-3 border-b-4 border-black flex justify-between items-center bg-neo-blue">
                 <span class="text-xs font-black text-black uppercase tracking-wider">Layers</span>
                 <div class="flex gap-1">
@@ -297,7 +298,7 @@
                         title="Add Layer"><i class="fa-solid fa-plus"></i></button>
                 </div>
             </div>
-            <div id="layerList" class="flex-1 overflow-y-auto custom-scroll p-2 space-y-1"></div>
+            <div id="layerList" class="flex-1 overflow-y-auto custom-scroll p-2 space-y-1 max-h-48 md:max-h-none"></div>
 
             <div class="p-4 border-t-4 border-black bg-neo-white space-y-4">
                 <div>
@@ -346,7 +347,7 @@
                         </div>
                     </div>
                     <div class="grid grid-cols-4 gap-2">
-                        <button onclick="applyPreset('pentagon')"
+                        <button onclick="applyPreset('triangle')"
                             class="aspect-square border-2 border-black bg-white hover:bg-neo-pink shadow-neo-sm hover:shadow-none flex items-center justify-center text-black font-bold transition-all"><i
                                 class="fa-solid fa-play fa-rotate-270 text-[10px]"></i></button>
                         <button onclick="applyPreset('circle')"
@@ -366,7 +367,8 @@
         <!-- Canvas Area -->
         <main class="flex-1 flex flex-col relative bg-[#f0f0f0]">
             <!-- Toolbar -->
-            <div class="h-14 bg-neo-white border-b-4 border-black flex items-center justify-center gap-6 px-4">
+            <div
+                class="h-auto md:h-14 py-2 md:py-0 bg-neo-white border-b-4 border-black flex flex-wrap items-center justify-center gap-4 md:gap-6 px-4">
                 <div class="flex items-center gap-2">
                     <button onclick="historyUndo()" id="btnUndo" disabled
                         class="w-9 h-9 flex items-center justify-center border-2 border-black bg-white shadow-neo-sm hover:shadow-none hover:translate-y-[2px] hover:bg-neo-yellow text-black disabled:opacity-30 disabled:shadow-none disabled:translate-y-0 transition-all"><i
@@ -398,8 +400,8 @@
             </div>
 
             <div id="canvasZone"
-                class="flex-1 flex items-center justify-center overflow-visible checkerboard relative p-10">
-                <div id="aspectContainer" class="relative transition-all duration-300 canvas-boundary"
+                class="flex-1 flex items-center justify-center overflow-visible checkerboard relative p-4 md:p-10 min-h-[400px]">
+                <div id="aspectContainer" class="relative transition-all duration-300 canvas-boundary max-w-full"
                     style="width: 400px; height: 400px;">
                     <!-- Removed onmousedown to prevent shape moving as requested -->
                     <div id="layersContainer" class="absolute inset-0 w-full h-full"></div>
@@ -427,7 +429,8 @@
         </main>
 
         <!-- Right Sidebar: Properties -->
-        <aside class="w-80 bg-neo-white border-l-4 border-black flex flex-col shrink-0 z-20">
+        <aside
+            class="w-full md:w-80 bg-neo-white border-t-4 md:border-t-0 md:border-l-4 border-black flex flex-col shrink-0 z-20 h-auto md:h-full">
             <div class="flex border-b border-slate-100">
                 <button onclick="setTab('shape')" id="tab-shape"
                     class="tab-btn active flex-1 py-3 text-xs font-black uppercase border-b-4 border-transparent hover:bg-neo-yellow transition-colors">Shape</button>
@@ -441,7 +444,7 @@
                     class="tab-btn flex-1 py-3 text-xs font-black uppercase border-b-4 border-transparent hover:bg-neo-yellow transition-colors">Code</button>
             </div>
 
-            <div class="flex-1 overflow-y-auto custom-scroll p-4 space-y-6">
+            <div class="flex-1 overflow-y-auto custom-scroll p-4 space-y-6 h-[50dvh] md:h-auto">
 
                 <!-- TAB: SHAPE (Geometry) -->
                 <div id="panel-shape" class="space-y-5">
@@ -1330,7 +1333,7 @@
                 }
 
                 if (l.style.borderActive) {
-                    out = `<!-- Wrapper for border filter -->\n<div class="drop-shadow-[0_0_${l.style.borderWidth}px_${l.style.borderColor.replace('#' ,'')}]">\n  <div class="${classes}"></div>\n</div>`;
+                    out = `<!-- Wrapper for border filter -->\n<div class="drop-shadow-[0_0_${l.style.borderWidth}px_${l.style.borderColor.replace('#', '')}]">\n  <div class="${classes}"></div>\n</div>`;
                 } else {
                     out = `<div class="${classes}"></div>`;
                 }
@@ -1526,7 +1529,7 @@
 
         function applyPreset(name) {
             let pts = []; const mk = (arr) => arr.map(p => ({ x: p.x, y: p.y, smooth: false, type: 'corner', r: 0, cp1: { x: p.x - 5, y: p.y }, cp2: { x: p.x + 5, y: p.y } }));
-            if (name === 'pentagon') { initPolygon(5); return; }
+            if (name === 'triangle') { initPolygon(3); return; }
             if (name === 'hexagon') { initPolygon(6); return; }
             if (name === 'circle') { const sides = 8; const r = 45; for (let i = 0; i < sides; i++) { const a = (i * 2 * Math.PI / sides); pts.push({ x: 50 + r * Math.cos(a), y: 50 + r * Math.sin(a), type: 'smooth', r: 0, cp1: { x: 0, y: 0 }, cp2: { x: 0, y: 0 } }); } }
             else if (name === 'star') pts = mk([{ x: 50, y: 0 }, { x: 61, y: 35 }, { x: 98, y: 35 }, { x: 68, y: 57 }, { x: 79, y: 91 }, { x: 50, y: 70 }, { x: 21, y: 91 }, { x: 32, y: 57 }, { x: 2, y: 35 }, { x: 39, y: 35 }]);
@@ -1534,7 +1537,7 @@
             else if (name === 'message') pts = mk([{ x: 5, y: 5 }, { x: 95, y: 5 }, { x: 95, y: 75 }, { x: 75, y: 75 }, { x: 75, y: 95 }, { x: 50, y: 75 }, { x: 5, y: 75 }]);
             else if (name === 'cross') pts = mk([{ x: 35, y: 5 }, { x: 65, y: 5 }, { x: 65, y: 35 }, { x: 95, y: 35 }, { x: 95, y: 65 }, { x: 65, y: 65 }, { x: 65, y: 95 }, { x: 35, y: 95 }, { x: 35, y: 65 }, { x: 5, y: 65 }, { x: 5, y: 35 }, { x: 35, y: 35 }]);
             else if (name === 'arrow') pts = mk([{ x: 0, y: 25 }, { x: 50, y: 25 }, { x: 50, y: 0 }, { x: 100, y: 50 }, { x: 50, y: 100 }, { x: 50, y: 75 }, { x: 0, y: 75 }]);
-            else if (name === 'frame') pts = mk([{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 100 }, { x: 0, y: 100 }, { x: 10, y: 10 }, { x: 90, y: 10 }, { x: 90, y: 90 }, { x: 10, y: 90 }, { x: 10, y: 10 }]);
+            else if (name === 'frame') pts = mk([{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 100 }, { x: 0, y: 100 }, { x: 0, y: 0 }, { x: 10, y: 10 }, { x: 10, y: 90 }, { x: 90, y: 90 }, { x: 90, y: 10 }, { x: 10, y: 10 }]);
             getActiveLayer().points = pts; getActiveLayer().hoverPoints = JSON.parse(JSON.stringify(pts)); saveHistory(); render();
         }
 
